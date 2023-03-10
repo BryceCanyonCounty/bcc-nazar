@@ -20,8 +20,3 @@ client_scripts {
     '/client/nazarspawn.lua',
     '/client/treasurehunt.lua',
 }
-
-escrow_ignore {
-    'config.lua',
-    'README.txt',
-}
