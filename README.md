@@ -10,7 +10,7 @@
 - The chests are on a global cooldown meaning once someone does it no one can start a new hunt for a certain set time
 - Madam Nazar can buy, and sell things to the player, making her a good option for a black market that moves automaticall every server restart.
 - Can create as many treasure hunt's as you want
-
+- In depth webhooking
 
 ## How it works
 - It creates Madam Nazar in your RedM server! Walk upto her and read the text that shows. Hit 'G' on your keyboard to open up her menu. From there you can choose to buy a hint for a treasure chest, sell items to her, or buy items from her.
