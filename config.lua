@@ -20,7 +20,6 @@ Config.NazarSetup = {
 --This is the treasure chest setup you can not add anymore sadly only configure the existing ones there are 20 in total and i can add more if enough people want more
 Config.TreasureLocations = {
     {
-        hintcost = 50,
         huntname = 'Grizzlies West', --the name that will show when buying a hint from nazar
         location = {x = -960.33, y = 1630.17, z = 246.58}, --the location of the chest
         Reward = { --this is the rewards -- you can add as many rewards per chest as you want use the existing rewards as a guide to add more
@@ -35,7 +34,6 @@ Config.TreasureLocations = {
         },
     },
     {
-        hintcost = 150,
         huntname = 'Girzzlies east',
         location = {x = -2728.65, y = -1464.78, z = 153.06},
         Reward = {
