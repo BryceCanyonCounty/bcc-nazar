@@ -34,7 +34,7 @@ function searchforchest()
                     TaskPlayAnim(PlayerPedId(), 'mech_ransack@chest@med@open@crouch@b', 'base', 8.0, 8.0, 1000, 17, 0.2, false, false, false) --plays the animation
                 end) --end of animation setup
                 RemoveBlip(blip)
-                TriggerServerEvent('chestopen', V) --triggers the server event and passes the variable
+                TriggerServerEvent('hd_nazar:chestopen', V) --triggers the server event and passes the variable
                 break
             end
         end

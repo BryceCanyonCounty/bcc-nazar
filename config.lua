@@ -4,7 +4,6 @@ Config = {}
 ChestWebhook = '' --will display when someone opens a chest who did it what items they got what chest etc
 ShopWebhook = '' --this is what will display when someone sells or buys from nazar
 
-
 --This is the nazar configuration
 Config.NazarSetup = {
     blip = true, --if true this will place a blip on nazar if not no blip will be there
@@ -54,14 +53,14 @@ Config.TreasureLocations = {
 
 --This is what she will purchase from the player
 Config.Shop = {
-    { itemdbname = 'iron', displayname = 'Eisenerz', price = '5'},
-    { itemdbname = 'coal', displayname = 'Kohle', price = '2'},
+    { itemdbname = 'iron', displayname = 'Iron', price = '5'},
+    { itemdbname = 'coal', displayname = 'Coal', price = '2'},
 }
 
 -- This is what she will sell to the player
 Config.Nazarssellableitems = {
-    { itemdbname = 'iron', displayname = 'Eisenerz', price = 3},
-    { itemdbname = 'coal', displayname = 'Kohle', price = 7},
+    { itemdbname = 'iron', displayname = 'Iron', price = 3},
+    { itemdbname = 'coal', displayname = 'Coal', price = 7},
 }
 
 ------------------- TRANSLATE HERE --------------

@@ -5,18 +5,17 @@ TriggerEvent("getUtils", function(utils)
 end)
 
 Citizen.CreateThread(function()
-    TriggerServerEvent('shopped')
+    TriggerServerEvent('hd_nazar:shopped')
 end)
 
 Citizen.CreateThread(function()
     D = math.random(1, #Config.NazarSetup.nazarspawn)
-    print(D)
     Nspawn = Config.NazarSetup.nazarspawn[D]
 end)
 
 local pedlock = 0
-RegisterNetEvent('pedspawn')
-AddEventHandler('pedspawn', function()
+RegisterNetEvent('hd_nazar:pedspawn')
+AddEventHandler('hd_nazar:pedspawn', function()
     local model = GetHashKey('cs_mp_travellingsaleswoman') --sets the npc model
     if Config.NazarSetup.blip == true then
         local blip = VORPutils.Blips:SetBlip("Madam Nazaar", 'blip_mp_collector_map', 0.8, Nspawn.x, Nspawn.y, Nspawn.z)
