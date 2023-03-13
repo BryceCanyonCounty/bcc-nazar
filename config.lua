@@ -13,8 +13,6 @@ Config.NazarSetup = {
         {x = -1308.82, y = 395.05, z = 95.38, h = 95.98},
         {x = -2698.67, y = -1500.59, z = 152.03, h = 294.63},
         {x = -1447.93, y = -2297.07, z = 43.37, h = 229.05},
-        {x = 2451.7, y = 2097.02, z = 173.33, h = 229.05},
-        {x = -943.65, y = 2181.4, z = 342.34, h = 229.05},
     }, --where she will be
     hintcooldown = 300000, --this is the cooldown between hints
 }
@@ -24,13 +22,14 @@ Config.TreasureLocations = {
     {
         huntname = 'Grizzlies West', --the name that will show when buying a hint from nazar
         location = {x = -960.33, y = 1630.17, z = 246.58}, --the location of the chest
+        hintcost = 5, --set to 0 if you dont want to charge the player for getting a hint
         Reward = { --this is the rewards -- you can add as many rewards per chest as you want use the existing rewards as a guide to add more
             {
-                name = 'wheat', --this has to be the database name of the item
+                name = 'coal', --this has to be the database name of the item
                 count = 1, --the amount of the item you want it to give
             },
             {
-                name = 'water',
+                name = 'iron',
                 count = 7,
             },
         },
@@ -38,9 +37,10 @@ Config.TreasureLocations = {
     {
         huntname = 'Girzzlies east',
         location = {x = -2728.65, y = -1464.78, z = 153.06},
+        hintcost = 5,
         Reward = {
             {
-                name = 'shovel',
+                name = 'horsebrush',
                 count = 1,
             },
         },
@@ -54,12 +54,47 @@ Config.TreasureLocations = {
 
 --This is what she will purchase from the player
 Config.Shop = {
-    { itemdbname = 'wheat', displayname = 'wheat', price = '5'},
-    { itemdbname = 'water', displayname = 'water', price = '2'},
+    { itemdbname = 'iron', displayname = 'Eisenerz', price = '5'},
+    { itemdbname = 'coal', displayname = 'Kohle', price = '2'},
 }
 
 -- This is what she will sell to the player
 Config.Nazarssellableitems = {
-    { itemdbname = 'water', displayname = 'water', price = 3},
-    { itemdbname = 'wheat', displayname = 'Wheat', price = 7},
+    { itemdbname = 'iron', displayname = 'Eisenerz', price = 3},
+    { itemdbname = 'coal', displayname = 'Kohle', price = 7},
+}
+
+------------------- TRANSLATE HERE --------------
+Config.Language = {
+    TreasureBlipName = 'Treasure?',
+    TreasurePromptTitle = 'Search the chest for clues',
+    TreasurePrompt_search = "Search Chest",
+    TalkToNPCText = 'Press "G" to see what Madam Nazar is offering',
+
+    Menu_Title_Hint = 'Hint Shop',
+    Menu_Title_Sell = 'Sell',
+    Menu_Title_Buy = 'Buy',
+    Menu_SubTitle_Hint = 'Purchase Hints',
+    Menu_SubTitle_Sell = 'Sell Items',
+    Menu_SubTitle_Buy = 'Buy Items',
+    SubMenu_Head_Hint = "Buy Hints",
+    SubMenu_Head_Sell = "Sell Items",
+    SubMenu_Head_Buy = "Buy Items",
+
+    SubMenu_Hint = 'Purchase a Hint ',
+    Shopmenu_sell = "Sell ",
+    Shopmenu_for = " for ",
+    Shopmenu_buy = "Buy ",
+
+    input_button = "confirm",
+    input_placeholder = "insert amount",
+    input_header = "amount",
+
+    HintNotify = "A clue to some treasure has been marked",
+    NoHintNotify = "I have nothing to offer currently come back later",
+
+    NoItem = "You do not have this item.",
+    NoMoney = "You do not have enough cash.",
+    NoChest = "Someone has already looted this chest!",
+    Alreadylooted = "You looted the chest!"
 }
