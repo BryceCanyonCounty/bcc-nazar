@@ -5,17 +5,18 @@ TriggerEvent("getUtils", function(utils)
 end)
 
 Citizen.CreateThread(function()
-    TriggerServerEvent('hd_nazar:shopped')
+    TriggerServerEvent('shopped')
 end)
 
 Citizen.CreateThread(function()
     D = math.random(1, #Config.NazarSetup.nazarspawn)
+    print(D)
     Nspawn = Config.NazarSetup.nazarspawn[D]
 end)
 
 local pedlock = 0
-RegisterNetEvent('hd_nazar:pedspawn')
-AddEventHandler('hd_nazar:pedspawn', function()
+RegisterNetEvent('pedspawn')
+AddEventHandler('pedspawn', function()
     local model = GetHashKey('cs_mp_travellingsaleswoman') --sets the npc model
     if Config.NazarSetup.blip == true then
         local blip = VORPutils.Blips:SetBlip("Madam Nazaar", 'blip_mp_collector_map', 0.8, Nspawn.x, Nspawn.y, Nspawn.z)
@@ -44,7 +45,7 @@ Citizen.CreateThread(function()
         local playercoord = GetEntityCoords(player) --gets the players ped coordinates
         local dist = GetDistanceBetweenCoords(playercoord.x, playercoord.y, playercoord.z, Nspawn.x, Nspawn.y, Nspawn.z, false) --gets the distance between coords
         if dist < 10 then -- if distance is less than 10 do
-            DrawText3D(Nspawn.x, Nspawn.y, Nspawn.z, 'Press "G" To see what Madam Nazar is offering') --creates the text
+            DrawText3D(Nspawn.x, Nspawn.y, Nspawn.z, Config.Language.TalkToNPCText) --creates the text
         end
     end
 end)
