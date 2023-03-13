@@ -11,33 +11,31 @@ StopAll = false
 
 --Main Menu
 Citizen.CreateThread(function()
-    WarMenu.CreateMenu('leg2', 'Madam Nazar') --creates the main menu
-    WarMenu.CreateSubMenu('shop', 'leg2', 'Sell Items')
-    WarMenu.CreateSubMenu('sell', 'leg2', 'Buy Hints')
-    WarMenu.CreateSubMenu('nazarsshop', 'leg2', 'Buy Items')
+    WarMenu.CreateMenu('hd_nazar:menu', 'Madam Nazar') --creates the main menu
+    WarMenu.CreateSubMenu('hd_nazar:shop', 'hd_nazar:menu', 'Sell Items')
+    WarMenu.CreateSubMenu('hd_nazar:sell', 'hd_nazar:menu', 'Buy Hints')
+    WarMenu.CreateSubMenu('hd_nazar:nazarsshop', 'hd_nazar:menu', 'Buy Items')
     while true do
-        if WarMenu.IsMenuOpened('leg2') then --if menu is opened then
+        if WarMenu.IsMenuOpened('hd_nazar:menu') then --if menu is opened then
             if WarMenu.Button('Hint Shop', '', 'Purchase Hints') then --creates the hint shop option
-                WarMenu.OpenMenu('sell') --opens the sell menu
+                WarMenu.OpenMenu('hd_nazar:sell') --opens the sell menu
             end
             if WarMenu.Button('Sell', '', 'Sell Items') then --creates the shop option
-                print('menu waorked') --print for testing
-                WarMenu.OpenMenu('shop') --opens the menu
+                WarMenu.OpenMenu('hd_nazar:shop') --opens the menu
             end
             if WarMenu.Button('Buy', '', 'Buy Items') then
-                WarMenu.OpenMenu('nazarsshop')
+                WarMenu.OpenMenu('hd_nazar:nazarsshop')
             end
         end
-        if WarMenu.IsMenuOpened('sell') then
+        if WarMenu.IsMenuOpened('hd_nazar:sell') then
             for k, v in pairs(Config.TreasureLocations) do --starts a for loop which creates multiple menus depending on the config
                 if WarMenu.Button(v.huntname, '', 'Purchase a Hint ') then --creates a option for each thing in config lua
                     local cost = v.hintcost
-                    print(cost)
                     C = v.location
                     V = v
-                    TriggerServerEvent('menuopen6', cost) --triggers server event which is the cooldown event 
-                    RegisterNetEvent('menuopen4') --creates a net event for the serever to call
-                    AddEventHandler('menuopen4', function() --makes the net event have something to run
+                    TriggerServerEvent('hd_nazar:menuopen6', cost) --triggers server event which is the cooldown event 
+                    RegisterNetEvent('hd_nazar:menuopen4') --creates a net event for the serever to call
+                    AddEventHandler('hd_nazar:menuopen4', function() --makes the net event have something to run
                         VORPcore.NotifyBottomRight("A clue to some treasure has been marked",6000) --text in bottom right
                         WarMenu.CloseMenu() --closes the menu
                         searchforchest()
@@ -45,7 +43,7 @@ Citizen.CreateThread(function()
                 end
             end
         end
-        if WarMenu.IsMenuOpened('shop') then
+        if WarMenu.IsMenuOpened('hd_nazar:shop') then
             for p, u in pairs(Config.Shop) do --opens the shop table
                 if WarMenu.Button('Sell ' .. u.displayname .. ' For ' .. u.price, '', '') then --creates a menu per thing in the shop
                     Iitemname = u.itemdbname --sets the varible to whatever option is clicked
@@ -68,7 +66,7 @@ Citizen.CreateThread(function()
                     TriggerEvent("vorpinputs:advancedInput", json.encode(myInput),function(result)
                         local qty = tonumber(result)
                         if qty > 0 then
-                            TriggerServerEvent("catchinputforsell",  qty) --result
+                            TriggerServerEvent("hd_nazar:catchinputforsell",  qty) --result
                         else
                             TriggerEvent("vorp:TipRight", "insertamount", 3000)
                         end
@@ -78,7 +76,7 @@ Citizen.CreateThread(function()
                 end
             end
         end
-        if WarMenu.IsMenuOpened('nazarsshop') then
+        if WarMenu.IsMenuOpened('hd_nazar:nazarsshop') then
             for k, e in pairs(Config.Nazarssellableitems) do
                 if WarMenu.Button('Buy ' .. e.displayname .. ' for ' .. e.price .. '?') then
                     Itemnamee = e.itemdbname
@@ -100,7 +98,7 @@ Citizen.CreateThread(function()
                     TriggerEvent("vorpinputs:advancedInput", json.encode(myInput),function(result)
                         local qty = tonumber(result)
                         if qty > 0 then
-                            TriggerServerEvent("nazarsellinfopass",  qty) --result
+                            TriggerServerEvent("hd_nazar:nazarsellinfopass",  qty) --result
                         else
                             TriggerEvent("vorp:TipRight", "insertamount", 3000)
                         end
@@ -115,24 +113,24 @@ Citizen.CreateThread(function()
 end)
 
 --This recieves the qty when buying from nazar and then passes the qty along with the item name and price to the server to handle giving the items
-RegisterNetEvent('nazarsellableitemscatch')
-AddEventHandler('nazarsellableitemscatch', function(qty) --is catching the qty from the server
-    TriggerServerEvent('buyfromnazar', qty, Itemnamee, Priceee) --is passing the 3 variables to the server
+RegisterNetEvent('hd_nazar:nazarsellableitemscatch')
+AddEventHandler('hd_nazar:nazarsellableitemscatch', function(qty) --is catching the qty from the server
+    TriggerServerEvent('hd_nazar:buyfromnazar', qty, Itemnamee, Priceee) --is passing the 3 variables to the server
 end)
 
 
 --this recieves the qty when selling items to nazar from the server and then passes the itemname and price to the server along with the qty
-RegisterNetEvent('infosenderforsell')
-AddEventHandler('infosenderforsell', function(qty)
-    TriggerServerEvent('getplayerdataforsell', Iitemname, Pprice, qty)
+RegisterNetEvent('hd_nazar:infosenderforsell')
+AddEventHandler('hd_nazar:infosenderforsell', function(qty)
+    TriggerServerEvent('hd_nazar:getplayerdataforsell', Iitemname, Pprice, qty)
 end)
 
 function openlegmenu() --creates a function named openlegmenu
-    WarMenu.OpenMenu('leg2') --opens the main menu
+    WarMenu.OpenMenu('hd_nazar:menu') --opens the main menu
 end
 
-RegisterNetEvent('failmenuopen') --this is the event that will trigger if cooldown is true
-AddEventHandler('failmenuopen', function() --makes the event do something
+RegisterNetEvent('hd_nazar:failmenuopen') --this is the event that will trigger if cooldown is true
+AddEventHandler('hd_nazar:failmenuopen', function() --makes the event do something
     VORPcore.NotifyBottomRight('I have nothing to offer currently come back later', 4000) --prints this in players screen
 end)
 
@@ -151,22 +149,17 @@ Citizen.CreateThread(function() --runs on start
 end)
 --End menu setup
 
-RegisterNetEvent('noitem') --creates a client event that prints no item
-AddEventHandler('noitem', function()
+RegisterNetEvent('hd_nazar:noitem') --creates a client event that prints no item
+AddEventHandler('hd_nazar:noitem', function()
     VORPcore.NotifyBottomRight('you do not have this item', 4000) --prints this in players screen
 end)
 
-RegisterNetEvent('nomon') --creates a client event that prints no item
-AddEventHandler('nomon', function()
+RegisterNetEvent('hd_nazar:nomon') --creates a client event that prints no item
+AddEventHandler('hd_nazar:nomon', function()
     VORPcore.NotifyBottomRight('You do not have enough cash', 4000) --prints this in players screen
 end)
 
-RegisterNetEvent('ccdown') --creates a client event that prints no item
-AddEventHandler('ccdown', function()
-    VORPcore.NotifyBottomRight('Someone has already looted this chest!', 4000) --prints this in players screen
-end)
-
-RegisterNetEvent('ccdown2') --creates a client event that prints no item
-AddEventHandler('ccdown2', function()
+RegisterNetEvent('hd_nazar:ccdown2') --creates a client event that prints no item
+AddEventHandler('hd_nazar:ccdown2', function()
     VORPcore.NotifyBottomRight('You looted the chest!', 4000) --prints this in players screen
 end)
