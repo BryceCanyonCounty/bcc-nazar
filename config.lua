@@ -46,7 +46,6 @@ Config.TreasureLocations = {
     },
 }
 
-
 --This is the shop configuration
 --You can add as many items to sale as you want just copy the line paste it and change it to your new item
 --itemdbname is the database name of the item and displayname is what will show in the menu with nazar
@@ -79,19 +78,15 @@ Config.Language = {
     SubMenu_Head_Hint = "Buy Hints",
     SubMenu_Head_Sell = "Sell Items",
     SubMenu_Head_Buy = "Buy Items",
-
     SubMenu_Hint = 'Purchase a Hint ',
     Shopmenu_sell = "Sell ",
     Shopmenu_for = " for ",
     Shopmenu_buy = "Buy ",
-
     input_button = "confirm",
     input_placeholder = "insert amount",
     input_header = "amount",
-
     HintNotify = "A clue to some treasure has been marked",
     NoHintNotify = "I have nothing to offer currently come back later",
-
     NoItem = "You do not have this item.",
     NoMoney = "You do not have enough cash.",
     NoChest = "Someone has already looted this chest!",

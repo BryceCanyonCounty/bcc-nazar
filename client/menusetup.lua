@@ -76,7 +76,7 @@ Citizen.CreateThread(function()
         end
         if WarMenu.IsMenuOpened('hd_nazar:nazarsshop') then
             for k, e in pairs(Config.Nazarssellableitems) do
-                if WarMenu.Button("" ..Config.Language.Shopmenu_sell.. "" .. e.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. e.price .. " $") then
+                if WarMenu.Button("" ..Config.Language.Menu_Title_Buy .. "" .. e.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. e.price .. " $") then
                     Itemnamee = e.itemdbname
                     Priceee = e.price
                     local myInput = {
