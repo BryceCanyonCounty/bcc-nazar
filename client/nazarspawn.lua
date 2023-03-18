@@ -1,11 +1,6 @@
 local VORPutils = {}
-
 TriggerEvent("getUtils", function(utils)
     VORPutils = utils
-end)
-
-Citizen.CreateThread(function()
-    TriggerServerEvent('hd_nazar:shopped')
 end)
 
 Citizen.CreateThread(function()
@@ -14,8 +9,7 @@ Citizen.CreateThread(function()
 end)
 
 local pedlock = 0
-RegisterNetEvent('hd_nazar:pedspawn')
-AddEventHandler('hd_nazar:pedspawn', function()
+Citizen.CreateThread(function()
     local model = GetHashKey('cs_mp_travellingsaleswoman') --sets the npc model
     if Config.NazarSetup.blip == true then
         local blip = VORPutils.Blips:SetBlip("Madam Nazaar", 'blip_mp_collector_map', 0.8, Nspawn.x, Nspawn.y, Nspawn.z)
@@ -28,7 +22,7 @@ AddEventHandler('hd_nazar:pedspawn', function()
         Citizen.Wait(1)
     end
     if pedlock == 0 then
-        local createdped = CreatePed(model, Nspawn.x, Nspawn.y, Nspawn.z - 1, Nspawn.h, true, true, true, true) --creates ped the minus one makes it so its standing on the ground not floating
+        local createdped = CreatePed(model, Nspawn.x, Nspawn.y, Nspawn.z - 1, Nspawn.h, false, true, true, true) --creates ped the minus one makes it so its standing on the ground not floating
         Citizen.InvokeNative(0x283978A15512B2FE, createdped, true) -- sets ped into random outfit, stops it being invis
         SetEntityAsMissionEntity(createdped, true, true) -- sets ped as mission entity preventing it from despawning
         SetEntityInvincible(createdped, true) --sets ped invincible
@@ -50,25 +44,6 @@ Citizen.CreateThread(function()
 end)
 
 
-
---Creates the ability to use DrawText3D
-function DrawText3D(x, y, z, text)
-	local onScreen,_x,_y=GetScreenCoordFromWorldCoord(x, y, z)
-	local px,py,pz=table.unpack(GetGameplayCamCoord())  
-	local dist = GetDistanceBetweenCoords(px,py,pz, x,y,z, 1)
-	local str = CreateVarString(10, "LITERAL_STRING", text, Citizen.ResultAsLong())
-	if onScreen then
-	  SetTextScale(0.30, 0.30)
-	  SetTextFontForCurrentCommand(1)
-	  SetTextColor(255, 255, 255, 215)
-	  SetTextCentre(1)
-	  DisplayText(str,_x,_y)
-	  local factor = (string.len(text)) / 225
-	  DrawSprite("feeds", "hud_menu_4a", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 35, 35, 35, 190, 0)
-	end
-end
---end 3d text ability
---end of shop npc setup
 
 --Creates the ability to use DrawText3D
 function DrawText3D(x, y, z, text)

@@ -1,33 +1,23 @@
--- Based on Malik's and Blue's animal shelters and vorp animal shelter --
-
-
 WarMenu = { }
 
 WarMenu.debug = false
 
 
 local menus = { }
-local keys = { up = 0x6319DB71, down = 0x05CA7C52, left = 0xA65EBAB4, right = 0xDEB34313, select = 0xC7B5340A, back = 0x156F7119 }
-
+local keys = { up = 0x911CB09E, down = 0x4403F97F, left = 0xAD7FCC5B, right = 0x65F9EC5B, select = 0xC7B5340A, back = 0x308588E6 }
 local optionCount = 0
 
 local currentKey = nil
 local currentMenu = nil
 
-local titleHeight = 0.09
-local titleYOffset = 0.010
+local titleHeight = 0.11
+local titleYOffset = 0.03
 local titleScale = 1.0
 
-local descWidth = 0.15
-local descHeight = 0.030
-
-local menuWidth = 0.200
-
 local buttonHeight = 0.038
-local buttonFont = 6
+local buttonFont = 1
 local buttonScale = 0.365
-
-local buttonTextXOffset = 0.003
+local buttonTextXOffset = 0.005
 local buttonTextYOffset = 0.005
 
 
@@ -73,47 +63,36 @@ local function setMenuVisible(id, visible, holdCurrent)
 	end
 end
 
-local function mysplit(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-    local t={}
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-        table.insert(t, str)
-    end
-    return t
-end
-
-local function drawMultilineFormat(str)
-    return str, #mysplit( str, "\n" )
-end
-
-
 local function drawText(text, x, y, font, color, scale, center, shadow, alignRight)
 
-	local str = CreateVarString(10, "LITERAL_STRING", text)
+    local str = CreateVarString(10, "LITERAL_STRING", text)
 
-	if color then
-		SetTextColor(color.r, color.g, color.b, color.a)
-	else
-		SetTextColor(255, 255, 255, 255)
-	end
+    if color then
+        SetTextColor(color.r, color.g, color.b, color.a)
+    else
+        SetTextColor(255, 255, 255, 255)
+    end
 
-	SetTextFontForCurrentCommand(font)
-	SetTextScale(scale, scale)
+    SetTextFontForCurrentCommand(font)
+    SetTextScale(scale, scale)
 
-	if shadow then
-		SetTextDropshadow(1, 0, 0, 0, 255)
-	end
+    if shadow then
+        SetTextDropshadow(1, 0, 0, 0, 255)
+    end
 
-	if center then
-		SetTextCentre(center)
-	elseif alignRight then
-		
-	end
+    if center then
+        SetTextCentre(center)
+    elseif alignRight then
+        --DisplayText(menus[currentMenu].x, menus[currentMenu].x + menus[currentMenu].width - buttonTextXOffset)
+    end
 
-	DisplayText(str, x, y)
+    DisplayText(str, x, y)
 
+end
+
+
+local function drawRect(x, y, width, height, color)
+	DrawRect(x, y, width, height, color.r, color.g, color.b, color.a)
 end
 
 
@@ -122,11 +101,10 @@ local function drawTitle()
 		local x = menus[currentMenu].x + menus[currentMenu].width / 2
 		local y = menus[currentMenu].y + titleHeight / 2
 
-		if HasStreamedTextureDictLoaded("menu_textures") then
-			DrawSprite("menu_textures", "translate_bg_1a", x, y, menus[currentMenu].width + .03, titleHeight, 0.0, 150, 2, 2, 255, 0)
-		end
-
-		drawText(menus[currentMenu].title, x, y - titleHeight / 2 + titleYOffset, menus[currentMenu].titleFont, { r = 255, g = 255, b = 255, a = 255 } , titleScale, true, true, false)
+        HasStreamedTextureDictLoaded("menu_textures")
+        DrawSprite("menu_textures", "translate_bg_1a", 0.20, 0.2, 0.35, 0.35, 0.8, 000, 2, 2, 200, 1)
+        DrawSprite("menu_textures", "translate_bg_1a", 0.20, 0.1, 0.30, 0.1, 0.1, 100, 1, 1, 150, 0)
+		drawText(menus[currentMenu].title, x, y - titleHeight / 2 + titleYOffset, menus[currentMenu].titleFont, menus[currentMenu].titleColor, titleScale, true)
 	end
 end
 
@@ -136,16 +114,14 @@ local function drawSubTitle()
 		local x = menus[currentMenu].x + menus[currentMenu].width / 2
 		local y = menus[currentMenu].y + titleHeight + buttonHeight / 2
 
-		local subTitleColor = { r = 255, g = 255, b = 255, a = 255 }
+		local subTitleColor = { r = menus[currentMenu].titleBackgroundColor.r, g = menus[currentMenu].titleBackgroundColor.g, b = menus[currentMenu].titleBackgroundColor.b, a = 255 }
 
-		if HasStreamedTextureDictLoaded("generic_textures") then
-			SetScriptGfxDrawOrder(1)
-			DrawSprite("generic_textures", "selection_box_bg_1d", x, y - 0.002, menus[currentMenu].width + 0.01 , buttonHeight, 0.0, 0, 0, 0, 255, 0)
-		end
-
+		drawRect(x, y, menus[currentMenu].width, buttonHeight, menus[currentMenu].subTitleBackgroundColor)
 		drawText(menus[currentMenu].subTitle, menus[currentMenu].x + buttonTextXOffset, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTitleColor, buttonScale, false)
 
-		drawText(tostring(menus[currentMenu].currentOption)..' / '..tostring(optionCount), menus[currentMenu].x + buttonTextXOffset + menuWidth - 0.015, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTextColor, buttonScale, false, shadow, true)
+		if optionCount > menus[currentMenu].maxOptionCount then
+			drawText(tostring(menus[currentMenu].currentOption)..' / '..tostring(optionCount), menus[currentMenu].x-0.05 + menus[currentMenu].width, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTitleColor, buttonScale, false, false, true)
+		end
 	end
 end
 
@@ -176,138 +152,53 @@ local function drawButton(text, subText)
 			textColor = menus[currentMenu].menuTextColor
 			subTextColor = menus[currentMenu].menuSubTextColor
 			shadow = true
-
 		end
 
-		if menus[currentMenu].currentOption == optionCount then
-			if HasStreamedTextureDictLoaded("generic_textures") then
-				SetScriptGfxDrawOrder(1)
-				DrawSprite("generic_textures", "selection_box_bg_1d", x, y - 0.002, menus[currentMenu].width+ 0.01, buttonHeight, 0.0, 255, 255, 255, 255, 0)
-			end
-		else
-			if HasStreamedTextureDictLoaded("generic_textures") then
-				SetScriptGfxDrawOrder(1)
-				DrawSprite("generic_textures", "selection_box_bg_1d", x, y - 0.002, menus[currentMenu].width+ 0.01, buttonHeight, 0.0, 0, 0, 0, 255, 0)
-			end
-		end
-
-		drawText(text, menus[currentMenu].x + buttonTextXOffset - 0.002, y - (buttonHeight / 2) + buttonTextYOffset, buttonFont, textColor, buttonScale, false, shadow)
+		drawRect(x, y, menus[currentMenu].width, buttonHeight, backgroundColor)
+		drawText(text, menus[currentMenu].x + buttonTextXOffset, y - (buttonHeight / 2) + buttonTextYOffset, buttonFont, textColor, buttonScale, false, shadow)
 
 		if subText then
-			drawText(subText, menus[currentMenu].x + buttonTextXOffset + menuWidth - 0.01, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTextColor, buttonScale, false, shadow, true)
+			drawText(subText, menus[currentMenu].x + buttonTextXOffset, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTextColor, buttonScale, false, shadow, true)
 		end
 	end
-end
-
-local function drawDescription(text)
-
-	local x = menus[currentMenu].x + menus[currentMenu].width / 2
-	local multiplier = nil
-
-    if menus[currentMenu].totalOptions >= menus[currentMenu].maxOptionCount then
-		multiplier = menus[currentMenu].maxOptionCount + 1
-	elseif menus[currentMenu].totalOptions <= menus[currentMenu].maxOptionCount then
-		multiplier = menus[currentMenu].totalOptions + 1
-	end
-
-	local backgroundColor = menus[currentMenu].menuBackgroundColor
-	local textColor = menus[currentMenu].menuTextColor
-
-	if text == nil or text == "" then
-		return
-	end
-
-	if optionCount > menus[currentMenu].maxOptionCount then
-		y = menus[currentMenu].y + titleHeight + buttonHeight * multiplier + 0.040
-	else
-		y = menus[currentMenu].y + titleHeight + buttonHeight * multiplier + 0.002
-	end
-
-	local string, lines = drawMultilineFormat(text)
-	drawText(text, menus[currentMenu].x + buttonTextXOffset, y + buttonTextYOffset, buttonFont, textColor, buttonScale, false, false, false, true)
-
-	descWidth = buttonHeight * lines - buttonHeight / 3 * ( lines-1 )
-
-	if HasStreamedTextureDictLoaded("menu_textures") then
-		SetScriptGfxDrawOrder(0)
-		DrawSprite("menu_textures", "translate_bg_1a", x, y + descWidth/2, menus[currentMenu].width + 0.02, descWidth, 0.0, 0, 0, 0, 255, 0)
-	end
-
-end
-
-local function drawArrows()
-
-    local x = menus[currentMenu].x + menus[currentMenu].width / 2
-    local menuHeight = buttonHeight * ( menus[currentMenu].maxOptionCount + 1 )
-	local y = menus[currentMenu].y + titleHeight + menuHeight + buttonHeight / 2
-	local color = { r = 0, g = 0, b = 0, a = 195 }
-
-    if HasStreamedTextureDictLoaded("generic_textures") then
-        local colour = menus[currentMenu].subTitleBackgroundColor
-
-		if HasStreamedTextureDictLoaded("menu_textures") then
-			SetScriptGfxDrawOrder(0)
-			DrawSprite("menu_textures", "translate_bg_1a", x, y, menus[currentMenu].width + 0.02, buttonHeight, 0.0, 0, 0, 0, 255, 0)
-		end
-
-		DrawSprite("CommonMenu", "shop_arrows_upanddown", x, y, 0.0200, 0.04, 0.0, 255, 255, 255, 255, 0)
-
-    end
-
 end
 
 
 function WarMenu.CreateMenu(id, title)
 	-- Default settings
 	menus[id] = { }
-	menus[id].title = title or ''
-	menus[id].subTitle = 'Interaction'
-	menus[id].desTitle = ''
-	menus[id].subMenuLeft = ''
-
-	menus[id].header = header or ''
+	menus[id].title = title
+	menus[id].subTitle = 'INTERACTION MENU'
 
 	menus[id].visible = false
-	menus[id].descText = ''
-	menus[id].descStat = nil
-
-	menus[id].menuWidth = 0.20
 
 	menus[id].previousMenu = nil
 
 	menus[id].aboutToBeClosed = false
-	menus[id].aboutToBeSubClosed = false
 
-	menus[id].x = 0.02
-	menus[id].y = 0.10
-
-	menus[id].width = 0.21
+	menus[id].x = 0.070
+	menus[id].y = 0.04
+	menus[id].width = 0.27
 
 	menus[id].currentOption = 1
-	menus[id].maxOptionCount = 10
+	menus[id].maxOptionCount = 4
 
-	menus[id].totalOptions = 0
-	menus[id].toogleHeritage = false
-
-	menus[id].footer = buttonHeight * ( menus[id].maxOptionCount + 1 )
-
-	menus[id].titleFont = 6
+	menus[id].titleFont = 1
 	menus[id].titleColor = { r = 255, g = 255, b = 255, a = 255 }
-	menus[id].titleBackgroundColor = { r = 186, g = 2, b = 2, a = 255 }
+	menus[id].titleBackgroundColor = { r = 255, g = 255, b = 255, a = 000 }
 	menus[id].titleBackgroundSprite = nil
 
-	menus[id].SliderColor = { r = 57, g = 116, b = 200, a = 255 }
-	menus[id].SliderBackgroundColor = { r = 4, g = 32, b = 57, a = 255 }
-
 	menus[id].menuTextColor = { r = 255, g = 255, b = 255, a = 255 }
-	menus[id].menuSubTextColor = { r = 189, g = 189, b = 189, a = 255 }
+	menus[id].menuSubTextColor = { r = 255, g = 255, b = 255, a = 255 }
 	menus[id].menuFocusTextColor = { r = 0, g = 0, b = 0, a = 255 }
-	menus[id].menuFocusBackgroundColor = { r = 245, g = 245, b = 245, a = 255 }
-	menus[id].menuBackgroundColor = { r = 0, g = 0, b = 0, a = 160 }
+	menus[id].menuFocusBackgroundColor = { r = 255, g = 255, b = 255, a = 255 }
+	menus[id].menuBackgroundColor = { r = 0, g = 0, b = 0, a = 000 }
 
 	menus[id].subTitleBackgroundColor = { r = menus[id].menuBackgroundColor.r, g = menus[id].menuBackgroundColor.g, b = menus[id].menuBackgroundColor.b, a = 255 }
 
 	menus[id].buttonPressedSound = { name = "SELECT", set = "HUD_FRONTEND_DEFAULT_SOUNDSET" } --https://pastebin.com/0neZdsZ5
+
+	debugPrint(tostring(id)..' menu created')
 end
 
 
@@ -349,7 +240,7 @@ end
 
 function WarMenu.OpenMenu(id)
 	if id and menus[id] then
-		PlaySoundFrontend("SELECT", "HUD_SHOP_SOUNDSET", 1)
+		PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 		setMenuVisible(id, true)
 		debugPrint(tostring(id)..' menu opened')
 	else
@@ -387,7 +278,7 @@ function WarMenu.CloseMenu()
 			menus[currentMenu].aboutToBeClosed = false
 			setMenuVisible(currentMenu, false)
 			debugPrint(tostring(currentMenu)..' menu closed')
-			PlaySoundFrontend("QUIT", "HUD_SHOP_SOUNDSET", 1)
+			PlaySoundFrontend(-1, "QUIT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 			optionCount = 0
 			currentMenu = nil
 			currentKey = nil
@@ -399,29 +290,26 @@ function WarMenu.CloseMenu()
 end
 
 
-function WarMenu.Button(text, subText, descText)
+function WarMenu.Button(text, subText)
+	local buttonText = text
+	if subText then
+		buttonText = '{ '..tostring(buttonText)..', '..tostring(subText)..' }'
+	end
 
 	if menus[currentMenu] then
-
-		descText = descText or ''
-
 		optionCount = optionCount + 1
 
 		local isCurrent = menus[currentMenu].currentOption == optionCount
 
 		drawButton(text, subText)
 
-		menus[currentMenu].totalOptions = optionCount
-
 		if isCurrent then
-			if descText then
-				menus[currentMenu].descText = descText
-			end
 			if currentKey == keys.select then
-				PlaySoundFrontend("SELECT", "HUD_SHOP_SOUNDSET", 1)
+				PlaySoundFrontend(-1, menus[currentMenu].buttonPressedSound.name, menus[currentMenu].buttonPressedSound.set, true)
+				debugPrint(buttonText..' button pressed')
 				return true
 			elseif currentKey == keys.left or currentKey == keys.right then
-				PlaySoundFrontend("SELECT", "HUD_SHOP_SOUNDSET", 1)
+				PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 			end
 		end
 
@@ -503,33 +391,31 @@ function WarMenu.Display()
 
 			currentKey = nil
 
-			if menus[currentMenu].descText then
-				drawDescription(menus[currentMenu].descText)
-			end
+			if IsControlJustReleased(1, keys.down) then
+				PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 
-			if isPressedKey(keys.down) then
-				PlaySoundFrontend( "NAV_DOWN", "Ledger_Sounds", true )
 				if menus[currentMenu].currentOption < optionCount then
 					menus[currentMenu].currentOption = menus[currentMenu].currentOption + 1
 				else
 					menus[currentMenu].currentOption = 1
 				end
-			elseif isPressedKey(keys.up) then
-				PlaySoundFrontend( "NAV_UP", "Ledger_Sounds", true )
+			elseif IsControlJustReleased(1, keys.up) then
+				PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+
 				if menus[currentMenu].currentOption > 1 then
 					menus[currentMenu].currentOption = menus[currentMenu].currentOption - 1
 				else
 					menus[currentMenu].currentOption = optionCount
 				end
-			elseif isPressedKey(keys.left) then
+			elseif IsControlJustReleased(1, keys.left) then
 				currentKey = keys.left
-			elseif isPressedKey(keys.right) then
+			elseif IsControlJustReleased(1, keys.right) then
 				currentKey = keys.right
-			elseif isPressedKey(keys.select) then
+			elseif IsControlJustReleased(1, keys.select) then
 				currentKey = keys.select
-			elseif isPressedKey(keys.back) then
+			elseif IsControlJustReleased(1, keys.back) then
 				if menus[menus[currentMenu].previousMenu] then
-					PlaySoundFrontend( "BACK", "HUD_SHOP_SOUNDSET", true )
+					PlaySoundFrontend(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 					setMenuVisible(menus[currentMenu].previousMenu, true)
 				else
 					WarMenu.CloseMenu()
@@ -541,50 +427,6 @@ function WarMenu.Display()
 	end
 end
 
-local k_delay = 180 -- 1er Delay
-local k_delay2 = 160 -- puis 2 3 et 4ème delay
-local k_delay3 = 130 -- et si touche restée appuyée.
-
-function isPressedKey(key)
-	if key ~= lastKey and IsDisabledControlPressed(1, key) then -- Pas la même touche -> RESET
-		lastKey = key
-		timer = GetGameTimer()
-		count = 0
-		pass = false
-		return true
-
-	elseif key == lastKey and IsDisabledControlPressed(1, key) then -- Meme Touche
-		if pass then 										-- Accélération du défilement
-			count = 0
-			if GetGameTimer() - timer > k_delay3 and GetGameTimer() - timer < k_delay then
-				timer = GetGameTimer()
-				return true
-			elseif GetGameTimer() - timer > k_delay then
-				pass = false
-				timer = GetGameTimer()
-				return true
-			end
-			return false
-		elseif GetGameTimer() - timer > k_delay + 100 then
-			count = 0
-			timer = GetGameTimer()
-			return true
-		elseif GetGameTimer() - timer > k_delay then
-			count = 1
-			timer = GetGameTimer()
-			return true
-		elseif GetGameTimer() - timer > k_delay2 and (count > 0 and count < 5) then
-			count = count + 1
-			timer = GetGameTimer()
-			return true
-		elseif count > 4 then
-			pass = true
-			return false
-		end
-		return false
-	end
-	return false
-end
 
 function WarMenu.SetMenuWidth(id, width)
 	setMenuProperty(id, 'width', width)
@@ -614,8 +456,8 @@ end
 function WarMenu.SetTitleColor(id, r, g, b, a)
 	setMenuProperty(id, 'titleColor', { ['r'] = r, ['g'] = g, ['b'] = b, ['a'] = a or menus[id].titleColor.a })
 end
-
-
+ 
+ 
 function WarMenu.SetTitleBackgroundColor(id, r, g, b, a)
 	setMenuProperty(id, 'titleBackgroundColor', { ['r'] = r, ['g'] = g, ['b'] = b, ['a'] = a or menus[id].titleBackgroundColor.a })
 end
@@ -646,7 +488,7 @@ function WarMenu.SetMenuSubTextColor(id, r, g, b, a)
 end
 
 function WarMenu.SetMenuFocusColor(id, r, g, b, a)
-	setMenuProperty(id, 'menuFocusBackgroundColor', { ['r'] = r, ['g'] = g, ['b'] = b, ['a'] = a or menus[id].menuFocusColor.a })
+	setMenuProperty(id, 'menuFocusColor', { ['r'] = r, ['g'] = g, ['b'] = b, ['a'] = a or menus[id].menuFocusColor.a })
 end
 
 

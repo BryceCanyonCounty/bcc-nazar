@@ -1,5 +1,4 @@
 local VORPcore = {} --Pulls vorp core
-
 TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
@@ -13,7 +12,7 @@ Citizen.CreateThread(function()
     WarMenu.CreateSubMenu('hd_nazar:shop', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Sell)
     WarMenu.CreateSubMenu('hd_nazar:sell', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Hint)
     WarMenu.CreateSubMenu('hd_nazar:nazarsshop', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Buy)
-    while true do
+    repeat
         if WarMenu.IsMenuOpened('hd_nazar:leg2') then --if menu is opened then
             if WarMenu.Button(Config.Language.Menu_Title_Hint, '', Config.Language.Menu_SubTitle_Hint) then --creates the hint shop option
                 WarMenu.OpenMenu('hd_nazar:sell') --opens the sell menu
@@ -24,10 +23,9 @@ Citizen.CreateThread(function()
             if WarMenu.Button(Config.Language.Menu_Title_Buy, '', Config.Language.Menu_SubTitle_Buy) then
                 WarMenu.OpenMenu('hd_nazar:nazarsshop')
             end
-        end
-        if WarMenu.IsMenuOpened('hd_nazar:sell') then
+        elseif WarMenu.IsMenuOpened('hd_nazar:sell') then
             for k, v in pairs(Config.TreasureLocations) do --starts a for loop which creates multiple menus depending on the config
-                if WarMenu.Button(v.huntname, tostring(v.hintcost) .. ' $', Config.Language.SubMenu_Hint) then --creates a option for each thing in config lua
+                if WarMenu.Button(v.huntname .. " For " .. tostring(v.hintcost)) then --creates a option for each thing in config lua
                     local cost = v.hintcost
                     C = v.location
                     V = v
@@ -40,8 +38,7 @@ Citizen.CreateThread(function()
                     end)
                 end
             end
-        end
-        if WarMenu.IsMenuOpened('hd_nazar:shop') then
+        elseif WarMenu.IsMenuOpened('hd_nazar:shop') then
             for p, u in pairs(Config.Shop) do --opens the shop table
                 if WarMenu.Button("" ..Config.Language.Shopmenu_sell.. "" .. u.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. u.price.. " $", '', '') then --creates a menu per thing in the shop
                     Iitemname = u.itemdbname --sets the varible to whatever option is clicked
@@ -63,18 +60,18 @@ Citizen.CreateThread(function()
                     }
                     TriggerEvent("vorpinputs:advancedInput", json.encode(myInput),function(result)
                         local qty = tonumber(result)
-                        if qty > 0 then
+                        if qty == nil then
+                            print('nil val')
+                        elseif qty > 0 then
                             TriggerServerEvent("hd_nazar:catchinputforsell",  qty) --result
                         else
                             TriggerEvent("vorp:TipRight", "insertamount", 3000)
                         end
                     end)
-                    WarMenu.CloseMenu() -- closes the menu to stop the loop
-                    --TriggerServerEvent('getplayerdataforsell', itemname, price) --triggers a server event and passes the variable
+                    WarMenu.CloseMenu()
                 end
             end
-        end
-        if WarMenu.IsMenuOpened('hd_nazar:nazarsshop') then
+        elseif WarMenu.IsMenuOpened('hd_nazar:nazarsshop') then
             for k, e in pairs(Config.Nazarssellableitems) do
                 if WarMenu.Button("" ..Config.Language.Menu_Title_Buy .. " " .. e.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. e.price .. " $") then
                     Itemnamee = e.itemdbname
@@ -107,7 +104,7 @@ Citizen.CreateThread(function()
         end
         WarMenu.Display() --makes the menu show
         Citizen.Wait(0) --prevents crashing
-    end
+    until false
 end)
 
 --This recieves the qty when buying from nazar and then passes the qty along with the item name and price to the server to handle giving the items
@@ -123,10 +120,6 @@ AddEventHandler('hd_nazar:infosenderforsell', function(qty)
     TriggerServerEvent('hd_nazar:getplayerdataforsell', Iitemname, Pprice, qty)
 end)
 
-function openlegmenu() --creates a function named openlegmenu
-    WarMenu.OpenMenu('hd_nazar:leg2') --opens the main menu
-end
-
 RegisterNetEvent('hd_nazar:failmenuopen') --this is the event that will trigger if cooldown is true
 AddEventHandler('hd_nazar:failmenuopen', function() --makes the event do something
     VORPcore.NotifyBottomRight(Config.Language.NoHintNotify, 4000) --prints this in players screen
@@ -139,7 +132,7 @@ Citizen.CreateThread(function() --runs on start
             local player = GetEntityCoords(PlayerPedId()) --gets players coords
             if GetDistanceBetweenCoords(Nspawn.x, Nspawn.y, Nspawn.z, player.x, player.y, player.z, false) < 2 then
                 if IsControlJustReleased(0, 0x760A9C6F) then
-                    openlegmenu()
+                    WarMenu.OpenMenu('hd_nazar:leg2') --opens the main menu
                 end
             end
         end

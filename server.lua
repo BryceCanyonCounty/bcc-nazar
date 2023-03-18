@@ -5,16 +5,6 @@ TriggerEvent("getCore", function(core)
   VORPcore = core
 end)
 
---this is creating a global catch so only 1 nazar spawns
-local shoppedspawn = 0
-RegisterServerEvent('hd_nazar:shopped')
-AddEventHandler('hd_nazar:shopped', function()
-  if shoppedspawn == 0 then
-    shoppedspawn = shoppedspawn + 1
-    TriggerClientEvent('hd_nazar:pedspawn', source)
-  end
-end)
-
 --global cooldown system
 local cooldown = false
 RegisterServerEvent('hd_nazar:menuopen6')
