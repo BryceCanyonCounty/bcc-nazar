@@ -3,7 +3,6 @@ TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
 --end pulling it
-Cooldown = false
 StopAll = false
 
 --Main Menu
@@ -14,13 +13,13 @@ Citizen.CreateThread(function()
     WarMenu.CreateSubMenu('hd_nazar:nazarsshop', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Buy)
     repeat
         if WarMenu.IsMenuOpened('hd_nazar:leg2') then --if menu is opened then
-            if WarMenu.Button(Config.Language.Menu_Title_Hint, '', Config.Language.Menu_SubTitle_Hint) then --creates the hint shop option
+            if WarMenu.Button(Config.Language.Menu_Title_Hint .. ' ' .. Config.Language.Menu_SubTitle_Hint, '') then --creates the hint shop option
                 WarMenu.OpenMenu('hd_nazar:sell') --opens the sell menu
             end
-            if WarMenu.Button(Config.Language.Menu_Title_Sell, '', Config.Language.Menu_SubTitle_Sell) then --creates the shop option
+            if WarMenu.Button(Config.Language.Menu_Title_Sell, Config.Language.Menu_SubTitle_Sell) then --creates the shop option
                 WarMenu.OpenMenu('hd_nazar:shop') --opens the menu
             end
-            if WarMenu.Button(Config.Language.Menu_Title_Buy, '', Config.Language.Menu_SubTitle_Buy) then
+            if WarMenu.Button(Config.Language.Menu_Title_Buy, Config.Language.Menu_SubTitle_Buy) then
                 WarMenu.OpenMenu('hd_nazar:nazarsshop')
             end
         elseif WarMenu.IsMenuOpened('hd_nazar:sell') then
@@ -40,7 +39,7 @@ Citizen.CreateThread(function()
             end
         elseif WarMenu.IsMenuOpened('hd_nazar:shop') then
             for p, u in pairs(Config.Shop) do --opens the shop table
-                if WarMenu.Button("" ..Config.Language.Shopmenu_sell.. "" .. u.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. u.price.. " $", '', '') then --creates a menu per thing in the shop
+                if WarMenu.Button("" ..Config.Language.Shopmenu_sell.. "" .. u.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. u.price.. " $", '') then --creates a menu per thing in the shop
                     Iitemname = u.itemdbname --sets the varible to whatever option is clicked
                     Pprice = u.price --sets the price variable to the config lua
                     --This is from vorpinputs to get the amount they want to sell
@@ -118,44 +117,4 @@ end)
 RegisterNetEvent('hd_nazar:infosenderforsell')
 AddEventHandler('hd_nazar:infosenderforsell', function(qty)
     TriggerServerEvent('hd_nazar:getplayerdataforsell', Iitemname, Pprice, qty)
-end)
-
-RegisterNetEvent('hd_nazar:failmenuopen') --this is the event that will trigger if cooldown is true
-AddEventHandler('hd_nazar:failmenuopen', function() --makes the event do something
-    VORPcore.NotifyBottomRight(Config.Language.NoHintNotify, 4000) --prints this in players screen
-end)
-
-Citizen.CreateThread(function() --runs on start
-    if Cooldown == false then --if cooldown is false then
-        while true do --creates loop
-            Citizen.Wait(0) --prevents crashing
-            local player = GetEntityCoords(PlayerPedId()) --gets players coords
-            if GetDistanceBetweenCoords(Nspawn.x, Nspawn.y, Nspawn.z, player.x, player.y, player.z, false) < 2 then
-                if IsControlJustReleased(0, 0x760A9C6F) then
-                    WarMenu.OpenMenu('hd_nazar:leg2') --opens the main menu
-                end
-            end
-        end
-    end
-end)
---End menu setup
-
-RegisterNetEvent('hd_nazar:noitem') --creates a client event that prints no item
-AddEventHandler('hd_nazar:noitem', function()
-    VORPcore.NotifyBottomRight(Config.Language.NoItem, 4000) --prints this in players screen
-end)
-
-RegisterNetEvent('hd_nazar:nomon') --creates a client event that prints no item
-AddEventHandler('hd_nazar:nomon', function()
-    VORPcore.NotifyBottomRight(Config.Language.NoMoney, 4000) --prints this in players screen
-end)
-
-RegisterNetEvent('hd_nazar:ccdown') --creates a client event that prints no item
-AddEventHandler('hd_nazar:ccdown', function()
-    VORPcore.NotifyBottomRight(Config.Language.NoChest, 4000) --prints this in players screen
-end)
-
-RegisterNetEvent('hd_nazar:ccdown2') --creates a client event that prints no item
-AddEventHandler('hd_nazar:ccdown2', function()
-    VORPcore.NotifyBottomRight(Config.Language.Alreadylooted, 4000) --prints this in players screen
 end)

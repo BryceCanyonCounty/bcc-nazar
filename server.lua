@@ -9,22 +9,34 @@ end)
 local cooldown = false
 RegisterServerEvent('hd_nazar:menuopen6')
 AddEventHandler('hd_nazar:menuopen6', function(cost)
-    local _source = source
-    local Character = VORPcore.getUser(_source).getUsedCharacter
-    if cooldown == false then
-        TriggerClientEvent('hd_nazar:menuopen4', source, arg)
-        Character.removeCurrency(0, cost) -- removes a amount of (cost) money(0) [gold would be 1]
-        cooldown = true
-        Wait(Config.NazarSetup.hintcooldown)
-        cooldown = false
-    elseif cooldown == true then
-        TriggerClientEvent('hd_nazar:failmenuopen', source)
-    end
+  local _source = source
+  local Character = VORPcore.getUser(_source).getUsedCharacter
+  if cooldown == false then
+    TriggerClientEvent('hd_nazar:menuopen4', source, arg)
+    Character.removeCurrency(0, cost) -- removes a amount of (cost) money(0) [gold would be 1]
+    cooldown = true
+    Wait(Config.NazarSetup.hintcooldown)
+    cooldown = false
+  elseif cooldown == true then
+    VORPcore.NotifyBottomRight(_source, Config.Language.NoHintNotify, 4000) --prints this in players screen
+  end
 end)
---end cooldown setups
+
+--Handles nazar spawn(this is used so that it only randomizes the coordinates of nazar once for everyone instead of a different coord for each player)
+local randomizedcoords = 0
+local nspawn = 0
+local d = 0
+RegisterServerEvent('hd_nazar:locationset')
+AddEventHandler('hd_nazar:locationset', function()
+  if randomizedcoords == 0 then
+    d = math.random(1, #Config.NazarSetup.nazarspawn)
+    nspawn = Config.NazarSetup.nazarspawn[d]
+    randomizedcoords = randomizedcoords + 1
+  end
+  TriggerClientEvent('hd_nazar:pedspawn', source, nspawn)
+end)
 
 --SELLING ITEMS TO NAZAR SETUP
-
 --this just catches the qty from the menusetup then triggers a client event to get the itemname price and pass back to the server
 RegisterServerEvent('hd_nazar:catchinputforsell')
 AddEventHandler('hd_nazar:catchinputforsell', function(qty)
@@ -37,7 +49,7 @@ AddEventHandler('hd_nazar:getplayerdataforsell', function(Iitemname, Pprice, qty
   local price2 = tonumber(Pprice) --changes the string to a integer
   local Character = VORPcore.getUser(source).getUsedCharacter --gets the players character
   local itemcount = VorpInv.getItemCount(source, Iitemname) --checks if you have the item
-  if itemcount >= 1 then --if you have atleast one item then
+  if itemcount >= tonumber(qty) then --if you have atleast one item then
     VorpInv.subItem(source, Iitemname, qty) --it removes 1 item
     repeat
       Citizen.Wait(0)
@@ -45,8 +57,8 @@ AddEventHandler('hd_nazar:getplayerdataforsell', function(Iitemname, Pprice, qty
       amountcatch = amountcatch + 1
     until amountcatch >= qty
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items Sold ' .. Iitemname .. ' Amount sold ' .. qty .. ' Sold for ' .. tonumber(Pprice))
-  elseif itemcount < 1 then
-    TriggerClientEvent('hd_nazar:noitem', source) --if you have no items it triggers the client event
+  elseif itemcount < tonumber(qty) then
+    VORPcore.NotifyBottomRight(source, Config.Language.NoItem, 4000) --prints this in players screen
   end
 end)
 
@@ -60,6 +72,7 @@ AddEventHandler('hd_nazar:chestopen', function(V) --tells the event what to do a
       VorpInv.addItem(source, v.name, v.count) --adds the items and amounts
     end
     TriggerClientEvent('hd_nazar:ccdown2', source)
+    VORPcore.NotifyBottomRight(source, Config.Language.Alreadylooted, 4000) --prints this in players screen
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ChestWebhook, 'chest Opened ' .. V.huntname)
     cooldown2 = true
     Citizen.Wait(Config.NazarSetup.hintcooldown)
@@ -84,6 +97,6 @@ AddEventHandler('hd_nazar:buyfromnazar', function(qty, Itemnamee, Priceee) --rec
     Character.removeCurrency(0, totalamountmultiplied)
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items bought ' .. Itemnamee .. ' Item price ' .. tostring(Priceee) .. ' Amount bought ' .. tostring(qty))
   elseif currcash < totalamountmultiplied then
-    TriggerClientEvent('hd_nazar:nomon', source)
+    VORPcore.NotifyBottomRight(source, Config.Language.NoMoney, 4000) --prints this in players screen
   end
 end)
