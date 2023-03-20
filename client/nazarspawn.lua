@@ -4,11 +4,11 @@ TriggerEvent("getUtils", function(utils)
 end)
 
 Citizen.CreateThread(function()
- TriggerServerEvent('hd_nazar:locationset')
+ TriggerServerEvent('bcc-nazar:locationset')
 end)
 
-RegisterNetEvent('hd_nazar:pedspawn')
-AddEventHandler('hd_nazar:pedspawn', function(nspawn)
+RegisterNetEvent('bcc-nazar:pedspawn')
+AddEventHandler('bcc-nazar:pedspawn', function(nspawn)
     Nspawn = nspawn
     local model = GetHashKey('cs_mp_travellingsaleswoman') --sets the npc model
     if Config.NazarSetup.blip == true then
@@ -38,7 +38,7 @@ AddEventHandler('hd_nazar:pedspawn', function(nspawn)
         local player = GetEntityCoords(PlayerPedId()) --gets players coords
         if GetDistanceBetweenCoords(Nspawn.x, Nspawn.y, Nspawn.z, player.x, player.y, player.z, false) < 2 then
             if IsControlJustReleased(0, 0x760A9C6F) then
-                WarMenu.OpenMenu('hd_nazar:leg2') --opens the main menu
+                WarMenu.OpenMenu('bcc-nazar:leg2') --opens the main menu
             end
         end
     end

@@ -7,37 +7,37 @@ StopAll = false
 
 --Main Menu
 Citizen.CreateThread(function()
-    WarMenu.CreateMenu('hd_nazar:leg2', 'Madam Nazar') --creates the main menu
-    WarMenu.CreateSubMenu('hd_nazar:shop', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Sell)
-    WarMenu.CreateSubMenu('hd_nazar:sell', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Hint)
-    WarMenu.CreateSubMenu('hd_nazar:nazarsshop', 'hd_nazar:leg2', Config.Language.SubMenu_Head_Buy)
+    WarMenu.CreateMenu('bcc-nazar:leg2', 'Madam Nazar') --creates the main menu
+    WarMenu.CreateSubMenu('bcc-nazar:shop', 'bcc-nazar:leg2', Config.Language.SubMenu_Head_Sell)
+    WarMenu.CreateSubMenu('bcc-nazar:sell', 'bcc-nazar:leg2', Config.Language.SubMenu_Head_Hint)
+    WarMenu.CreateSubMenu('bcc-nazar:nazarsshop', 'bcc-nazar:leg2', Config.Language.SubMenu_Head_Buy)
     repeat
-        if WarMenu.IsMenuOpened('hd_nazar:leg2') then --if menu is opened then
+        if WarMenu.IsMenuOpened('bcc-nazar:leg2') then --if menu is opened then
             if WarMenu.Button(Config.Language.Menu_Title_Hint .. ' ' .. Config.Language.Menu_SubTitle_Hint, '') then --creates the hint shop option
-                WarMenu.OpenMenu('hd_nazar:sell') --opens the sell menu
+                WarMenu.OpenMenu('bcc-nazar:sell') --opens the sell menu
             end
             if WarMenu.Button(Config.Language.Menu_Title_Sell, Config.Language.Menu_SubTitle_Sell) then --creates the shop option
-                WarMenu.OpenMenu('hd_nazar:shop') --opens the menu
+                WarMenu.OpenMenu('bcc-nazar:shop') --opens the menu
             end
             if WarMenu.Button(Config.Language.Menu_Title_Buy, Config.Language.Menu_SubTitle_Buy) then
-                WarMenu.OpenMenu('hd_nazar:nazarsshop')
+                WarMenu.OpenMenu('bcc-nazar:nazarsshop')
             end
-        elseif WarMenu.IsMenuOpened('hd_nazar:sell') then
+        elseif WarMenu.IsMenuOpened('bcc-nazar:sell') then
             for k, v in pairs(Config.TreasureLocations) do --starts a for loop which creates multiple menus depending on the config
                 if WarMenu.Button(v.huntname .. " For " .. tostring(v.hintcost)) then --creates a option for each thing in config lua
                     local cost = v.hintcost
                     C = v.location
                     V = v
-                    TriggerServerEvent('hd_nazar:menuopen6', cost) --triggers server event which is the cooldown event 
-                    RegisterNetEvent('hd_nazar:menuopen4') --creates a net event for the serever to call
-                    AddEventHandler('hd_nazar:menuopen4', function() --makes the net event have something to run
+                    TriggerServerEvent('bcc-nazar:menuopen6', cost) --triggers server event which is the cooldown event 
+                    RegisterNetEvent('bcc-nazar:menuopen4') --creates a net event for the serever to call
+                    AddEventHandler('bcc-nazar:menuopen4', function() --makes the net event have something to run
                         VORPcore.NotifyBottomRight(Config.Language.HintNotify,6000) --text in bottom right
                         WarMenu.CloseMenu() --closes the menu
                         searchforchest()
                     end)
                 end
             end
-        elseif WarMenu.IsMenuOpened('hd_nazar:shop') then
+        elseif WarMenu.IsMenuOpened('bcc-nazar:shop') then
             for p, u in pairs(Config.Shop) do --opens the shop table
                 if WarMenu.Button("" ..Config.Language.Shopmenu_sell.. "" .. u.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. u.price.. " $", '') then --creates a menu per thing in the shop
                     Iitemname = u.itemdbname --sets the varible to whatever option is clicked
@@ -62,7 +62,7 @@ Citizen.CreateThread(function()
                         if qty == nil then
                             print('nil val')
                         elseif qty > 0 then
-                            TriggerServerEvent("hd_nazar:catchinputforsell",  qty) --result
+                            TriggerServerEvent("bcc-nazar:catchinputforsell",  qty) --result
                         else
                             TriggerEvent("vorp:TipRight", "insertamount", 3000)
                         end
@@ -70,7 +70,7 @@ Citizen.CreateThread(function()
                     WarMenu.CloseMenu()
                 end
             end
-        elseif WarMenu.IsMenuOpened('hd_nazar:nazarsshop') then
+        elseif WarMenu.IsMenuOpened('bcc-nazar:nazarsshop') then
             for k, e in pairs(Config.Nazarssellableitems) do
                 if WarMenu.Button("" ..Config.Language.Menu_Title_Buy .. " " .. e.displayname .. "" ..Config.Language.Shopmenu_for.. "" .. e.price .. " $") then
                     Itemnamee = e.itemdbname
@@ -92,7 +92,7 @@ Citizen.CreateThread(function()
                     TriggerEvent("vorpinputs:advancedInput", json.encode(myInput),function(result)
                         local qty = tonumber(result)
                         if qty > 0 then
-                            TriggerServerEvent("hd_nazar:nazarsellinfopass",  qty) --result
+                            TriggerServerEvent("bcc-nazar:nazarsellinfopass",  qty) --result
                         else
                             TriggerEvent("vorp:TipRight", "insertamount", 3000)
                         end
@@ -107,14 +107,14 @@ Citizen.CreateThread(function()
 end)
 
 --This recieves the qty when buying from nazar and then passes the qty along with the item name and price to the server to handle giving the items
-RegisterNetEvent('hd_nazar:nazarsellableitemscatch')
-AddEventHandler('hd_nazar:nazarsellableitemscatch', function(qty) --is catching the qty from the server
-    TriggerServerEvent('hd_nazar:buyfromnazar', qty, Itemnamee, Priceee) --is passing the 3 variables to the server
+RegisterNetEvent('bcc-nazar:nazarsellableitemscatch')
+AddEventHandler('bcc-nazar:nazarsellableitemscatch', function(qty) --is catching the qty from the server
+    TriggerServerEvent('bcc-nazar:buyfromnazar', qty, Itemnamee, Priceee) --is passing the 3 variables to the server
 end)
 
 
 --this recieves the qty when selling items to nazar from the server and then passes the itemname and price to the server along with the qty
-RegisterNetEvent('hd_nazar:infosenderforsell')
-AddEventHandler('hd_nazar:infosenderforsell', function(qty)
-    TriggerServerEvent('hd_nazar:getplayerdataforsell', Iitemname, Pprice, qty)
+RegisterNetEvent('bcc-nazar:infosenderforsell')
+AddEventHandler('bcc-nazar:infosenderforsell', function(qty)
+    TriggerServerEvent('bcc-nazar:getplayerdataforsell', Iitemname, Pprice, qty)
 end)

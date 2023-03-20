@@ -1,4 +1,4 @@
-# hd_nazar
+# bcc-nazar
 
 >This script is a simple easy to use and configure Madam Nazar for RedM!
 
@@ -17,7 +17,6 @@
 
 ## Why use it
 - It has alot of cool features too it. 
-- I will offer as much support as i can for this.
 - Can be used as a automated moving black market.
 - Unlimited amount of treasure hunts
 - Gives your RedM server more depth, and content to do
@@ -30,7 +29,7 @@
 
 ## Installation Steps
 - Add the file to your resource file
-- Add ensure 'hd_nazar' to your resources.cfg
+- Add ensure 'bcc-nazar' to your resources.cfg
 
 ## Side notes
 - If you have any suggestions please be sure to let me know
