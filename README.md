@@ -1,6 +1,6 @@
 # bcc-nazar
 
->This script is a simple easy to use and configure Madam Nazar for RedM!
+> This script is a simple easy to use and configure Madam Nazar for RedM!
 
 ## Features
 - Creates Madam Nazar in your RedM server!
