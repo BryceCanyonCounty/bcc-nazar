@@ -38,7 +38,7 @@ AddEventHandler('bcc-nazar:pedspawn', function(nspawn)
         local player = GetEntityCoords(PlayerPedId()) --gets players coords
         if GetDistanceBetweenCoords(Nspawn.x, Nspawn.y, Nspawn.z, player.x, player.y, player.z, false) < 2 then
             if IsControlJustReleased(0, 0x760A9C6F) then
-                WarMenu.OpenMenu('bcc-nazar:leg2') --opens the main menu
+                MainMenu() --opens the menu
             end
         end
     end
