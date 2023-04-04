@@ -191,7 +191,6 @@ function HintMenu()
                 RegisterNetEvent('bcc-nazar:menuopen4') --creates a net event for the serever to call
                 AddEventHandler('bcc-nazar:menuopen4', function() --makes the net event have something to run
                     VORPcore.NotifyBottomRight(Config.Language.HintNotify,6000) --text in bottom right
-                    WarMenu.CloseMenu() --closes the menu
                     searchforchest()
                 end)
             end
