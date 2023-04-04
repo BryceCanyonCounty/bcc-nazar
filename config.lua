@@ -76,6 +76,7 @@ Config.Language = {
     Menu_SubTitle_Sell = 'Sell Items',
     Menu_SubTitle_Buy = 'Buy Items',
     SubMenu_Head_Hint = "Buy Hints",
+    Nazar = 'Madam Nazar',
     SubMenu_Head_Sell = "Sell Items",
     SubMenu_Head_Buy = "Buy Items",
     SubMenu_Hint = 'Purchase a Hint ',
