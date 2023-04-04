@@ -14,7 +14,6 @@ shared_scripts {
 
 
 client_scripts {
-    '/client/warmenu.lua',
     '/client/menusetup.lua',
     '/client/nazarspawn.lua',
     '/client/treasurehunt.lua',

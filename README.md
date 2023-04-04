@@ -26,6 +26,7 @@
 - VORP Utils
 - VORP Inventory
 - VORP Inputs
+- Menu Api
 
 ## Installation Steps
 - Add the file to your resource file
