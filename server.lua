@@ -24,7 +24,7 @@ end)
 
 --Handles nazar spawn(this is used so that it only randomizes the coordinates of nazar once for everyone instead of a different coord for each player)
 local randomizedcoords = 0
-local nspawn = 0
+local nspawn
 local d = 0
 RegisterServerEvent('bcc-nazar:locationset')
 AddEventHandler('bcc-nazar:locationset', function()
@@ -100,3 +100,8 @@ AddEventHandler('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee) --re
     VORPcore.NotifyBottomRight(source, Config.Language.NoMoney, 4000) --prints this in players screen
   end
 end)
+
+--This handles the version check
+local versioner = exports['bcc-versioner'].initiate()
+local repo = 'https://github.com/BryceCanyonCounty/bcc-nazar'
+versioner.checkRelease(GetCurrentResourceName(), repo)

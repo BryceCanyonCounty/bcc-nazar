@@ -6,12 +6,17 @@ ShopWebhook = '' --this is what will display when someone sells or buys from naz
 
 --This is the nazar configuration
 Config.NazarSetup = {
+    nazarswagon = false, --if true this will spawn nazars wagon with nazar at the set coords. (The wagon can be hard to get set on the groun properly hence why this is optional, it will be tedious to get it set correctly, mainly will only work on perfectly flat ground)
     blip = true, --if true this will place a blip on nazar if not no blip will be there
-    nazarspawn = { --it will pick one of these 4 coordinates upon start. You can not have more or less than 4 without editing the code
-        {x = -1047.19, y = 450.55, z = 56.81, h = 178.68}, --to get coords use xyz paste then manually add the heading to the table
-        {x = -1308.82, y = 395.05, z = 95.38, h = 95.98},
-        {x = -2698.67, y = -1500.59, z = 152.03, h = 294.63},
-        {x = -1447.93, y = -2297.07, z = 43.37, h = 229.05},
+    nazarspawn = { --You can add as many locations as you would like the script will randomly pick one each server restart!
+        {
+            nazarspawncoords = {x = -1047.19, y = 450.55, z = 56.81, h = 178.68}, --to get coords use xyz paste then manually add the heading to the table
+            nazarwagonspawncoords = {x = -1043.98, y = 451.66, z = 56.71, h = 53.18} --where the wagon will spawn
+        },
+        {
+            nazarspawncoords = {x = -1526.77, y = -312.55, z = 142.55, h = 12.82},
+            nazarwagonspawncoords = {x = -1522.95, y = -311.68, z = 142.39, h = 282.76},
+        },
     }, --where she will be
     hintcooldown = 300000, --this is the cooldown between hints
 }

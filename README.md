@@ -11,6 +11,8 @@
 - Madam Nazar can buy, and sell things to the player, making her a good option for a black market that moves automaticall every server restart.
 - Can create as many treasure hunt's as you want
 - In depth webhooking
+- Config Option too have a wagon spawn with nazar or not!
+- Version check to help you keep up to date on new features and bug fixes!
 
 ## How it works
 - It creates Madam Nazar in your RedM server! Walk upto her and read the text that shows. Hit 'G' on your keyboard to open up her menu. From there you can choose to buy a hint for a treasure chest, sell items to her, or buy items from her.
@@ -27,6 +29,7 @@
 - VORP Inventory
 - VORP Inputs
 - Menu Api
+- bcc-versioner
 
 ## Installation Steps
 - Add the file to your resource file
