@@ -44,16 +44,21 @@ AddEventHandler('bcc-nazar:catchinputforsell', function(qty)
 end)
 
 RegisterServerEvent('bcc-nazar:getplayerdataforsell') --registers a server event
-AddEventHandler('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty) --gives the event somethign to do and also pulls variables from the client
+AddEventHandler('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency) --gives the event somethign to do and also pulls variables from the client --edited by mrtb
   local amountcatch = 0
   local price2 = tonumber(Pprice) --changes the string to a integer
   local Character = VORPcore.getUser(source).getUsedCharacter --gets the players character
   local itemcount = VorpInv.getItemCount(source, Iitemname) --checks if you have the item
+  if (Bcurrency == 'cash') then --added by mrtb start
+    BcurrencyT = 0
+  elseif (Bcurrency == 'gold') then
+    BcurrencyT = 1
+  end -- added by mrtb edited
   if itemcount >= tonumber(qty) then --if you have atleast one item then
     VorpInv.subItem(source, Iitemname, qty) --it removes 1 item
     repeat
       Citizen.Wait(0)
-      Character.addCurrency(0, price2) --it gives you the set money
+      Character.addCurrency(BcurrencyT, price2) --it gives you the set money
       amountcatch = amountcatch + 1
     until amountcatch >= qty
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items Sold ' .. Iitemname .. ' Amount sold ' .. qty .. ' Sold for ' .. tonumber(Pprice))
@@ -88,17 +93,29 @@ end)
 
 --this will actually sell the items as it is recieving the item name qty and price
 RegisterServerEvent('bcc-nazar:buyfromnazar')
-AddEventHandler('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee) --recieves the 3 variables from the client. The order caught is important
+AddEventHandler('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, Scurrencyy) --recieves the 3 variables from the client. The order caught is important
   local totalamountmultiplied = 	qty * Priceee --multiplies the qty by the price to get the total amount of cash it should cost
   local Character = VORPcore.getUser(source).getUsedCharacter --Pulls the character info
-  local currcash = Character.money
-  if currcash >= totalamountmultiplied then
+  local currmoney
+  if (Scurrencyy == 'cash') then -- added by mrtb start
+    ScurrencyT = 0
+    currmoney = Character.money
+  elseif (Scurrencyy == 'gold') then
+    ScurrencyT = 1
+    currmoney = Character.gold
+  end -- added by mrtb end
+  if currmoney >= totalamountmultiplied then
     VorpInv.addItem(source, Itemnamee, qty)
-    Character.removeCurrency(0, totalamountmultiplied)
+    Character.removeCurrency(ScurrencyT, totalamountmultiplied)
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items bought ' .. Itemnamee .. ' Item price ' .. tostring(Priceee) .. ' Amount bought ' .. tostring(qty))
-  elseif currcash < totalamountmultiplied then
-    VORPcore.NotifyBottomRight(source, Config.Language.NoMoney, 4000) --prints this in players screen
+  elseif currmoney < totalamountmultiplied then
+    if (Scurrencyy == 'cash') then --- added by mrtb start
+      VORPcore.NotifyBottomRight(source, Config.Language.NoMoney, 4000) --prints this in players screen
+    elseif (Scurrencyy == 'gold') then
+      VORPcore.NotifyBottomRight(source, Config.Language.NoGold, 4000) --prints this in players screen
+    end -- added by mrtb end
   end
+
 end)
 
 --This handles the version check

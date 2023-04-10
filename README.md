@@ -13,6 +13,7 @@
 - In depth webhooking
 - Config Option too have a wagon spawn with nazar or not!
 - Version check to help you keep up to date on new features and bug fixes!
+- Option to set the type of currency for items in nazars shop!
 
 ## How it works
 - It creates Madam Nazar in your RedM server! Walk upto her and read the text that shows. Hit 'G' on your keyboard to open up her menu. From there you can choose to buy a hint for a treasure chest, sell items to her, or buy items from her.
@@ -41,3 +42,4 @@
 - I really hope you enjoy the script thanks for trying it!
 - I have optimized this code quite alot, but if you see any code that can be optimized further please open a pull request and I will take a look if it works I will merge it. Or just tell me lol.
 - You can edit the code obviously. All I ask is that you release the edits to the community freely.
+- Credit to Mr Terabyte for the menu overhaul absolutely awsome!
