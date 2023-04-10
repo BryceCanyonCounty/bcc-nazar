@@ -1,9 +1,3 @@
---Pulling Essentials
-local VORPutils = {}
-TriggerEvent("getUtils", function(utils)
-    VORPutils = utils
-end)
-
 --Function to spawn the chest after buying hint
 function searchforchest()
     --Object Creation
