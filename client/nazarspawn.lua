@@ -1,5 +1,5 @@
 --Pulling Essentials
-local VORPutils = {}
+VORPutils = {}
 TriggerEvent("getUtils", function(utils)
     VORPutils = utils
 end)

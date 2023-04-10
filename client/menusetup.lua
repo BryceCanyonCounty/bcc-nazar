@@ -1,4 +1,4 @@
-local VORPcore = {} --Pulls vorp core
+VORPcore = {} --Pulls vorp core
 TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
@@ -61,7 +61,8 @@ function BuyMenu()
     Citizen.Wait(100) --waits 100ms
     for k, items in pairs(Config.Shop) do --opens a for loop
         elements[elementindex] = { --sets the elemnents to this table
-            label = items.displayname .. ' ' .. items.price.. '$', --sets the label
+            label = "<img style='max-height:45px;max-width:45px;float: left;text-align: center; margin-top: -5px;' src='nui://vorp_inventory/html/img/items/" ..
+            items.itemdbname .. ".png'>" .. items.displayname .. ' - ' .. items.price .. ' ' .. '<span style="color: Yellow;">  ' .. items.currencytype .. '</span>',--sets the label -- added currency color and image added by mrtb
             value = 'sell' .. tostring(elementindex), --sets the value
             desc = '', --empty desc
             info = items --sets info to the table(this will allow you too open the table in the menu setup below)
@@ -80,6 +81,7 @@ function BuyMenu()
             else
                 Iitemname = data.current.info.itemdbname --sets the varible to whatever option is clicked (since we set info to = the table)
                 Pprice = data.current.info.price
+                Scurrencytype = data.current.info.currencytype -- Get the currencytype from config.shop added by mrtb
                 local myInput = {
                     type = "enableinput", -- dont touch
                     inputType = "input", -- or text area for sending messages
@@ -112,9 +114,11 @@ function SellMenu()
     local elements = {}
     local elementindex = 1
     Citizen.Wait(100)
-    for k, items in pairs(Config.Nazarssellableitems) do
+    
+    for k, items in pairs(Config.Nazarssellableitems) do    
         elements[elementindex] = {
-            label = items.displayname .. ' ' .. items.price.. '$',
+            label = "<img style='max-height:45px;max-width:45px;float: left;text-align: center; margin-top: -5px;' src='nui://vorp_inventory/html/img/items/" ..
+            items.itemdbname .. ".png'>" .. items.displayname .. ' - ' .. items.price .. ' ' .. '<span style="color: Yellow;">  ' .. items.currencytype .. '</span>', -- edited by mrtb
             value = 'sell' .. tostring(elementindex),
             desc = '',
             info = items
@@ -133,6 +137,7 @@ function SellMenu()
             else
                 Iitemname = data.current.info.itemdbname --sets the varible to whatever option is clicked
                 Pprice = data.current.info.price
+                Scurrencytype = data.current.info.currencytype --added by mrtb
                 local myInput = {
                     type = "enableinput", -- dont touch
                     inputType = "input", -- or text area for sending messages
@@ -208,12 +213,12 @@ end)
 --This recieves the qty when buying from nazar and then passes the qty along with the item name and price to the server to handle giving the items
 RegisterNetEvent('bcc-nazar:nazarsellableitemscatch')
 AddEventHandler('bcc-nazar:nazarsellableitemscatch', function(qty) --is catching the qty from the server
-    TriggerServerEvent('bcc-nazar:buyfromnazar', qty, Iitemname, Pprice) --is passing the 3 variables to the server
+    TriggerServerEvent('bcc-nazar:buyfromnazar', qty, Iitemname, Pprice, Scurrencytype) --is passing the 4 variables to the server Scurrencytype --edited by mrtb
 end)
 
 
 --this recieves the qty when selling items to nazar from the server and then passes the itemname and price to the server along with the qty
 RegisterNetEvent('bcc-nazar:infosenderforsell')
 AddEventHandler('bcc-nazar:infosenderforsell', function(qty)
-    TriggerServerEvent('bcc-nazar:getplayerdataforsell', Iitemname, Pprice, qty)
+    TriggerServerEvent('bcc-nazar:getplayerdataforsell', Iitemname, Pprice, qty, Scurrencytype) -- edited by mrtb
 end)
