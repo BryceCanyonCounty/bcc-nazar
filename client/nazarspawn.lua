@@ -10,8 +10,7 @@ Citizen.CreateThread(function()
 end)
 
 --This is the event that when triggered from server will spawn madam nazar for the client
-RegisterNetEvent('bcc-nazar:pedspawn')
-AddEventHandler('bcc-nazar:pedspawn', function(nspawn)
+RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     Nspawn = nspawn.nazarspawncoords
     local wagonspawn = nspawn.nazarwagonspawncoords
 
@@ -40,6 +39,7 @@ AddEventHandler('bcc-nazar:pedspawn', function(nspawn)
     SetEntityInvincible(createdped, true) --sets ped invincible
     FreezeEntityPosition(createdped, true) --freezes the entity
     SetBlockingOfNonTemporaryEvents(createdped, true) --Npc won't get scared
+    TaskStartScenarioInPlace(createdped, GetHashKey("WORLD_HUMAN_SMOKE_NAZAR"), -1)
     --Loop creation to create text, and open menu
     while true do -- creates a loop to keep the text up and the distance constantly checked
         Citizen.Wait(10) --makes it wait a slight amount (avoids crashing is needed)
