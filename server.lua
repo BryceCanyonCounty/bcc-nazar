@@ -7,8 +7,7 @@ end)
 
 --global cooldown system
 local cooldown = false
-RegisterServerEvent('bcc-nazar:menuopen6')
-AddEventHandler('bcc-nazar:menuopen6', function(cost)
+RegisterServerEvent('bcc-nazar:menuopen6', function(cost)
   local _source = source
   local Character = VORPcore.getUser(_source).getUsedCharacter
   if cooldown == false then
@@ -26,8 +25,7 @@ end)
 local randomizedcoords = 0
 local nspawn
 local d = 0
-RegisterServerEvent('bcc-nazar:locationset')
-AddEventHandler('bcc-nazar:locationset', function()
+RegisterServerEvent('bcc-nazar:locationset', function()
   if randomizedcoords == 0 then
     d = math.random(1, #Config.NazarSetup.nazarspawn)
     nspawn = Config.NazarSetup.nazarspawn[d]
@@ -38,13 +36,11 @@ end)
 
 --SELLING ITEMS TO NAZAR SETUP
 --this just catches the qty from the menusetup then triggers a client event to get the itemname price and pass back to the server
-RegisterServerEvent('bcc-nazar:catchinputforsell')
-AddEventHandler('bcc-nazar:catchinputforsell', function(qty)
+RegisterServerEvent('bcc-nazar:catchinputforsell', function(qty)
   TriggerClientEvent('bcc-nazar:infosenderforsell', source, qty)
 end)
 
-RegisterServerEvent('bcc-nazar:getplayerdataforsell') --registers a server event
-AddEventHandler('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency) --gives the event somethign to do and also pulls variables from the client --edited by mrtb
+RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency) --registers a server event
   local amountcatch = 0
   local price2 = tonumber(Pprice) --changes the string to a integer
   local Character = VORPcore.getUser(source).getUsedCharacter --gets the players character
@@ -69,8 +65,7 @@ end)
 
 --handles the giving of items whena  chest is opened
 local cooldown2 = false
-RegisterServerEvent('bcc-nazar:chestopen') --registers an event
-AddEventHandler('bcc-nazar:chestopen', function(V) --tells the event what to do and pulls the reward variable from the client
+RegisterServerEvent('bcc-nazar:chestopen', function(V) --registers an event
   local Character = VORPcore.getUser(source).getUsedCharacter --Pulls the character info
   if cooldown2 == false then
     for k, v in pairs(V.Reward) do --opens the table
@@ -86,14 +81,12 @@ AddEventHandler('bcc-nazar:chestopen', function(V) --tells the event what to do 
 end)
 
 --This will handle the items nazar wil sell to the player
-RegisterServerEvent('bcc-nazar:nazarsellinfopass')
-AddEventHandler('bcc-nazar:nazarsellinfopass', function(qty)
+RegisterServerEvent('bcc-nazar:nazarsellinfopass', function(qty)
   TriggerClientEvent('bcc-nazar:nazarsellableitemscatch', source, qty)
 end)
 
 --this will actually sell the items as it is recieving the item name qty and price
-RegisterServerEvent('bcc-nazar:buyfromnazar')
-AddEventHandler('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, Scurrencyy) --recieves the 3 variables from the client. The order caught is important
+RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, Scurrencyy)
   local totalamountmultiplied = 	qty * Priceee --multiplies the qty by the price to get the total amount of cash it should cost
   local Character = VORPcore.getUser(source).getUsedCharacter --Pulls the character info
   local currmoney
@@ -115,7 +108,6 @@ AddEventHandler('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, Scur
       VORPcore.NotifyBottomRight(source, Config.Language.NoGold, 4000) --prints this in players screen
     end -- added by mrtb end
   end
-
 end)
 
 --This handles the version check
