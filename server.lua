@@ -4,6 +4,10 @@ local VORPcore = {} --Pulls vorp core
 TriggerEvent("getCore", function(core)
   VORPcore = core
 end)
+local BccUtils = {}
+TriggerEvent('bcc:getUtils', function(bccutils)
+  BccUtils = bccutils
+end)
 
 --global cooldown system
 local cooldown = false
@@ -111,6 +115,5 @@ RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, 
 end)
 
 --This handles the version check
-local versioner = exports['bcc-versioner'].initiate()
 local repo = 'https://github.com/BryceCanyonCounty/bcc-nazar'
-versioner.checkRelease(GetCurrentResourceName(), repo)
+BccUtils.Versioner.checkRelease(GetCurrentResourceName(), repo)
