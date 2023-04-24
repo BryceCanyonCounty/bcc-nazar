@@ -27,6 +27,6 @@ dependency {
     'vorp_inventory',
     'menuapi',
     'vorp_utils',
-    'bcc-versioner',
+    'bcc-utils',
     'vorp_inputs'
 }

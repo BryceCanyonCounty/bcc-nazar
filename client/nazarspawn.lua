@@ -3,6 +3,10 @@ VORPutils = {}
 TriggerEvent("getUtils", function(utils)
     VORPutils = utils
 end)
+BccUtils = {}
+TriggerEvent('bcc:getUtils', function(bccutils)
+    BccUtils = bccutils
+end)
 
 --Thread to set nazars spawn location (this has to be done server side otherwise it would be different for each client)
 Citizen.CreateThread(function()
@@ -10,8 +14,8 @@ Citizen.CreateThread(function()
 end)
 
 --This is the event that when triggered from server will spawn madam nazar for the client
-RegisterNetEvent('bcc-nazar:pedspawn')
-AddEventHandler('bcc-nazar:pedspawn', function(nspawn)
+RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
+    local audioplay = false
     Nspawn = nspawn.nazarspawncoords
     local wagonspawn = nspawn.nazarwagonspawncoords
 
@@ -40,12 +44,26 @@ AddEventHandler('bcc-nazar:pedspawn', function(nspawn)
     SetEntityInvincible(createdped, true) --sets ped invincible
     FreezeEntityPosition(createdped, true) --freezes the entity
     SetBlockingOfNonTemporaryEvents(createdped, true) --Npc won't get scared
+    TaskStartScenarioInPlace(createdped, GetHashKey("WORLD_HUMAN_SMOKE_NAZAR"), -1)
     --Loop creation to create text, and open menu
     while true do -- creates a loop to keep the text up and the distance constantly checked
         Citizen.Wait(10) --makes it wait a slight amount (avoids crashing is needed)
         local playercoord = GetEntityCoords(PlayerPedId()) --gets the players ped coordinates
         if GetDistanceBetweenCoords(playercoord.x, playercoord.y, playercoord.z, Nspawn.x, Nspawn.y, Nspawn.z, true) < 10 then --if dist less than 10 then
+            if Config.NazarSetup.Music then
+                if not audioplay then
+                    audioplay = true
+                    BccUtils.YtAudioPlayer.PlayAudio('https://www.youtube.com/embed/IgSBKjBz7Qw', 'IgSBKjBz7Qw', Config.NazarSetup.MusicVolume, 1)
+                end
+            end
             DrawText3D(Nspawn.x, Nspawn.y, Nspawn.z, Config.Language.TalkToNPCText) --creates the text
+        else
+            if Config.NazarSetup.Music then
+                if audioplay then
+                    audioplay = false
+                    BccUtils.YtAudioPlayer.StopAudio()
+                end
+            end
         end
         if GetDistanceBetweenCoords(Nspawn.x, Nspawn.y, Nspawn.z, playercoord.x, playercoord.y, playercoord.z, false) < 2 then --if dist less than 2 then
             if IsControlJustReleased(0, 0x760A9C6F) then
