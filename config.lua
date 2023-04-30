@@ -10,6 +10,9 @@ Config.NazarSetup = {
     MusicVolume = 20, --audio level of the music 0-100
     nazarswagon = false, --if true this will spawn nazars wagon with nazar at the set coords. (The wagon can be hard to get set on the groun properly hence why this is optional, it will be tedious to get it set correctly, mainly will only work on perfectly flat ground)
     blip = true, --if true this will place a blip on nazar if not no blip will be there
+    BlipHash = 2119977580, --blips hash
+    BlipName = "Madam Nazar", --blips name
+    BlipColor = "BLIP_MODIFIER_MP_COLOR_10", --blips color
     nazarspawn = { --You can add as many locations as you would like the script will randomly pick one each server restart!
         {
             nazarspawncoords = {x = -1047.19, y = 450.55, z = 56.81, h = 178.68}, --to get coords use xyz paste then manually add the heading to the table
@@ -244,3 +247,37 @@ Config.Language = {
     NoChest = "Someone has already looted this chest!",
     Alreadylooted = "You looted the chest!"
 }
+
+--[[--------BLIP_COLORS----------
+LIGHT_BLUE    = 'BLIP_MODIFIER_MP_COLOR_1',
+DARK_RED      = 'BLIP_MODIFIER_MP_COLOR_2',
+PURPLE        = 'BLIP_MODIFIER_MP_COLOR_3',
+ORANGE        = 'BLIP_MODIFIER_MP_COLOR_4',
+TEAL          = 'BLIP_MODIFIER_MP_COLOR_5',
+LIGHT_YELLOW  = 'BLIP_MODIFIER_MP_COLOR_6',
+PINK          = 'BLIP_MODIFIER_MP_COLOR_7',
+GREEN         = 'BLIP_MODIFIER_MP_COLOR_8',
+DARK_TEAL     = 'BLIP_MODIFIER_MP_COLOR_9',
+RED           = 'BLIP_MODIFIER_MP_COLOR_10',
+LIGHT_GREEN   = 'BLIP_MODIFIER_MP_COLOR_11',
+TEAL2         = 'BLIP_MODIFIER_MP_COLOR_12',
+BLUE          = 'BLIP_MODIFIER_MP_COLOR_13',
+DARK_PUPLE    = 'BLIP_MODIFIER_MP_COLOR_14',
+DARK_PINK     = 'BLIP_MODIFIER_MP_COLOR_15',
+DARK_DARK_RED = 'BLIP_MODIFIER_MP_COLOR_16',
+GRAY          = 'BLIP_MODIFIER_MP_COLOR_17',
+PINKISH       = 'BLIP_MODIFIER_MP_COLOR_18',
+YELLOW_GREEN  = 'BLIP_MODIFIER_MP_COLOR_19',
+DARK_GREEN    = 'BLIP_MODIFIER_MP_COLOR_20',
+BRIGHT_BLUE   = 'BLIP_MODIFIER_MP_COLOR_21',
+BRIGHT_PURPLE = 'BLIP_MODIFIER_MP_COLOR_22',
+YELLOW_ORANGE = 'BLIP_MODIFIER_MP_COLOR_23',
+BLUE2         = 'BLIP_MODIFIER_MP_COLOR_24',
+TEAL3         = 'BLIP_MODIFIER_MP_COLOR_25',
+TAN           = 'BLIP_MODIFIER_MP_COLOR_26',
+OFF_WHITE     = 'BLIP_MODIFIER_MP_COLOR_27',
+LIGHT_YELLOW2 = 'BLIP_MODIFIER_MP_COLOR_28',
+LIGHT_PINK    = 'BLIP_MODIFIER_MP_COLOR_29',
+LIGHT_RED     = 'BLIP_MODIFIER_MP_COLOR_30',
+LIGHT_YELLOW3 = 'BLIP_MODIFIER_MP_COLOR_31',
+WHITE         = 'BLIP_MODIFIER_MP_COLOR_32']]
