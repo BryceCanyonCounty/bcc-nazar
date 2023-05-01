@@ -27,10 +27,17 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     end
 
     --Spawning Nazar Setup
-    local model = GetHashKey('cs_mp_travellingsaleswoman') --sets the npc model
+    local model = joaat('cs_mp_travellingsaleswoman') --sets the npc model
+    
     if Config.NazarSetup.blip == true then
-        local blip = VORPutils.Blips:SetBlip("Madam Nazaar", 'blip_mp_collector_map', 0.8, Nspawn.x, Nspawn.y, Nspawn.z)
+        --Pulled from mrterabytes oil fork
+        local blip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, Nspawn.x, Nspawn.y, Nspawn.z) -- This create a blip with a defualt blip hash we given
+        SetBlipSprite(blip, Config.NazarSetup.BlipHash, 1) -- This sets the blip hash to the given in config.
+        SetBlipScale(blip, 0.8)
+        Citizen.InvokeNative(0x662D364ABF16DE2F, blip, joaat(Config.NazarSetup.BlipColor))
+        Citizen.InvokeNative(0x9CB1A1623062F402, blip, Config.NazarSetup.BlipName) -- Sets the blip Name
     end
+    
     RequestModel(model) -- requests the varible model
     if not HasModelLoaded(model) then --checks if its loaded
         RequestModel(model)
@@ -44,7 +51,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     SetEntityInvincible(createdped, true) --sets ped invincible
     FreezeEntityPosition(createdped, true) --freezes the entity
     SetBlockingOfNonTemporaryEvents(createdped, true) --Npc won't get scared
-    TaskStartScenarioInPlace(createdped, GetHashKey("WORLD_HUMAN_SMOKE_NAZAR"), -1)
+    TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
     --Loop creation to create text, and open menu
     while true do -- creates a loop to keep the text up and the distance constantly checked
         Citizen.Wait(10) --makes it wait a slight amount (avoids crashing is needed)
@@ -89,5 +96,3 @@ function DrawText3D(x, y, z, text)
 	  DrawSprite("feeds", "hud_menu_4a", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 35, 35, 35, 190, 0)
 	end
 end
-
--- TODO add music from online to play when near nazar audio file located just have not found out how to play it in game. File name 'DANSE_TZIGANE_70BPM' in audio_banks rdr3 discovories

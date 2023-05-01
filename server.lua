@@ -15,7 +15,7 @@ RegisterServerEvent('bcc-nazar:menuopen6', function(cost)
   local _source = source
   local Character = VORPcore.getUser(_source).getUsedCharacter
   if cooldown == false then
-    TriggerClientEvent('bcc-nazar:menuopen4', source, arg)
+    TriggerClientEvent('bcc-nazar:menuopen4', _source)
     Character.removeCurrency(0, cost) -- removes a amount of (cost) money(0) [gold would be 1]
     cooldown = true
     Wait(Config.NazarSetup.hintcooldown)
@@ -38,12 +38,8 @@ RegisterServerEvent('bcc-nazar:locationset', function()
   TriggerClientEvent('bcc-nazar:pedspawn', source, nspawn)
 end)
 
---SELLING ITEMS TO NAZAR SETUP
---this just catches the qty from the menusetup then triggers a client event to get the itemname price and pass back to the server
-RegisterServerEvent('bcc-nazar:catchinputforsell', function(qty)
-  TriggerClientEvent('bcc-nazar:infosenderforsell', source, qty)
-end)
 
+--Selling Items setup
 RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency) --registers a server event
   local amountcatch = 0
   local price2 = tonumber(Pprice) --changes the string to a integer
@@ -84,11 +80,6 @@ RegisterServerEvent('bcc-nazar:chestopen', function(V) --registers an event
   end
 end)
 
---This will handle the items nazar wil sell to the player
-RegisterServerEvent('bcc-nazar:nazarsellinfopass', function(qty)
-  TriggerClientEvent('bcc-nazar:nazarsellableitemscatch', source, qty)
-end)
-
 --this will actually sell the items as it is recieving the item name qty and price
 RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, Scurrencyy)
   local totalamountmultiplied = 	qty * Priceee --multiplies the qty by the price to get the total amount of cash it should cost
@@ -115,5 +106,4 @@ RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, 
 end)
 
 --This handles the version check
-local repo = 'https://github.com/BryceCanyonCounty/bcc-nazar'
-BccUtils.Versioner.checkRelease(GetCurrentResourceName(), repo)
+BccUtils.Versioner.checkRelease(GetCurrentResourceName(), 'https://github.com/BryceCanyonCounty/bcc-nazar')

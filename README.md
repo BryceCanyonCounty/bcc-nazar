@@ -14,6 +14,7 @@
 - Config Option too have a wagon spawn with nazar or not!
 - Version check to help you keep up to date on new features and bug fixes!
 - Option to set the type of currency for items in nazars shop!
+- Option to enable her music from RDO to play when near!
 
 ## How it works
 - It creates Madam Nazar in your RedM server! Walk upto her and read the text that shows. Hit 'G' on your keyboard to open up her menu. From there you can choose to buy a hint for a treasure chest, sell items to her, or buy items from her.
@@ -30,7 +31,7 @@
 - VORP Inventory
 - VORP Inputs
 - Menu Api
-- bcc-versioner
+- bcc-utils
 
 ## Installation Steps
 - Add the file to your resource file

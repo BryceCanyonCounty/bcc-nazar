@@ -1,5 +1,6 @@
 --Function to spawn the chest after buying hint
-function searchforchest()
+RegisterNetEvent('bcc-nazar:menuopen4', function()
+    VORPcore.NotifyBottomRight(Config.Language.HintNotify,6000) --text in bottom right
     --Object Creation
     local object = CreateObject('p_chest01x', C.x, C.y, C.z - 1, false, false, false) --creates an object
     RequestModel(object, true) --requests the object model
@@ -29,4 +30,4 @@ function searchforchest()
             end
         end
     end
-end
+end)
