@@ -14,13 +14,13 @@ local cooldown = false
 RegisterServerEvent('bcc-nazar:menuopen6', function(cost)
   local _source = source
   local Character = VORPcore.getUser(_source).getUsedCharacter
-  if cooldown == false then
+  if not cooldown then
     TriggerClientEvent('bcc-nazar:menuopen4', _source)
     Character.removeCurrency(0, cost) -- removes a amount of (cost) money(0) [gold would be 1]
     cooldown = true
     Wait(Config.NazarSetup.hintcooldown)
     cooldown = false
-  elseif cooldown == true then
+  else
     VORPcore.NotifyBottomRight(_source, Config.Language.NoHintNotify, 4000) --prints this in players screen
   end
 end)
@@ -42,7 +42,6 @@ end)
 --Selling Items setup
 RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency) --registers a server event
   local amountcatch = 0
-  local price2 = tonumber(Pprice) --changes the string to a integer
   local Character = VORPcore.getUser(source).getUsedCharacter --gets the players character
   local itemcount = VorpInv.getItemCount(source, Iitemname) --checks if you have the item
   if (Bcurrency == 'cash') then --added by mrtb start
@@ -54,7 +53,7 @@ RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice
     VorpInv.subItem(source, Iitemname, qty) --it removes 1 item
     repeat
       Citizen.Wait(0)
-      Character.addCurrency(BcurrencyT, price2) --it gives you the set money
+      Character.addCurrency(BcurrencyT, tonumber(Pprice)) --it gives you the set money
       amountcatch = amountcatch + 1
     until amountcatch >= qty
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items Sold ' .. Iitemname .. ' Amount sold ' .. qty .. ' Sold for ' .. tonumber(Pprice))
@@ -67,7 +66,7 @@ end)
 local cooldown2 = false
 RegisterServerEvent('bcc-nazar:chestopen', function(V) --registers an event
   local Character = VORPcore.getUser(source).getUsedCharacter --Pulls the character info
-  if cooldown2 == false then
+  if not cooldown2 then
     for k, v in pairs(V.Reward) do --opens the table
       VorpInv.addItem(source, v.name, v.count) --adds the items and amounts
     end
