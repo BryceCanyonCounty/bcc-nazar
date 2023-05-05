@@ -15,7 +15,7 @@ RegisterNetEvent('bcc-nazar:menuopen4', function()
 
     --Distance Tracker Setup
     while true do
-        Citizen.Wait(10)
+        Citizen.Wait(5)
         local pl = GetEntityCoords(PlayerPedId())
         if GetDistanceBetweenCoords(pl.x, pl.y, pl.z, C.x, C.y, C.z, true) < 3 then
             PromptGroup:ShowGroup(Config.Language.TreasurePrompt_search) --Names the prompt search chest

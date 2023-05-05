@@ -29,7 +29,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     --Spawning Nazar Setup
     local model = joaat('cs_mp_travellingsaleswoman') --sets the npc model
     
-    if Config.NazarSetup.blip == true then
+    if Config.NazarSetup.blip then
         --Pulled from mrterabytes oil fork
         local blip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, Nspawn.x, Nspawn.y, Nspawn.z) -- This create a blip with a defualt blip hash we given
         SetBlipSprite(blip, Config.NazarSetup.BlipHash, 1) -- This sets the blip hash to the given in config.
@@ -47,10 +47,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     end
     local createdped = CreatePed(model, Nspawn.x, Nspawn.y, Nspawn.z - 1, Nspawn.h, false, true, true, true) --creates ped the minus one makes it so its standing on the ground not floating
     Citizen.InvokeNative(0x283978A15512B2FE, createdped, true) -- sets ped into random outfit, stops it being invis
-    SetEntityAsMissionEntity(createdped, true, true) -- sets ped as mission entity preventing it from despawning
-    SetEntityInvincible(createdped, true) --sets ped invincible
-    FreezeEntityPosition(createdped, true) --freezes the entity
-    SetBlockingOfNonTemporaryEvents(createdped, true) --Npc won't get scared
+    BccUtils.Ped.SetStatic(createdped)
     TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
     --Loop creation to create text, and open menu
     while true do -- creates a loop to keep the text up and the distance constantly checked
@@ -63,7 +60,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
                     BccUtils.YtAudioPlayer.PlayAudio('https://www.youtube.com/embed/IgSBKjBz7Qw', 'IgSBKjBz7Qw', Config.NazarSetup.MusicVolume, 1)
                 end
             end
-            DrawText3D(Nspawn.x, Nspawn.y, Nspawn.z, Config.Language.TalkToNPCText) --creates the text
+            BccUtils.Misc.DrawText3D(Nspawn.x, Nspawn.y, Nspawn.z, Config.Language.TalkToNPCText)
         else
             if Config.NazarSetup.Music then
                 if audioplay then
@@ -79,20 +76,3 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
         end
     end
 end)
-
---Creates the ability to use DrawText3D
-function DrawText3D(x, y, z, text)
-	local onScreen,_x,_y=GetScreenCoordFromWorldCoord(x, y, z)
-	local px,py,pz=table.unpack(GetGameplayCamCoord())  
-	local dist = GetDistanceBetweenCoords(px,py,pz, x,y,z, 1)
-	local str = CreateVarString(10, "LITERAL_STRING", text, Citizen.ResultAsLong())
-	if onScreen then
-	  SetTextScale(0.30, 0.30)
-	  SetTextFontForCurrentCommand(1)
-	  SetTextColor(255, 255, 255, 215)
-	  SetTextCentre(1)
-	  DisplayText(str,_x,_y)
-	  local factor = (string.len(text)) / 225
-	  DrawSprite("feeds", "hud_menu_4a", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 35, 35, 35, 190, 0)
-	end
-end
