@@ -15,6 +15,7 @@
 - Version check to help you keep up to date on new features and bug fixes!
 - Option to set the type of currency for items in nazars shop!
 - Option to enable her music from RDO to play when near!
+- Card Collecting Added! (Spawns cards around the map at set coords, each player can collect each card once per restart, when collected it will give them the card item set in the config)
 
 ## How it works
 - It creates Madam Nazar in your RedM server! Walk upto her and read the text that shows. Hit 'G' on your keyboard to open up her menu. From there you can choose to buy a hint for a treasure chest, sell items to her, or buy items from her.
@@ -31,6 +32,7 @@
 - VORP Inventory
 - VORP Inputs
 - Menu Api
+- VORP Character
 - bcc-utils
 
 ## Installation Steps

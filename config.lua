@@ -189,6 +189,22 @@ Config.TreasureLocations = {
     },
 }
 
+------ Card Setup -----
+Config.CardsEnable = true --if true collectable cards will be enabled
+Config.CardRespawnTime = 30000 --how often in ms the cards will respawn
+Config.CollectableCards = {
+    {
+        coords = {x = 1486.19, y = 791.14, z = 99.81}, --coords the card will spawn at
+        carditem = 'water', --item to give database name
+        cardname = 'Collector Card 1', --display name that will be shown in the prompt to pick card up (MAKE SURE THESE ARE UNIQUE NAMES OTHERWISE IT WILL BREAK)
+    },
+    {
+        coords = {x = 1489.69, y = 783.15, z = 99.74}, --coords the card will spawn at
+        carditem = 'iron', --item to give database name
+        cardname = 'Collector Card 2', --display name that will be shown in the prompt to pick card up (MAKE SURE THESE ARE UNIQUE NAMES OTHERWISE IT WILL BREAK)
+    },
+}
+
 --This is the shop configuration
 --You can add as many items to sale as you want just copy the line paste it and change it to your new item
 --itemdbname is the database name of the item and displayname is what will show in the menu with nazar

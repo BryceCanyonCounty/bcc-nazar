@@ -4,10 +4,7 @@ local VORPcore = {} --Pulls vorp core
 TriggerEvent("getCore", function(core)
   VORPcore = core
 end)
-local BccUtils = {}
-TriggerEvent('bcc:getUtils', function(bccutils)
-  BccUtils = bccutils
-end)
+local BccUtils = exports['bcc-utils'].initiate()
 
 --global cooldown system
 local cooldown = false
@@ -26,9 +23,8 @@ RegisterServerEvent('bcc-nazar:menuopen6', function(cost)
 end)
 
 --Handles nazar spawn(this is used so that it only randomizes the coordinates of nazar once for everyone instead of a different coord for each player)
-local randomizedcoords = 0
+local randomizedcoords, d = 0, 0
 local nspawn
-local d = 0
 RegisterServerEvent('bcc-nazar:locationset', function()
   if randomizedcoords == 0 then
     d = math.random(1, #Config.NazarSetup.nazarspawn)
@@ -102,6 +98,29 @@ RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, 
       VORPcore.NotifyBottomRight(source, Config.Language.NoGold, 4000) --prints this in players screen
     end -- added by mrtb end
   end
+end)
+
+----------- Card Collection Cooldown ---------------------
+local cooldowns = {}
+RegisterServerEvent('bcc-nazar:CardCooldownCheck', function(shopid, v)
+  local _source = source
+  print(shopid)
+  if cooldowns[shopid] then --Checks if the player has collected the card yet
+    local seconds = Config.CardRespawnTime
+    if os.difftime(os.time(), cooldowns[shopid]) >= seconds then
+      cooldowns[shopid] = os.time() --Update the cooldown with the new enacted time.
+      TriggerClientEvent("bcc-nazar:CardCollectorMain", _source, v)
+    end
+  else
+    cooldowns[shopid] = os.time()
+    TriggerClientEvent("bcc-nazar:CardCollectorMain", _source, v)
+  end
+end)
+
+---------- Card Add Items -----------
+RegisterServerEvent('bcc-nazar:CardCollectorAddItems', function(item)
+  local _source = source
+  VorpInv.addItem(_source, item, 1)
 end)
 
 --This handles the version check
