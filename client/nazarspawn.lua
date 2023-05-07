@@ -48,7 +48,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
     --Loop creation to create text, and open menu
     while true do
-        Citizen.Wait(5)
+        Wait(5)
         local playercoord = GetEntityCoords(PlayerPedId())
         local dist = GetDistanceBetweenCoords(playercoord.x, playercoord.y, playercoord.z, Nspawn.x, Nspawn.y, Nspawn.z, true)
         if dist < 10 then

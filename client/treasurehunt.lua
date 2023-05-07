@@ -15,7 +15,7 @@ RegisterNetEvent('bcc-nazar:menuopen4', function()
 
     --Distance Tracker Setup
     while true do
-        Citizen.Wait(5)
+        Wait(5)
         local pl = GetEntityCoords(PlayerPedId())
         local dist = GetDistanceBetweenCoords(pl.x, pl.y, pl.z, C.x, C.y, C.z, true)
         if dist < 3 then
@@ -23,14 +23,14 @@ RegisterNetEvent('bcc-nazar:menuopen4', function()
             if firstprompt:HasCompleted() then --if the prmpt has been done then
                 RequestAnimDict('mech_ransack@chest@med@open@crouch@b') --Checks to see if its loaded
                 while not HasAnimDictLoaded('mech_ransack@chest@med@open@crouch@b') do --makes sure its loaded
-                    Citizen.Wait(0)
+                    Wait(0)
                 end
                 TaskPlayAnim(PlayerPedId(), 'mech_ransack@chest@med@open@crouch@b', 'base', 8.0, 8.0, 1000, 17, 0.2, false, false, false) --plays the animation
                 RemoveBlip(blip)
                 TriggerServerEvent('bcc-nazar:chestopen', V) break --triggers the server event and passes the variable and breaks loop
             end
         elseif dist > 200 then
-            Citizen.Wait(2000)
+            Wait(2000)
         end
     end
 end)
@@ -58,7 +58,7 @@ RegisterNetEvent('bcc-nazar:CardCollectorMain', function(v)
     Citizen.InvokeNative(0x7DFB49BCDB73089A, object, true)
 
     while true do
-        Citizen.Wait(5)
+        Wait(5)
         local pl = GetEntityCoords(PlayerPedId())
         local dist = GetDistanceBetweenCoords(v.coords.x, v.coords.y, v.coords.z, pl.x, pl.y, pl.z, true)
         if dist < 3 then
@@ -68,7 +68,7 @@ RegisterNetEvent('bcc-nazar:CardCollectorMain', function(v)
                 TriggerServerEvent('bcc-nazar:CardCollectorAddItems', v.carditem) break
             end
         elseif dist > 200 then
-            Citizen.Wait(2000)
+            Wait(2000)
         end
     end
 end)

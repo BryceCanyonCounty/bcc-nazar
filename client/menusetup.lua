@@ -27,7 +27,7 @@ local myInput = {
 local inmenu = false --var used to see if you are in the main menu or not
 AddEventHandler('bcc-nazar:MenuClose', function()
     while true do --loops will run permantely
-        Citizen.Wait(10) --waits 10ms prevents crashing
+        Wait(10) --waits 10ms prevents crashing
         if IsControlJustReleased(0, 0x156F7119) then --if backspace is pressed then
             if inmenu then --if var is true then
                 inmenu = false --resets var
@@ -72,7 +72,7 @@ end
 function BuyMenu()
     MenuData.CloseAll()
     local elements, elementindex = {}, 1
-    Citizen.Wait(100) --waits 100ms
+    Wait(100) --waits 100ms
     for k, items in pairs(Config.Shop) do --opens a for loop
         elements[elementindex] = { --sets the elemnents to this table
             label = "<img style='max-height:45px;max-width:45px;float: left;text-align: center; margin-top: -5px;' src='nui://vorp_inventory/html/img/items/" ..
@@ -111,7 +111,7 @@ end
 function SellMenu()
     MenuData.CloseAll()
     local elements, elementindex = {}, 1
-    Citizen.Wait(100)
+    Wait(100)
     
     for k, items in pairs(Config.Nazarssellableitems) do    
         elements[elementindex] = {
@@ -151,7 +151,7 @@ end
 function HintMenu()
     MenuData.CloseAll()
     local elements, elementindex = {}, 1
-    Citizen.Wait(100)
+    Wait(100)
     for k, v in pairs(Config.TreasureLocations) do
         elements[elementindex] = {
             label = v.huntname,
