@@ -71,8 +71,7 @@ end
 
 function BuyMenu()
     MenuData.CloseAll()
-    local elements = {} --sets the var to a table
-    local elementindex = 1 --sets the var too 1
+    local elements, elementindex = {}, 1
     Citizen.Wait(100) --waits 100ms
     for k, items in pairs(Config.Shop) do --opens a for loop
         elements[elementindex] = { --sets the elemnents to this table
@@ -111,8 +110,7 @@ end
 
 function SellMenu()
     MenuData.CloseAll()
-    local elements = {}
-    local elementindex = 1
+    local elements, elementindex = {}, 1
     Citizen.Wait(100)
     
     for k, items in pairs(Config.Nazarssellableitems) do    
@@ -152,8 +150,7 @@ end
 
 function HintMenu()
     MenuData.CloseAll()
-    local elements = {}
-    local elementindex = 1
+    local elements, elementindex = {}, 1
     Citizen.Wait(100)
     for k, v in pairs(Config.TreasureLocations) do
         elements[elementindex] = {
