@@ -20,7 +20,7 @@ client_scripts {
     '/client/treasurehunt.lua',
 }
 
-version '1.1.0'
+version '1.2.0'
 
 dependency {
     'vorp_core',
@@ -28,5 +28,6 @@ dependency {
     'menuapi',
     'vorp_utils',
     'bcc-utils',
+    'vorp_character',
     'vorp_inputs'
 }

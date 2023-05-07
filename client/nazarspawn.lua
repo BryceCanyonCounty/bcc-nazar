@@ -3,10 +3,8 @@ VORPutils = {}
 TriggerEvent("getUtils", function(utils)
     VORPutils = utils
 end)
-BccUtils = {}
-TriggerEvent('bcc:getUtils', function(bccutils)
-    BccUtils = bccutils
-end)
+BccUtils = exports['bcc-utils'].initiate()
+
 
 --Thread to set nazars spawn location (this has to be done server side otherwise it would be different for each client)
 Citizen.CreateThread(function()
@@ -15,9 +13,8 @@ end)
 
 --This is the event that when triggered from server will spawn madam nazar for the client
 RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
-    local audioplay = false
+    local audioplay, wagonspawn = false, nspawn.nazarwagonspawncoords
     Nspawn = nspawn.nazarspawncoords
-    local wagonspawn = nspawn.nazarwagonspawncoords
 
     --Spawning Wagon Setup
     if Config.NazarSetup.nazarswagon then
@@ -50,10 +47,11 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     BccUtils.Ped.SetStatic(createdped)
     TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
     --Loop creation to create text, and open menu
-    while true do -- creates a loop to keep the text up and the distance constantly checked
-        Citizen.Wait(10) --makes it wait a slight amount (avoids crashing is needed)
-        local playercoord = GetEntityCoords(PlayerPedId()) --gets the players ped coordinates
-        if GetDistanceBetweenCoords(playercoord.x, playercoord.y, playercoord.z, Nspawn.x, Nspawn.y, Nspawn.z, true) < 10 then --if dist less than 10 then
+    while true do
+        Wait(5)
+        local playercoord = GetEntityCoords(PlayerPedId())
+        local dist = GetDistanceBetweenCoords(playercoord.x, playercoord.y, playercoord.z, Nspawn.x, Nspawn.y, Nspawn.z, true)
+        if dist < 10 then
             if Config.NazarSetup.Music then
                 if not audioplay then
                     audioplay = true
@@ -69,10 +67,11 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
                 end
             end
         end
-        if GetDistanceBetweenCoords(Nspawn.x, Nspawn.y, Nspawn.z, playercoord.x, playercoord.y, playercoord.z, false) < 2 then --if dist less than 2 then
+        if dist < 2 then
             if IsControlJustReleased(0, 0x760A9C6F) then
                 MainMenu() --opens the menu
             end
         end
+        if dist > 200 then Citizen.Wait(2000) end
     end
 end)
