@@ -48,7 +48,7 @@ RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice
   if itemcount >= tonumber(qty) then --if you have atleast one item then
     VorpInv.subItem(source, Iitemname, qty) --it removes 1 item
     repeat
-      Citizen.Wait(0)
+      Wait(0)
       Character.addCurrency(BcurrencyT, tonumber(Pprice)) --it gives you the set money
       amountcatch = amountcatch + 1
     until amountcatch >= qty
@@ -70,7 +70,7 @@ RegisterServerEvent('bcc-nazar:chestopen', function(V) --registers an event
     VORPcore.NotifyBottomRight(source, Config.Language.Alreadylooted, 4000) --prints this in players screen
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ChestWebhook, 'chest Opened ' .. V.huntname)
     cooldown2 = true
-    Citizen.Wait(Config.NazarSetup.hintcooldown)
+    Wait(Config.NazarSetup.hintcooldown)
     cooldown2 = false
   end
 end)
