@@ -104,7 +104,6 @@ end)
 local cooldowns = {}
 RegisterServerEvent('bcc-nazar:CardCooldownCheck', function(shopid, v)
   local _source = source
-  print(shopid)
   if cooldowns[shopid] then --Checks if the player has collected the card yet
     local seconds = Config.CardRespawnTime
     if os.difftime(os.time(), cooldowns[shopid]) >= seconds then
