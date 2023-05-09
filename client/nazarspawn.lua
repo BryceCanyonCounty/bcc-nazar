@@ -1,32 +1,29 @@
---Pulling Essentials
+------------------- Pulling Essentials ----------
 VORPutils = {}
 TriggerEvent("getUtils", function(utils)
     VORPutils = utils
 end)
 BccUtils = exports['bcc-utils'].initiate()
+
+-------------- Variables -------------------
 local blip, createdped, object
 
-
---Thread to set nazars spawn location (this has to be done server side otherwise it would be different for each client)
-Citizen.CreateThread(function()
- TriggerServerEvent('bcc-nazar:locationset')
+------------- Location Setting ---------------
+CreateThread(function()
+    TriggerServerEvent('bcc-nazar:locationset')
 end)
 
---This is the event that when triggered from server will spawn madam nazar for the client
+--------------- Nazar Spawn Setup -------------------
 RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     local audioplay, wagonspawn = false, nspawn.nazarwagonspawncoords
     Nspawn = nspawn.nazarspawncoords
 
-    --Spawning Wagon Setup
     if Config.NazarSetup.nazarswagon then
-        object = CreateObject('mp005_p_collectorwagon01', wagonspawn.x, wagonspawn.y, wagonspawn.z - 1, false, false, false) --creates an object
-        RequestModel(object, true) --requests the object model
-        PlaceObjectOnGroundProperly(object, true) --sets the wagon on ground properly
+        object = CreateObject('mp005_p_collectorwagon01', wagonspawn.x, wagonspawn.y, wagonspawn.z - 1, false, false, false)
+        RequestModel(object, true)
+        PlaceObjectOnGroundProperly(object, true)
     end
 
-    --Spawning Nazar Setup
-    local model = joaat('cs_mp_travellingsaleswoman') --sets the npc model
-    
     if Config.NazarSetup.blip then
         --Pulled from mrterabytes oil fork
         blip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, Nspawn.x, Nspawn.y, Nspawn.z) -- This create a blip with a defualt blip hash we given
@@ -36,8 +33,9 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
         Citizen.InvokeNative(0x9CB1A1623062F402, blip, Config.NazarSetup.BlipName) -- Sets the blip Name
     end
     
-    RequestModel(model) -- requests the varible model
-    if not HasModelLoaded(model) then --checks if its loaded
+    local model = joaat('cs_mp_travellingsaleswoman')
+    RequestModel(model)
+    if not HasModelLoaded(model) then
         RequestModel(model)
     end
     while not HasModelLoaded(model) do
@@ -47,7 +45,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     Citizen.InvokeNative(0x283978A15512B2FE, createdped, true) -- sets ped into random outfit, stops it being invis
     BccUtils.Ped.SetStatic(createdped)
     TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
-    --Loop creation to create text, and open menu
+
     while true do
         Wait(5)
         local playercoord = GetEntityCoords(PlayerPedId())
@@ -77,7 +75,7 @@ RegisterNetEvent('bcc-nazar:pedspawn', function(nspawn)
     end
 end)
 
--- Delete Blips, Peds and wagon when resource stops
+------------- Cleanup ----------------
 AddEventHandler("onResourceStop", function(resource)
     if resource == GetCurrentResourceName() then
         DeletePed(createdped)

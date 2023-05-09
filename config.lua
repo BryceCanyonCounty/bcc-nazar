@@ -34,14 +34,17 @@ Config.TreasureLocations = {
         hintcost = 5, --set to 0 if you dont want to charge the player for getting a hint
         Reward = { --this is the rewards -- you can add as many rewards per chest as you want use the existing rewards as a guide to add more
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'diamond', --this has to be the database name of the item
                 count = 1, --the amount of the item you want it to give
             },
             {
+                displayname = 'Golden Nugget',
                 name = 'gold_nugget',
                 count = 2,
             },
             {
+                displayname = 'Iron',
                 name = 'iron',
                 count = 5,
             },
@@ -53,14 +56,17 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'book',
                 count = 2,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'rollingpaper',
                 count = 5,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'beer',
                 count = 2,
             },
@@ -72,10 +78,12 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'stolenmerch',
                 count = 2,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'pipe',
                 count = 1,
             },
@@ -87,14 +95,17 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'lockpick',
                 count = 1,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'aligatorto',
                 count = 4,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'cigar',
                 count = 2,
             },
@@ -106,18 +117,22 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'heroin',
                 count = 2,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'book',
                 count = 1,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'lockpick',
                 count = 1,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'gold_nugget',
                 count = 2,
             },
@@ -129,10 +144,12 @@ Config.TreasureLocations = {
         hintcost = 10,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'goldbar',
                 count = 1,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'lockpick',
                 count = 1,
             },
@@ -144,10 +161,12 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'gold_nugget',
                 count = 3,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'stolenmerch',
                 count = 1,
             },
@@ -159,14 +178,17 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'goldbar',
                 count = 1,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'stolenmerch',
                 count = 1,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'gold_nugget',
                 count = 2,
             },
@@ -178,10 +200,12 @@ Config.TreasureLocations = {
         hintcost = 5,
         Reward = {
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'gold_nugget',
                 count = 3,
             },
             {
+                displayname = 'Diamond', --the name of the item that the notification will display
                 name = 'aligatorto',
                 count = 2,
             },
@@ -196,11 +220,13 @@ Config.CollectableCards = {
     {
         coords = {x = 1486.19, y = 791.14, z = 99.81}, --coords the card will spawn at
         carditem = 'water', --item to give database name
+        carditemdisplayname = 'Water', --this is the name of the carditem that will show in the items recieved notification
         cardname = 'Collector Card 1', --display name that will be shown in the prompt to pick card up (MAKE SURE THESE ARE UNIQUE NAMES OTHERWISE IT WILL BREAK)
     },
     {
         coords = {x = 1489.69, y = 783.15, z = 99.74}, --coords the card will spawn at
         carditem = 'iron', --item to give database name
+        carditemdisplayname = 'Iron', --this is the name of the carditem that will show in the items recieved notification
         cardname = 'Collector Card 2', --display name that will be shown in the prompt to pick card up (MAKE SURE THESE ARE UNIQUE NAMES OTHERWISE IT WILL BREAK)
     },
 }
@@ -261,7 +287,8 @@ Config.Language = {
     NoMoney = "You do not have enough cash.",
     NoGold = "You do not have enugh gold", -- added by mrtb
     NoChest = "Someone has already looted this chest!",
-    Alreadylooted = "You looted the chest!"
+    Alreadylooted = "You looted the chest!",
+    ChestLooted = 'Items Recieved: '
 }
 
 --[[--------BLIP_COLORS----------
