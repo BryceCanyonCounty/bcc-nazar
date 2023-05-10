@@ -1,13 +1,14 @@
-VORPcore = {} --Pulls vorp core
+-------------------- Pulling Essentials ---------------
+VORPcore = {}
 TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
-StopAll = false --dead check variable
 TriggerEvent("menuapi:getData", function(call)
     MenuData = call
 end)
 
---Input var setup
+-------- Variables ----------------
+StopAll = false
 local myInput = {
     type = "enableinput", -- dont touch
     inputType = "input", -- or text area for sending messages
@@ -23,24 +24,25 @@ local myInput = {
     }
 }
 
---this is used to close the menu while you are on the main menu and hit backspace button
-local inmenu = false --var used to see if you are in the main menu or not
+----------- Closing menu if backspace pressed ----------------------
+local inmenu = false
 AddEventHandler('bcc-nazar:MenuClose', function()
-    while true do --loops will run permantely
-        Wait(10) --waits 10ms prevents crashing
-        if IsControlJustReleased(0, 0x156F7119) then --if backspace is pressed then
-            if inmenu then --if var is true then
-                inmenu = false --resets var
-                MenuData.CloseAll() --closes all menus
+    while inmenu do
+        Wait(10)
+        if IsControlJustReleased(0, 0x156F7119) then
+            if inmenu then
+                inmenu = false
+                MenuData.CloseAll()
             end
         end
     end
 end)
 
-function MainMenu() --when triggered will open the main menu
-    inmenu = true --changes var to true allowing the press of backspace to close the menu
-    TriggerEvent('bcc-nazar:MenuClose') --triggers the event
-    MenuData.CloseAll() --closes all menus
+---------- Main Menu Setup -------------------
+function MainMenu()
+    inmenu = true
+    TriggerEvent('bcc-nazar:MenuClose')
+    MenuData.CloseAll()
     local elements = { --sets the main 3 elements up
         { label = Config.Language.Menu_SubTitle_Buy, value = 'buyitems', desc = '' },
         { label = Config.Language.Menu_SubTitle_Sell, value = 'sellitems', desc = '' },
@@ -48,17 +50,17 @@ function MainMenu() --when triggered will open the main menu
     }
     MenuData.Open('default', GetCurrentResourceName(), 'menuapi', --opens the menu
         {
-            title = Config.Language.Nazar, --sets the title
-            align = 'top-left', --aligns it too left side of screen
-            elements = elements, --sets the elemnts
+            title = Config.Language.Nazar,
+            align = 'top-left',
+            elements = elements,
         },
-        function(data) --creates a function with data as a var
+        function(data)
             if data.current == "backup" then
                 _G[data.trigger]()
             end
             if data.current.value == 'buyitems' then --if option clicked is this then
-                inmenu = false --resets var
-                BuyMenu() --triggers function
+                inmenu = false
+                BuyMenu()
             elseif data.current.value == 'sellitems' then
                 inmenu = false
                 SellMenu()
@@ -69,11 +71,12 @@ function MainMenu() --when triggered will open the main menu
         end)
 end
 
+------------ Buying Menu Setup ---------------------
 function BuyMenu()
     MenuData.CloseAll()
     local elements, elementindex = {}, 1
-    Wait(100) --waits 100ms
-    for k, items in pairs(Config.Shop) do --opens a for loop
+    Wait(100)
+    for k, items in pairs(Config.Shop) do
         elements[elementindex] = { --sets the elemnents to this table
             label = "<img style='max-height:45px;max-width:45px;float: left;text-align: center; margin-top: -5px;' src='nui://vorp_inventory/html/img/items/" ..
             items.itemdbname .. ".png'>" .. items.displayname .. ' - ' .. items.price .. ' ' .. '<span style="color: Yellow;">  ' .. items.currencytype .. '</span>',--sets the label -- added currency color and image added by mrtb
@@ -108,6 +111,7 @@ function BuyMenu()
         end)
 end
 
+------------ Selling Items Menu Setup -----------------
 function SellMenu()
     MenuData.CloseAll()
     local elements, elementindex = {}, 1
@@ -148,6 +152,7 @@ function SellMenu()
         end)
 end
 
+-------------- Hint Menu Setup -----------------
 function HintMenu()
     MenuData.CloseAll()
     local elements, elementindex = {}, 1
@@ -179,7 +184,7 @@ function HintMenu()
         end)
 end
 
---This closes the menu when you stop or restart the resources.
+----------------- Cleanup --------------------
 AddEventHandler("onResourceStop", function(resourceName)
     if resourceName ~= GetCurrentResourceName() then
         return

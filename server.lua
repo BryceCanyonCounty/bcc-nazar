@@ -1,28 +1,29 @@
-local VorpInv = {} -- Pulls and allows the use of VORP Inventory
+--------------------- Pulling Essentials --------------------
+local VorpInv = {}
 VorpInv = exports.vorp_inventory:vorp_inventoryApi()
-local VORPcore = {} --Pulls vorp core
+local VORPcore = {}
 TriggerEvent("getCore", function(core)
   VORPcore = core
 end)
 local BccUtils = exports['bcc-utils'].initiate()
 
---global cooldown system
+------------ Cool Down System -----------------
 local cooldown = false
 RegisterServerEvent('bcc-nazar:menuopen6', function(cost)
   local _source = source
   local Character = VORPcore.getUser(_source).getUsedCharacter
   if not cooldown then
     TriggerClientEvent('bcc-nazar:menuopen4', _source)
-    Character.removeCurrency(0, cost) -- removes a amount of (cost) money(0) [gold would be 1]
+    Character.removeCurrency(0, cost)
     cooldown = true
     Wait(Config.NazarSetup.hintcooldown)
     cooldown = false
   else
-    VORPcore.NotifyBottomRight(_source, Config.Language.NoHintNotify, 4000) --prints this in players screen
+    VORPcore.NotifyBottomRight(_source, Config.Language.NoHintNotify, 4000)
   end
 end)
 
---Handles nazar spawn(this is used so that it only randomizes the coordinates of nazar once for everyone instead of a different coord for each player)
+--------- Nazar Spawn Coords Handler (Done Server Side so its same location for all players) ---------------
 local randomizedcoords, d = 0, 0
 local nspawn
 RegisterServerEvent('bcc-nazar:locationset', function()
@@ -35,39 +36,41 @@ RegisterServerEvent('bcc-nazar:locationset', function()
 end)
 
 
---Selling Items setup
-RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency) --registers a server event
-  local amountcatch = 0
-  local Character = VORPcore.getUser(source).getUsedCharacter --gets the players character
-  local itemcount = VorpInv.getItemCount(source, Iitemname) --checks if you have the item
+---------------------- Selling Items Setup ----------------------
+RegisterServerEvent('bcc-nazar:getplayerdataforsell', function(Iitemname, Pprice, qty, Bcurrency)
+  local amountcatch, _source = 0, source
+  local Character = VORPcore.getUser(_source).getUsedCharacter
+  local itemcount = VorpInv.getItemCount(_source, Iitemname)
   if (Bcurrency == 'cash') then --added by mrtb start
     BcurrencyT = 0
   elseif (Bcurrency == 'gold') then
     BcurrencyT = 1
   end -- added by mrtb edited
-  if itemcount >= tonumber(qty) then --if you have atleast one item then
-    VorpInv.subItem(source, Iitemname, qty) --it removes 1 item
+  if itemcount >= tonumber(qty) then
+    VorpInv.subItem(_source, Iitemname, qty)
     repeat
       Wait(0)
-      Character.addCurrency(BcurrencyT, tonumber(Pprice)) --it gives you the set money
+      Character.addCurrency(BcurrencyT, tonumber(Pprice))
       amountcatch = amountcatch + 1
     until amountcatch >= qty
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items Sold ' .. Iitemname .. ' Amount sold ' .. qty .. ' Sold for ' .. tonumber(Pprice))
   elseif itemcount < tonumber(qty) then
-    VORPcore.NotifyBottomRight(source, Config.Language.NoItem, 4000) --prints this in players screen
+    VORPcore.NotifyBottomRight(_source, Config.Language.NoItem, 4000)
   end
 end)
 
---handles the giving of items whena  chest is opened
+----------- Handles Giving Items When Chest Is Opened ------------
 local cooldown2 = false
-RegisterServerEvent('bcc-nazar:chestopen', function(V) --registers an event
-  local Character = VORPcore.getUser(source).getUsedCharacter --Pulls the character info
+RegisterServerEvent('bcc-nazar:chestopen', function(V)
+  local _source = source
+  local itemsgot = ''
+  local Character = VORPcore.getUser(_source).getUsedCharacter
   if not cooldown2 then
-    for k, v in pairs(V.Reward) do --opens the table
-      VorpInv.addItem(source, v.name, v.count) --adds the items and amounts
+    for k, v in pairs(V.Reward) do
+      VorpInv.addItem(_source, v.name, v.count)
+      itemsgot = itemsgot .. v.displayname .. ','
     end
-    TriggerClientEvent('bcc-nazar:ccdown2', source)
-    VORPcore.NotifyBottomRight(source, Config.Language.Alreadylooted, 4000) --prints this in players screen
+    VORPcore.NotifyRightTip(_source ,Config.Language.ChestLooted .. itemsgot, 4000)
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ChestWebhook, 'chest Opened ' .. V.huntname)
     cooldown2 = true
     Wait(Config.NazarSetup.hintcooldown)
@@ -75,10 +78,11 @@ RegisterServerEvent('bcc-nazar:chestopen', function(V) --registers an event
   end
 end)
 
---this will actually sell the items as it is recieving the item name qty and price
+------------ This will actually sell the items -----------------
 RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, Scurrencyy)
+  local _source = source
   local totalamountmultiplied = 	qty * Priceee --multiplies the qty by the price to get the total amount of cash it should cost
-  local Character = VORPcore.getUser(source).getUsedCharacter --Pulls the character info
+  local Character = VORPcore.getUser(_source).getUsedCharacter
   local currmoney
   if (Scurrencyy == 'cash') then -- added by mrtb start
     ScurrencyT = 0
@@ -88,14 +92,14 @@ RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, 
     currmoney = Character.gold
   end -- added by mrtb end
   if currmoney >= totalamountmultiplied then
-    VorpInv.addItem(source, Itemnamee, qty)
+    VorpInv.addItem(_source, Itemnamee, qty)
     Character.removeCurrency(ScurrencyT, totalamountmultiplied)
     VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ShopWebhook, 'Items bought ' .. Itemnamee .. ' Item price ' .. tostring(Priceee) .. ' Amount bought ' .. tostring(qty))
   elseif currmoney < totalamountmultiplied then
     if (Scurrencyy == 'cash') then --- added by mrtb start
-      VORPcore.NotifyBottomRight(source, Config.Language.NoMoney, 4000) --prints this in players screen
+      VORPcore.NotifyBottomRight(_source, Config.Language.NoMoney, 4000)
     elseif (Scurrencyy == 'gold') then
-      VORPcore.NotifyBottomRight(source, Config.Language.NoGold, 4000) --prints this in players screen
+      VORPcore.NotifyBottomRight(_source, Config.Language.NoGold, 4000)
     end -- added by mrtb end
   end
 end)
@@ -117,9 +121,10 @@ RegisterServerEvent('bcc-nazar:CardCooldownCheck', function(shopid, v)
 end)
 
 ---------- Card Add Items -----------
-RegisterServerEvent('bcc-nazar:CardCollectorAddItems', function(item)
+RegisterServerEvent('bcc-nazar:CardCollectorAddItems', function(item, dispname)
   local _source = source
   VorpInv.addItem(_source, item, 1)
+  VORPcore.NotifyRightTip(_source, Config.Language.ChestLooted .. ' ' .. dispname, 4000)
 end)
 
 --This handles the version check
