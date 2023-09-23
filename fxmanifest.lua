@@ -25,7 +25,7 @@ version '1.2.0'
 dependency {
     'vorp_core',
     'vorp_inventory',
-    'menuapi',
+    'vorp_menu',
     'vorp_utils',
     'bcc-utils',
     'vorp_character',
