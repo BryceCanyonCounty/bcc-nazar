@@ -216,20 +216,6 @@ Config.TreasureLocations = {
 ------ Card Setup -----
 Config.CardsEnable = true --if true collectable cards will be enabled
 Config.CardRespawnTime = 30000 --how often in ms the cards will respawn
-Config.CollectableCards = {
-    {
-        coords = {x = 1486.19, y = 791.14, z = 99.81}, --coords the card will spawn at
-        carditem = 'water', --item to give database name
-        carditemdisplayname = 'Water', --this is the name of the carditem that will show in the items recieved notification
-        cardname = 'Collector Card 1', --display name that will be shown in the prompt to pick card up (MAKE SURE THESE ARE UNIQUE NAMES OTHERWISE IT WILL BREAK)
-    },
-    {
-        coords = {x = 1489.69, y = 783.15, z = 99.74}, --coords the card will spawn at
-        carditem = 'iron', --item to give database name
-        carditemdisplayname = 'Iron', --this is the name of the carditem that will show in the items recieved notification
-        cardname = 'Collector Card 2', --display name that will be shown in the prompt to pick card up (MAKE SURE THESE ARE UNIQUE NAMES OTHERWISE IT WILL BREAK)
-    },
-}
 
 --This is the shop configuration
 --You can add as many items to sale as you want just copy the line paste it and change it to your new item
@@ -288,7 +274,10 @@ Config.Language = {
     NoGold = "You do not have enugh gold", -- added by mrtb
     NoChest = "Someone has already looted this chest!",
     Alreadylooted = "You looted the chest!",
-    ChestLooted = 'Items Recieved: '
+    ChestLooted = 'Items Recieved: ',
+    Pickup = "Pick up Card",
+    CardCollected = "Card Collected",
+    CantCollectCard = "This card has been grabbed by someone recently and you must wait"
 }
 
 --[[--------BLIP_COLORS----------
