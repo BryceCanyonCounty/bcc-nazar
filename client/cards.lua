@@ -38,6 +38,11 @@ if ConfigCards.Enabled then
                         DeleteEntity(propEntity)
                         v.spawned = false
                     end
+                   if cardmade then
+                       if IsControlJustPressed(0, 0x308588E6) then
+                           ClearPedTasks(PlayerPedId())
+                       end
+                   end
                 end
             end
         end
@@ -49,6 +54,7 @@ RegisterNetEvent('bcc-nazar:UseCard', function(hash)
     Citizen.InvokeNative(0xCB9401F918CB0F75, PlayerPedId(), "GENERIC_DOCUMENT_FLIP_AVAILABLE", true, -1)
     TaskItemInteraction_2(PlayerPedId(), GetHashKey(hash), propEntity, GetHashKey('PrimaryItem'),
         GetHashKey('CIGARETTE_CARD_W6-5_H10-7_SINGLE_INTRO'), 1, 0, -1.0)
+                  cardmade = true
 end)
 
 RegisterNetEvent('bcc-nazar:ClientCardCheck', function(check)
