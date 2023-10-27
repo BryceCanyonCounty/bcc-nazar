@@ -104,27 +104,44 @@ RegisterServerEvent('bcc-nazar:buyfromnazar', function(qty, Itemnamee, Priceee, 
   end
 end)
 
------------ Card Collection Cooldown ---------------------
-local cooldowns = {}
-RegisterServerEvent('bcc-nazar:CardCooldownCheck', function(shopid, v)
+
+RegisterServerEvent("bcc-nazar:GetCard", function(cardname, hash)
   local _source = source
-  if cooldowns[shopid] then --Checks if the player has collected the card yet
-    local seconds = Config.CardRespawnTime
-    if os.difftime(os.time(), cooldowns[shopid]) >= seconds then
-      cooldowns[shopid] = os.time() --Update the cooldown with the new enacted time.
-      TriggerClientEvent("bcc-nazar:CardCollectorMain", _source, v)
+      local canCarry = VORPInv.canCarryItem(_source, ConfigCards.Item, 1)
+  if canCarry then
+    local space = VORPInv.canCarryItems(_source, ConfigCards.Item)
+    if space then
+      VORPcore.NotifyLeft(_source,Config.Language.CardCollected, Config.Language.YouCollected, "INVENTORY_ITEMS",
+        "document_cig_card_act", 4000, "Color_white")
+      VORP_INV.addItem(_source, ConfigCards.Item, 1, { description = cardname, hash = hash })
+    else
+      VORPcore.NotifyRightTip(_source, Config.Language.InvFull, 4000)
     end
   else
-    cooldowns[shopid] = os.time()
-    TriggerClientEvent("bcc-nazar:CardCollectorMain", _source, v)
+    VORPcore.NotifyRightTip(_source, Config.Language.StackFull, 4000)
   end
 end)
 
----------- Card Add Items -----------
-RegisterServerEvent('bcc-nazar:CardCollectorAddItems', function(item, dispname)
-  local _source = source
-  VorpInv.addItem(_source, item, 1)
-  VORPcore.NotifyRightTip(_source, Config.Language.ChestLooted .. ' ' .. dispname, 4000)
+local Cooldowns = {} --Card Cooldown
+RegisterServerEvent('bcc-nazar:CardCooldownSV', function(card)
+    local _source = source
+    local shopid = card.hash
+    if Cooldowns[shopid] then
+        if os.difftime(os.time(), Cooldowns[shopid]) >= 3600 then
+          print('we are here')
+          Cooldowns[shopid] = os.time()
+          VorpCore.NotifyRightTip(_source, "got it", 4000)
+          TriggerClientEvent('nate_commands:ClientCardCheck', _source, false)
+        else
+          VorpCore.NotifyRightTip(_source, "TooSoon", 4000)
+          TriggerClientEvent('nate_commands:ClientCardCheck', _source, true)
+        end
+    else
+      Cooldowns[shopid] = os.time()           --Store the current time
+      VorpCore.NotifyRightTip(_source, "got it", 4000)
+                TriggerClientEvent('nate_commands:ClientCardCheck', _source, false)
+
+    end
 end)
 
 --This handles the version check
