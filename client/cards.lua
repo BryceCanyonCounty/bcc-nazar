@@ -25,11 +25,11 @@ CreateThread(function()
                         if not CardCheck then
                             TaskPlayAnim(PlayerPedId(), "mech_inspection@cigarette_card@ground", "enter", 5.0, 5.0, 3500,
                                 01, 0)
-                            VORPcore.NotifyLeft("Config,Language.CardCollected", "Config,Language.CardCollected", "INVENTORY_ITEMS",
+                            VORPcore.NotifyLeft("Config.Language.CardCollected", "Config.Language.CardCollected", "INVENTORY_ITEMS",
                                 "document_cig_card_act", 4000, "Color_white")
                             TriggerServerEvent('bcc-nazar:GetCard', v.name .. ' ' .. v.number, v.hash)
                         else
-                            VORPcore.NotifyRightTip("Config,Language.CantCollectCard", 4000)
+                            VORPcore.NotifyRightTip("Config.Language.CantCollectCard", 4000)
                         end
                     end
                 end
