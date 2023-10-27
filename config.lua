@@ -213,10 +213,6 @@ Config.TreasureLocations = {
     },
 }
 
------- Card Setup -----
-Config.CardsEnable = true --if true collectable cards will be enabled
-Config.CardRespawnTime = 30000 --how often in ms the cards will respawn
-
 --This is the shop configuration
 --You can add as many items to sale as you want just copy the line paste it and change it to your new item
 --itemdbname is the database name of the item and displayname is what will show in the menu with nazar
