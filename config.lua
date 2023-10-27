@@ -271,10 +271,13 @@ Config.Language = {
     NoChest = "Someone has already looted this chest!",
     Alreadylooted = "You looted the chest!",
     ChestLooted = 'Items Recieved: ',
+    
     Pickup = "Pick up Card",
     YouCollected = "You have collected a card",
     CardCollected = "Card Collected",
-    CantCollectCard = "This card has been grabbed by someone recently and you must wait"
+    CantCollectCard = "This card has been grabbed by someone recently and you must wait",
+    StackFull = "You can't carry anymore of this item",
+    InvFull = "You can't carry anymore"
 }
 
 --[[--------BLIP_COLORS----------
