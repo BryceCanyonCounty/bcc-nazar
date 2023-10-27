@@ -8,7 +8,7 @@ CreateThread(function()
         Wait(5)
         local coords, cardcoords = GetEntityCoords(PlayerPedId()), nil
         for k, v in pairs(ConfigCards.Cards) do
-            if GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true) < 5 then
+            if GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true) < 15 then
                 if not cardmade then
                     propEntity = CreateObject(GetHashKey(v.hash), v.coords.x, v.coords.y, v.coords.z, false, true, false,
                         false, true)
@@ -17,7 +17,7 @@ CreateThread(function()
                     FreezeEntityPosition(propEntity, true)
                 end
                 cardcoords = GetEntityCoords(propEntity)
-                if GetDistanceBetweenCoords(coords, cardcoords, false) < 4.5 then
+                if GetDistanceBetweenCoords(coords, cardcoords, false) < 2.0 then
                     PromptGroup:ShowGroup(Config.Language.Pickup)
                     if firstprompt:HasCompleted() then
                         TriggerServerEvent('bcc-nazar:CardCooldownSV', v)
