@@ -272,6 +272,7 @@ Config.Language = {
     Alreadylooted = "You looted the chest!",
     ChestLooted = 'Items Recieved: ',
     Pickup = "Pick up Card",
+    YouCollected = "You have collected a card",
     CardCollected = "Card Collected",
     CantCollectCard = "This card has been grabbed by someone recently and you must wait"
 }
