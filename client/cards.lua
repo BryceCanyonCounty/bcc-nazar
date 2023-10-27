@@ -1,46 +1,52 @@
 local cardmade, CardCheck = false, false
 
-CreateThread(function()
-    local PromptGroup = VORPutils.Prompts:SetupPromptGroup()
-    local firstprompt = PromptGroup:RegisterPrompt(Config.Language.Pickup, 0x760A9C6F, 1, 1, true, 'hold',
-        { timedeventhash = "MEDIUM_TIMED_EVENT" })
-    while true do
-        Wait(5)
-        local coords, cardcoords = GetEntityCoords(PlayerPedId()), nil
-        for k, v in pairs(ConfigCards.Cards) do
-            if GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true) < 15 then
-                if not cardmade then
-                    propEntity = CreateObject(GetHashKey(v.hash), v.coords.x, v.coords.y, v.coords.z, false, true, false,
-                        false, true)
-                    Citizen.InvokeNative(0x9587913B9E772D29, propEntity, true)
-                    cardmade = true
-                    FreezeEntityPosition(propEntity, true)
-                end
-                cardcoords = GetEntityCoords(propEntity)
-                if GetDistanceBetweenCoords(coords, cardcoords, false) < 2.0 then
-                    PromptGroup:ShowGroup(Config.Language.Pickup)
-                    if firstprompt:HasCompleted() then
-                        TriggerServerEvent('bcc-nazar:CardCooldownSV', v)
-                        Wait(250)
-                        if not CardCheck then
-                            TaskPlayAnim(PlayerPedId(), "mech_inspection@cigarette_card@ground", "enter", 5.0, 5.0, 3500,
-                                01, 0)
-                            VORPcore.NotifyLeft("Config.Language.CardCollected", "Config.Language.CardCollected", "INVENTORY_ITEMS",
-                                "document_cig_card_act", 4000, "Color_white")
-                            TriggerServerEvent('bcc-nazar:GetCard', v.name .. ' ' .. v.number, v.hash)
-                        else
-                            VORPcore.NotifyRightTip("Config.Language.CantCollectCard", 4000)
+if CardsConfig.Enabled then
+    CreateThread(function()
+        local PromptGroup = VORPutils.Prompts:SetupPromptGroup()
+        local firstprompt = PromptGroup:RegisterPrompt(Config.Language.Pickup, 0x760A9C6F, 1, 1, true, 'hold',
+            { timedeventhash = "MEDIUM_TIMED_EVENT" })
+        for k, v in pairs(Config.Cards) do
+            v.spawned = false
+        end
+        while true do
+            Wait(5)
+            local coords, cardcoords = GetEntityCoords(PlayerPedId()), nil
+            for k, v in pairs(Config.Cards) do
+                if GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true) < 15 then
+                    if not v.spawned then
+                        propEntity = CreateObject(GetHashKey(v.hash), v.coords.x, v.coords.y, v.coords.z, false, true, false,
+                            false, true)
+                        Citizen.InvokeNative(0x9587913B9E772D29, propEntity, true)
+                        v.spawned = true
+                        FreezeEntityPosition(propEntity, true)
+                    end
+                    cardcoords = GetEntityCoords(propEntity)
+                    if GetDistanceBetweenCoords(coords, cardcoords, false) < 2.5 then
+                        PromptGroup:ShowGroup(Config.Language.Pickup)
+                        if firstprompt:HasCompleted() then
+                            TriggerServerEvent('bcc-nazar:CardCooldownSV', v)
+                            Wait(250)
+                            if not CardCheck then
+                                TaskPlayAnim(PlayerPedId(), "mech_inspection@cigarette_card@ground", "enter", 5.0, 5.0, 3500,
+                                    01, 0)
+                                VORPcore.NotifyLeft("Config.Language.CardCollected", "Config.Language.YouCollected", "INVENTORY_ITEMS",
+                                    "document_cig_card_act", 4000, "Color_white")
+                                TriggerServerEvent('bcc-nazar:GetCard', v.name .. ' ' .. v.number, v.hash)
+                            else
+                                VORPcore.NotifyRightTip("Config.Language.CantCollectCard", 4000)
+                            end
                         end
                     end
+                else
+                    if v.spawned then
+                        DeleteEntity(propEntity)
+                        v.spawned = false
+                    end
                 end
-            else
-                cardmade = false
-                DeleteEntity(propEntity)
             end
         end
-    end
-end)
-
+    end)
+end
 RegisterNetEvent('bcc-nazar:UseCard', function(hash)
     local coords = GetEntityCoords(PlayerPedId())
     local propEntity = CreateObject(GetHashKey(hash), coords, false, true, false, false, true)
