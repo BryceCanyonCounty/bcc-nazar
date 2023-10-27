@@ -1,5 +1,5 @@
 ConfigCards = {}
-
+ConfigCards.Item = "CollectorCard"
 ConfigCards.Cards = {
     {
         name = "Flora Of North America",
