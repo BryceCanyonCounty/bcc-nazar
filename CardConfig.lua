@@ -1,5 +1,7 @@
 ConfigCards = {}
 ConfigCards.Item = "CollectorCard"
+Config.EnableCards = true
+Config.CardTime = 3600 -- = 1 hour, this is time in seconds before card can be collected again, you can also do 60 * 60 for example
 ConfigCards.Cards = {
     {
         name = "Flora Of North America",
