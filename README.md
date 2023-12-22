@@ -31,7 +31,6 @@
 - [vorp_inventory](https://github.com/VORPCORE/vorp_inventory-lua)
 - [vorp_inputs](https://github.com/VORPCORE/vorp_inputs-lua)
 - [vorp_menu](https://github.com/VORPCORE/vorp_menu)
-- [vorp_character](https://github.com/VORPCORE/vorp_character-lua)
 - [bcc-utils](https://github.com/BryceCanyonCounty/bcc-utils)
 
 ## Installation Steps
