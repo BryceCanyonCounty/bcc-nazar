@@ -32,6 +32,5 @@ dependency {
     'vorp_inventory',
     'vorp_menu',
     'bcc-utils',
-    'vorp_character',
     'vorp_inputs'
 }
