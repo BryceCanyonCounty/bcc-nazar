@@ -11,7 +11,10 @@ server_scripts {
 
 shared_scripts {
     'config.lua',
-    'CardConfig.lua'
+    'CardConfig.lua',
+    'locale.lua',
+    'languages/*.lua'
+    
 }
 
 
@@ -22,14 +25,12 @@ client_scripts {
     '/client/cards.lua'
 }
 
-version '1.3.0'
+version '1.4.0'
 
 dependency {
     'vorp_core',
     'vorp_inventory',
     'vorp_menu',
-    'vorp_utils',
     'bcc-utils',
-    'vorp_character',
     'vorp_inputs'
 }

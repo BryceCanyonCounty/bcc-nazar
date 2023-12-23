@@ -15,7 +15,7 @@
 - Version check to help you keep up to date on new features and bug fixes!
 - Option to set the type of currency for items in nazars shop!
 - Option to enable her music from RDO to play when near!
-- Card Collecting Added! (Spawns cards around the map at set coords, each player can collect each card once per restart, when collected it will give them the card item set in the config)
+- Card Collecting Added! (Spawns cards around the map at set coords. Use a card in inventory to view in your hand.)
 
 ## How it works
 - It creates Madam Nazar in your RedM server! Walk upto her and read the text that shows. Hit 'G' on your keyboard to open up her menu. From there you can choose to buy a hint for a treasure chest, sell items to her, or buy items from her.
@@ -27,17 +27,19 @@
 - Gives your RedM server more depth, and content to do
 
 ## Requirements
-- VORP Core
-- VORP Utils
-- VORP Inventory
-- VORP Inputs
-- Menu Api
-- VORP Character
-- bcc-utils
+- [vorp_core](https://github.com/VORPCORE/vorp-core-lua)
+- [vorp_inventory](https://github.com/VORPCORE/vorp_inventory-lua)
+- [vorp_inputs](https://github.com/VORPCORE/vorp_inputs-lua)
+- [vorp_menu](https://github.com/VORPCORE/vorp_menu)
+- [bcc-utils](https://github.com/BryceCanyonCounty/bcc-utils)
 
 ## Installation Steps
-- Add the file to your resource file
-- Add ensure 'bcc-nazar' to your resources.cfg
+- Make sure dependencies are installed and updated
+- Add `bcc-nazar` folder to your resources folder
+- Add `ensure bcc-nazar` to your resources.cfg
+- Run the included database file `nazar.sql`
+- Add `collector_card` image to: `...\vorp_inventory\html\img`
+- Restart server
 
 ## Side notes
 - If you have any suggestions please be sure to let me know
