@@ -87,7 +87,7 @@ function BuyMenu()
             local price = data.current.info.price
             local currencyType = data.current.info.currencytype -- Get the currencytype from config.shop added by mrtb
             TriggerEvent("vorpinputs:advancedInput", json.encode(myInput), function(result)
-                local qty = tonumber(result)
+                local qty = tonumber(result) or 0
                 if qty >= 1 then
                     TriggerServerEvent('bcc-nazar:BuyFromNazar', qty, itemName, price, currencyType)
                     menu.close()
