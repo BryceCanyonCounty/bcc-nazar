@@ -11,12 +11,16 @@ if ConfigCards.Enabled then
         local current_ptfx_handle_id = false
 
         while true do
-            Wait(0)
-            local sleep = true
+            local sleep = 1000
+            local player = PlayerId()
+            local playerPed = PlayerPedId()
+            if IsEntityDead(playerPed) then
+                goto continue
+            end
             for card, cardCfg in pairs(ConfigCards.Cards) do
-                local distance = #(GetEntityCoords(PlayerPedId()) - cardCfg.coords)
+                local distance = #(GetEntityCoords(playerPed) - cardCfg.coords)
                 if distance <= 15 then
-                    sleep = false
+                    sleep = 0
                     if not cardCfg.propEntity then
                         SpawnCard(card)
                     end
@@ -25,9 +29,9 @@ if ConfigCards.Enabled then
                         PromptSetActiveGroupThisFrame(CardGroup, promptText)
                         if Citizen.InvokeNative(0xE0F65F0640EF0617, CardPrompt) then -- PromptHasHoldModeCompleted
                             local onCooldown = VORPcore.Callback.TriggerAwait('bcc-nazar:CardCooldown', cardCfg.model)
-                            if Citizen.InvokeNative(0x45AB66D02B601FA7, PlayerId()) then
-                                Citizen.InvokeNative(0x64FF4BF9AF59E139, PlayerId(), true) -- _SECONDARY_SPECIAL_ABILITY_SET_DISABLED
-                                Citizen.InvokeNative(0xC0B21F235C02139C, PlayerId())       -- _SPECIAL_ABILITY_SET_EAGLE_EYE_DISABLED
+                            if Citizen.InvokeNative(0x45AB66D02B601FA7, player) then
+                                Citizen.InvokeNative(0x64FF4BF9AF59E139, player, true) -- _SECONDARY_SPECIAL_ABILITY_SET_DISABLED
+                                Citizen.InvokeNative(0xC0B21F235C02139C, player)       -- _SPECIAL_ABILITY_SET_EAGLE_EYE_DISABLED
                             end
 
                             if not onCooldown then
@@ -39,7 +43,7 @@ if ConfigCards.Enabled then
                         end
                     end
 
-                    if Citizen.InvokeNative(0x45AB66D02B601FA7, PlayerId()) and ConfigCards.ptfx.enabled then
+                    if Citizen.InvokeNative(0x45AB66D02B601FA7, player) and ConfigCards.ptfx.enabled then
                         -- Eagle Eyes : ON
                         if not is_particle_effect_active then
                             if not Citizen.InvokeNative(0x65BB72F29138F5D6, GetHashKey(ConfigCards.ptfx.dict)) then                         -- HasNamedPtfxAssetLoaded
@@ -80,15 +84,14 @@ if ConfigCards.Enabled then
                     end
                     if CardMade then
                         if IsControlJustPressed(0, 0x308588E6) then -- INPUT_GAME_MENU_CANCEL / ESC - BACKSPACE
-                            ClearPedTasks(PlayerPedId())
+                            ClearPedTasks(playerPed)
                             CardMade = false
                         end
                     end
                 end
             end
-            if sleep then
-                Wait(1000)
-            end
+            ::continue::
+            Wait(sleep)
         end
     end)
 end
@@ -115,10 +118,9 @@ function SpawnCard(card)
 end
 
 function StartCardPrompt()
-    local str = CreateVarString(10, 'LITERAL_STRING', _U('Pickup'))
     CardPrompt = PromptRegisterBegin()
     PromptSetControlAction(CardPrompt, Config.keys.collect) -- [G]
-    PromptSetText(CardPrompt, str)
+    PromptSetText(CardPrompt, CreateVarString(10, 'LITERAL_STRING', _U('Pickup')))
     PromptSetVisible(CardPrompt, true)
     PromptSetEnabled(CardPrompt, true)
     PromptSetHoldMode(CardPrompt, 2000)

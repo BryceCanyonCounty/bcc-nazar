@@ -25,7 +25,7 @@ client_scripts {
     '/client/cards.lua'
 }
 
-version '1.4.0'
+version '1.4.1'
 
 dependency {
     'vorp_core',

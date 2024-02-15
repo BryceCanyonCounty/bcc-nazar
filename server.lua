@@ -12,7 +12,7 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(cost)
             Character.removeCurrency(0, cost)
             TriggerClientEvent('bcc-nazar:OpenChest', _source)
         else
-            VORPcore.NotifyRightTip(src, _U('NoMoney'), 4000)
+            VORPcore.NotifyRightTip(_source, _U('NoMoney'), 4000)
             return
         end
         HintCooldown = true
