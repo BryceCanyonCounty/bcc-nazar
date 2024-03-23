@@ -10,10 +10,11 @@ Config.keys = {
     chest   = 0x760A9C6F, -- [G]
 }
 -----------------------------------------------------
-
---webhooks place your webhook url between the two '
-ChestWebhook = '' --will display when someone opens a chest who did it what items they got what chest etc
-ShopWebhook = '' --this is what will display when someone sells or buys from nazar
+--will display when someone opens a chest who did it what items they got what chest etc
+--this is what will display when someone sells or buys from nazar
+Config.Webhook = ''  --webhooks place your webhook url between the two
+Config.WebhookTitle = 'BCC-Nazar'
+Config.WebhookAvatar = ''
 -----------------------------------------------------
 
 --This is the nazar configuration
