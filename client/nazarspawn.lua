@@ -38,6 +38,9 @@ RegisterNetEvent('bcc-nazar:PedSpawn', function(nspawn)
     Citizen.InvokeNative(0x283978A15512B2FE, createdped, true) -- sets ped into random outfit, stops it being invis
     BccUtils.Ped.SetStatic(createdped)
     TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
+    NazarPromptGroup = BccUtils.Prompts:SetupPromptGroup()
+	
+	madamNazarPrompt = NazarPromptGroup:RegisterPrompt(_U('TalkToNPCText'), Config.keys.nazar, 1, 1, true, 'click', {})
 
     while true do
         Wait(0)
@@ -60,8 +63,9 @@ RegisterNetEvent('bcc-nazar:PedSpawn', function(nspawn)
             end
         end
         if distance <= 2 then
-            BccUtils.Misc.DrawText3D(Nspawn.x, Nspawn.y, Nspawn.z, _U('TalkToNPCText'))
-            if IsControlJustReleased(0, Config.keys.nazar) then -- [G]
+            NazarPromptGroup:ShowGroup(_U('Nazar'))
+
+            if madamNazarPrompt:HasCompleted() then
                 MainMenu() --opens the menu
                 DisplayRadar(false)
             end
