@@ -38,9 +38,11 @@ RegisterNetEvent('bcc-nazar:PedSpawn', function(nspawn)
     Citizen.InvokeNative(0x283978A15512B2FE, createdped, true) -- sets ped into random outfit, stops it being invis
     BccUtils.Ped.SetStatic(createdped)
     TaskStartScenarioInPlace(createdped, joaat("WORLD_HUMAN_SMOKE_NAZAR"), -1)
-    NazarPromptGroup = BccUtils.Prompts:SetupPromptGroup()
+
+    -- Prompts
+    local NazarPromptGroup = BccUtils.Prompts:SetupPromptGroup()
 	
-	madamNazarPrompt = NazarPromptGroup:RegisterPrompt(_U('TalkToNPCText'), Config.keys.nazar, 1, 1, true, 'click', {})
+	local madamNazarPrompt = NazarPromptGroup:RegisterPrompt(_U('TalkToNPCText'), Config.keys.nazar, 1, 1, true, 'click', {})
 
     while true do
         Wait(0)
