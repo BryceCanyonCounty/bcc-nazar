@@ -2,6 +2,8 @@
 local VORPcore = exports.vorp_core:GetCore()
 local BccUtils = exports['bcc-utils'].initiate()
 
+local discord = BccUtils.Discord.setup(Config.Webhook, Config.WebhookTitle, Config.WebhookAvatar)
+
 ------------ Hint Management -----------------
 local HintCooldown = false
 RegisterServerEvent('bcc-nazar:BuyHint', function(cost)
@@ -53,8 +55,7 @@ RegisterServerEvent('bcc-nazar:GetPlayerDataForSell', function(qty, itemName, pr
         Character.addCurrency(currency, tonumber(price))
         amountCatch = amountCatch + 1
         until amountCatch >= qty
-        VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier,
-            ShopWebhook, 'Items Sold ' .. itemName .. ' Amount sold ' .. qty .. ' Sold for ' .. tonumber(price))
+        discord:sendMessage("Name: " .. Character.firstname .. " " .. Character.lastname .. "\nIdentifier: " .. Character.identifier .. '\nItems Sold: ' .. itemName .. '\nAmount sold: ' .. qty .. '\nSold for: ' .. tonumber(price))
     elseif itemCount < tonumber(qty) then
         VORPcore.NotifyBottomRight(_source, _U('NoItem'), 4000)
     end
@@ -72,7 +73,7 @@ RegisterServerEvent('bcc-nazar:GetRewards', function(V)
             items = items .. v.displayname .. ','
         end
         VORPcore.NotifyRightTip(_source, _U('ChestLooted') .. items, 4000)
-        VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier, ChestWebhook, 'chest Opened ' .. V.huntname)
+        discord:sendMessage("Name: " .. Character.firstname .. " " .. Character.lastname .. "\nIdentifier: " .. Character.identifier .. '\nChest Opened: ' .. V.huntname.. "\nRewards: " .. items)
         ChestCooldown = true
         Wait(Config.NazarSetup.hintCooldown)
         ChestCooldown = false
@@ -93,8 +94,7 @@ RegisterServerEvent('bcc-nazar:BuyFromNazar', function(qty, itemName, price, cur
     if currmoney >= totalAmount then
         exports.vorp_inventory:addItem(_source, itemName, qty)
         Character.removeCurrency(currency, totalAmount)
-        VORPcore.AddWebhook(Character.firstname .. " " .. Character.lastname .. " " .. Character.identifier,
-            ShopWebhook, 'Items bought ' .. itemName .. ' Item price ' .. tostring(price) .. ' Amount bought ' .. tostring(qty))
+        discord:sendMessage("Name: " .. Character.firstname .. " " .. Character.lastname .. "\nIdentifier: " .. Character.identifier .. '\nItems bought: ' .. itemName .. '\nItem price: ' .. tostring(price) .. '\nAmount bought: ' .. tostring(qty))
     elseif currmoney < totalAmount then
         if (currencyType == 'cash') then --- added by mrtb start
             VORPcore.NotifyBottomRight(_source, _U('NoMoney'), 4000)
