@@ -179,7 +179,6 @@ VORPcore.Callback.Register('bcc-nazar:CardCooldown', function(source, cb, cardId
     end
 end)
 
-
 ----------------------------------CARD SET UPDATE-----------------------------------------
 
 local function GetCardsDataFromSet(setId)
@@ -243,7 +242,6 @@ AddEventHandler("vorp_inventory:Server:OnItemCreated",function(data, src)
     if data.name ~= ConfigCards.SetItem and next(data.metadata) ~= nil then
         return
     end
-    
     exports.vorp_inventory:setItemMetadata(src, data.id, {description = data.desc.."<br>Empty Box", setId = 0}, 1)
 end)
 

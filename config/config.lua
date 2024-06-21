@@ -10,7 +10,7 @@ Config.keys = {
     chest   = 0x760A9C6F, -- [G]
 }
 -----------------------------------------------------
-Config.UseVORPMenu = true
+Config.UseVORPMenu = false -- true | Use VORPmenu , false | Use Feather Menu
 -----------------------------------------------------
 --will display when someone opens a chest who did it what items they got what chest etc
 --this is what will display when someone sells or buys from nazar
