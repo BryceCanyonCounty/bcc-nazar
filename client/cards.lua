@@ -20,7 +20,7 @@ if ConfigCards.Enabled then
             for card, cardCfg in pairs(ConfigCards.Cards) do
                 local distance = #(GetEntityCoords(playerPed) - cardCfg.coords)
                 if distance <= 15 then
-                    sleep = 0
+                    sleep = 1
                     if not cardCfg.propEntity then
                         SpawnCard(card)
                     end
@@ -82,12 +82,14 @@ if ConfigCards.Enabled then
                         DeleteEntity(cardCfg.propEntity)
                         cardCfg.propEntity = nil
                     end
-                    if CardMade then
-                        if IsControlJustPressed(0, 0x308588E6) then -- INPUT_GAME_MENU_CANCEL / ESC - BACKSPACE
-                            ClearPedTasks(playerPed)
-                            CardMade = false
-                        end
-                    end
+                end
+            end
+            -- Took it out of for loop to allow card inspect to be closed when near any other prompts too (currently if there's other prompt active then user can't put away card and gets stucked)
+            if CardMade then
+                sleep = 1
+                if IsControlJustPressed(0, 0x308588E6) then -- INPUT_GAME_MENU_CANCEL / ESC - BACKSPACE
+                    ClearPedTasks(playerPed)
+                    CardMade = false
                 end
             end
             ::continue::

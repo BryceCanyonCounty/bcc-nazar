@@ -4,6 +4,9 @@ BccUtils = exports['bcc-utils'].initiate()
 -------------- Variables -------------------
 local blip, createdped, object
 
+-- Make it usable and change after every 30mins instead of every prompt press
+RandomQuoteIndex = 0
+
 ------------- Location Setting ---------------
 CreateThread(function()
     TriggerServerEvent('bcc-nazar:LocationSet')
@@ -45,7 +48,7 @@ RegisterNetEvent('bcc-nazar:PedSpawn', function(nspawn)
 	local madamNazarPrompt = NazarPromptGroup:RegisterPrompt(_U('TalkToNPCText'), Config.keys.nazar, 1, 1, true, 'click', {})
 
     while true do
-        Wait(0)
+        Wait(1) -- Wait for next frame
         local sleep = true
         local distance = #(GetEntityCoords(PlayerPedId()) - vector3(Nspawn.x, Nspawn.y, Nspawn.z))
         if distance <= 10 then
@@ -68,8 +71,8 @@ RegisterNetEvent('bcc-nazar:PedSpawn', function(nspawn)
             NazarPromptGroup:ShowGroup(_U('Nazar'))
 
             if madamNazarPrompt:HasCompleted() then
-                MainMenu() --opens the menu
-                DisplayRadar(false)
+                RandomQuoteIndex = math.random(1, #Config.NazarSetup.randomQuotes)
+                OpenNazarMenu() --opens the menu
             end
         end
         if sleep then
