@@ -239,10 +239,9 @@ end)
 
 -- Set metadata for card box as setId = 0
 AddEventHandler("vorp_inventory:Server:OnItemCreated",function(data, src)
-    if data.name ~= ConfigCards.SetItem and next(data.metadata) ~= nil then
-        return
+    if data.name == ConfigCards.SetItem and next(data.metadata) == nil then
+        exports.vorp_inventory:setItemMetadata(src, data.id, {description = data.desc.."<br>Empty Box", setId = 0}, 1)      
     end
-    exports.vorp_inventory:setItemMetadata(src, data.id, {description = data.desc.."<br>Empty Box", setId = 0}, 1)
 end)
 
 exports.vorp_inventory:registerUsableItem(ConfigCards.SetItem, function(data)
@@ -283,4 +282,8 @@ exports.vorp_inventory:registerUsableItem(ConfigCards.SetItem, function(data)
             print('^1 Failed to Change Metadata after Unpack Cards ^7 Item :', item.mainid)
         end
     end
+end)
+
+CreateThread(function()
+    print('^1RESTARTED SCRIPT^7')
 end)
