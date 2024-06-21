@@ -28,6 +28,7 @@
 - Added a check to only deduct money if item is added to player inv and vice-versa for sell
 - Removed deprecated export `canCarryItems` as `canCarryItem` now checks for both item and stack limit.
 - Added feature to pack cards of same type in a box (can unpack too)
+- ### Please make sure to add "collector_card_box" item to db (provided in nazar.sql)
 
 ## How it works
 
