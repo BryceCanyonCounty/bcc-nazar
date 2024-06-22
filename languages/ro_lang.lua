@@ -18,11 +18,18 @@ Locales["ro_lang"] = {
     NoItem = "Nu ai acest obiect.",
     NoMoney = "Nu ai destui bani.",
     NoGold = "Nu ai destul aur", -- adaugat de mrtb
+    NoCurrency = "Nu ai destul moneda",
     ChestLooted = 'Obiecte primite: ',
     Pickup = "Colecteaza",
     YouCollected = "Ai colectat o carte",
     CardCollected = "Carte colectata",
     CantCollectCard = "Te rog asteapta, cineva a colectat recent aceasta carte",
     StackFull = "Nu poti transporta mai multe din acest obiect",
-    InvFull = "Nu poti transporta mai multe obiecte"
+    InvFull = "Nu poti transporta mai multe obiecte",
+
+    CraftCard = "Pack Carduri",
+    NotEnoughCards = "Nu ai suficiente cărți : ",
+    PackedCards = "Set de cărți împachetate : ",
+    UnpackedCards = "Set de cărți despachetate : ",
+    NoCardBox = "Nu aveți o cutie goală pentru carduri."
 }

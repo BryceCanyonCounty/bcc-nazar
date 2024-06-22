@@ -6,17 +6,16 @@ lua54 'yes'
 author 'BCC @ Jake2k4'
 
 server_scripts {
-    'server.lua',
+    'server/main.lua',
+    'server/versioncheck.lua'
 }
 
 shared_scripts {
-    'config.lua',
-    'CardConfig.lua',
+    'config/*.lua',
     'locale.lua',
     'languages/*.lua'
     
 }
-
 
 client_scripts {
     '/client/menusetup.lua',
@@ -25,12 +24,10 @@ client_scripts {
     '/client/cards.lua'
 }
 
-version '1.4.3'
+version '1.5.0'
 
 dependency {
     'vorp_core',
     'vorp_inventory',
-    'vorp_menu',
     'bcc-utils',
-    'vorp_inputs'
 }
