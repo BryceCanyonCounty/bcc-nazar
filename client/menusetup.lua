@@ -81,48 +81,18 @@ else
             print('^1Missing/Stopped Feather Menu Resource^7')
             return
         end
-        MainMenu = FeatherMenu:RegisterMenu('feather:nazar:mainMenu', {
-            top = '5%',
-            left = '5%',
-            ['720width'] = '400px',
-            ['1080width'] = '500px',
-            ['2kwidth'] = '600px',
-            ['4kwidth'] = '700px',
-            style = {
-                -- ['height'] = '500px'
-                -- ['border'] = '5px solid white',
-                -- ['background-image'] = 'none',
-                -- ['background-color'] = '#515A5A'
-            },
-            contentslot = {
-                style = { --This style is what is currently making the content slot scoped and scrollable. If you delete this, it will make the content height dynamic to its inner content.
-                    ['height'] = '300px',
-                    ['min-height'] = '300px',
-                }
-            },
-            draggable = false,
-            --canclose = false
-        }, {
-            opened = function()
-                DisplayRadar(false)
-            end,
-            closed = function()
-                DisplayRadar(true)
-            end,
-        })
-
-        local MainPage = MainMenu:RegisterPage('first:page')
-        MainPage:RegisterElement('header', {
+        local NazarMenuPage = NazarMainMenu:RegisterPage('nazar:menu:page')
+        NazarMenuPage:RegisterElement('header', {
             value = _U('Nazar'),
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('line', {
+        NazarMenuPage:RegisterElement('line', {
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('button', {
-            label = "Buy Items",
+        NazarMenuPage:RegisterElement('button', {
+            label = _U('Menu_SubTitle_Buy'),
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -131,8 +101,8 @@ else
             OpenBuyMenu()
             -- This gets triggered whenever the button is clicked
         end)
-        MainPage:RegisterElement('button', {
-            label = "Sell Items",
+        NazarMenuPage:RegisterElement('button', {
+            label = _U('Menu_SubTitle_Sell'),
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -141,8 +111,8 @@ else
             OpenSellMenu()
             -- This gets triggered whenever the button is clicked
         end)
-        MainPage:RegisterElement('button', {
-            label = "Purchase Hints",
+        NazarMenuPage:RegisterElement('button', {
+            label = _U('Menu_SubTitle_Hint'),
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -152,11 +122,11 @@ else
             -- This gets triggered whenever the button is clicked
         end)
         
-        MainPage:RegisterElement('line', {
+        NazarMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        MainPage:RegisterElement('textdisplay', {
+        NazarMenuPage:RegisterElement('textdisplay', {
             value = Config.NazarSetup.randomQuotes[RandomQuoteIndex],
             slot = "footer",
             style = {
@@ -166,14 +136,14 @@ else
             }
         })
 
-        MainPage:RegisterElement('line', {
+        NazarMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        MainMenu:Open({
+        NazarMainMenu:Open({
             -- cursorFocus = false,
             -- menuFocus = false,
-            startupPage = MainPage,
+            startupPage = NazarMenuPage,
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -234,54 +204,24 @@ if Config.UseVORPMenu then
 else
     local BuyMenu
     function OpenBuyMenu()
-        BuyMenu = FeatherMenu:RegisterMenu('feather:nazar:mainMenu', {
-            top = '5%',
-            left = '5%',
-            ['720width'] = '400px',
-            ['1080width'] = '500px',
-            ['2kwidth'] = '600px',
-            ['4kwidth'] = '700px',
-            style = {
-                -- ['height'] = '500px'
-                -- ['border'] = '5px solid white',
-                -- ['background-image'] = 'none',
-                -- ['background-color'] = '#515A5A'
-            },
-            contentslot = {
-                style = { --This style is what is currently making the content slot scoped and scrollable. If you delete this, it will make the content height dynamic to its inner content.
-                    ['height'] = '300px',
-                    ['min-height'] = '300px'
-                }
-            },
-            draggable = false,
-            --canclose = false
-        }, {
-            opened = function()
-                DisplayRadar(false)
-            end,
-            closed = function()
-                DisplayRadar(true)
-            end,
-        })
-
-        local MainPage = BuyMenu:RegisterPage('first:page')
-        MainPage:RegisterElement('header', {
+        local BuyMenuPage = NazarMainMenu:RegisterPage('buy:menu:page')
+        BuyMenuPage:RegisterElement('header', {
             value = 'Madam Nazar',
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('subheader', {
+        BuyMenuPage:RegisterElement('subheader', {
             value = _U('Menu_SubTitle_Buy'),
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('line', {
+        BuyMenuPage:RegisterElement('line', {
             slot = "header",
             style = {}
         })
 
         for _, items in pairs(Config.Shop) do
-            MainPage:RegisterElement('button', {
+            BuyMenuPage:RegisterElement('button', {
                 label = items.displayname .. ' - '..items.price..' ('..items.currencytype..')',
                 -- style = {
                 --     ['color'] = ((items.currencytype == "gold") and "yellow" or "white")
@@ -296,11 +236,11 @@ else
             end)
         end
 
-        MainPage:RegisterElement('line', {
+        BuyMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        MainPage:RegisterElement('button', {
+        BuyMenuPage:RegisterElement('button', {
             label = "BACK",
             slot = "footer",
             style = {
@@ -315,14 +255,14 @@ else
             -- This gets triggered whenever the button is clicked
         end)
 
-        MainPage:RegisterElement('line', {
+        BuyMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        BuyMenu:Open({
+        NazarMainMenu:Open({
             -- cursorFocus = false,
             -- menuFocus = false,
-            startupPage = MainPage,
+            startupPage = BuyMenuPage,
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -382,54 +322,24 @@ if Config.UseVORPMenu then
 else
     local SellMenu
     function OpenSellMenu()
-        SellMenu = FeatherMenu:RegisterMenu('feather:nazar:mainMenu', {
-            top = '5%',
-            left = '5%',
-            ['720width'] = '400px',
-            ['1080width'] = '500px',
-            ['2kwidth'] = '600px',
-            ['4kwidth'] = '700px',
-            style = {
-                -- ['height'] = '500px'
-                -- ['border'] = '5px solid white',
-                -- ['background-image'] = 'none',
-                -- ['background-color'] = '#515A5A'
-            },
-            contentslot = {
-                style = { --This style is what is currently making the content slot scoped and scrollable. If you delete this, it will make the content height dynamic to its inner content.
-                    ['height'] = '300px',
-                    ['min-height'] = '300px'
-                }
-            },
-            draggable = false,
-            --canclose = false
-        }, {
-            opened = function()
-                DisplayRadar(false)
-            end,
-            closed = function()
-                DisplayRadar(true)
-            end,
-        })
-
-        local MainPage = SellMenu:RegisterPage('first:page')
-        MainPage:RegisterElement('header', {
+        local SellMenuPage = NazarMainMenu:RegisterPage('sell:menu:page')
+        SellMenuPage:RegisterElement('header', {
             value = 'Madam Nazar',
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('subheader', {
+        SellMenuPage:RegisterElement('subheader', {
             value = _U('Menu_SubTitle_Sell'),
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('line', {
+        SellMenuPage:RegisterElement('line', {
             slot = "header",
             style = {}
         })
 
         for _, items in pairs(Config.NazarsSellableItems) do
-            MainPage:RegisterElement('button', {
+            SellMenuPage:RegisterElement('button', {
                 label = items.displayname .. ' - '..items.price..' ('..items.currencytype..')',
                 -- style = {
                 --     ['color'] = ((items.currencytype == "gold") and "yellow" or "white")
@@ -444,11 +354,11 @@ else
             end)
         end
 
-        MainPage:RegisterElement('line', {
+        SellMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        MainPage:RegisterElement('button', {
+        SellMenuPage:RegisterElement('button', {
             label = "BACK",
             slot = "footer",
             style = {
@@ -463,14 +373,14 @@ else
             -- This gets triggered whenever the button is clicked
         end)
 
-        MainPage:RegisterElement('line', {
+        SellMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        SellMenu:Open({
+        NazarMainMenu:Open({
             -- cursorFocus = false,
             -- menuFocus = false,
-            startupPage = MainPage,
+            startupPage = SellMenuPage,
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -524,54 +434,24 @@ if Config.UseVORPMenu then
 else
     local HintMenu
     function OpenHintMenu()
-        HintMenu = FeatherMenu:RegisterMenu('feather:nazar:mainMenu', {
-            top = '5%',
-            left = '5%',
-            ['720width'] = '400px',
-            ['1080width'] = '500px',
-            ['2kwidth'] = '600px',
-            ['4kwidth'] = '700px',
-            style = {
-                -- ['height'] = '500px'
-                -- ['border'] = '5px solid white',
-                -- ['background-image'] = 'none',
-                -- ['background-color'] = '#515A5A'
-            },
-            contentslot = {
-                style = { --This style is what is currently making the content slot scoped and scrollable. If you delete this, it will make the content height dynamic to its inner content.
-                    ['height'] = '300px',
-                    ['min-height'] = '300px'
-                }
-            },
-            draggable = false,
-            --canclose = false
-        }, {
-            opened = function()
-                DisplayRadar(false)
-            end,
-            closed = function()
-                DisplayRadar(true)
-            end,
-        })
-
-        local MainPage = HintMenu:RegisterPage('first:page')
-        MainPage:RegisterElement('header', {
+        local HintMenuPage = NazarMainMenu:RegisterPage('hint:menu:page')
+        HintMenuPage:RegisterElement('header', {
             value = 'Madam Nazar',
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('subheader', {
+        HintMenuPage:RegisterElement('subheader', {
             value = _U('Menu_SubTitle_Hint'),
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('line', {
+        HintMenuPage:RegisterElement('line', {
             slot = "header",
             style = {}
         })
 
         for _, v in pairs(Config.TreasureLocations) do
-            MainPage:RegisterElement('button', {
+            HintMenuPage:RegisterElement('button', {
                 label = v.huntname,
                 -- style = {
                 --     ['color'] = ((items.currencytype == "gold") and "yellow" or "white")
@@ -587,11 +467,11 @@ else
             end)
         end
 
-        MainPage:RegisterElement('line', {
+        HintMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        MainPage:RegisterElement('button', {
+        HintMenuPage:RegisterElement('button', {
             label = "BACK",
             slot = "footer",
             style = {
@@ -606,14 +486,14 @@ else
             -- This gets triggered whenever the button is clicked
         end)
 
-        MainPage:RegisterElement('line', {
+        HintMenuPage:RegisterElement('line', {
             slot = "footer"
         })
 
-        HintMenu:Open({
+        NazarMainMenu:Open({
             -- cursorFocus = false,
             -- menuFocus = false,
-            startupPage = MainPage,
+            startupPage = HintMenuPage,
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -625,42 +505,21 @@ end
 ----------------- Quantity and Handler--------
 if not Config.UseVORPMenu then
     function OpenHandlerMenu(itemDisplay, itemDbName, currencyType, action)
-        HandlerMenu = FeatherMenu:RegisterMenu('feather:nazar:handlerMenu', {
-            top = '50%',
-            left = '50%',
-            ['720width'] = '400px',
-            ['1080width'] = '500px',
-            ['2kwidth'] = '600px',
-            ['4kwidth'] = '700px',
-            style = {    
-                ['height'] = 'auto'  
-            },
-            contentslot = {
-                style = { --This style is what is currently making the content slot scoped and scrollable. If you delete this, it will make the content height dynamic to its inner content.
-                    --['height'] = '100px',
-                    --['min-height'] = '100px'
-                }
-            },
-            draggable = false,
-            --canclose = false
-        }, {
-            opened = function()
-                DisplayRadar(false)
-            end,
-            closed = function()
-                DisplayRadar(true)
-            end,
+        local HandlerMenuPage = NazarMainMenu:RegisterPage('handler:menu:page')
+
+        HandlerMenuPage:RegisterElement('header', {
+            value = 'Madam Nazar',
+            slot = "header",
+            style = {}
         })
 
-        local MainPage = HandlerMenu:RegisterPage('first:page')
-
-        MainPage:RegisterElement('line', {
+        HandlerMenuPage:RegisterElement('line', {
             slot = "header"
         })
 
         local qty = 1
 
-        MainPage:RegisterElement('slider', {
+        HandlerMenuPage:RegisterElement('slider', {
             label = itemDisplay:upper(),
             start = 1,
             min = 1,
@@ -672,13 +531,13 @@ if not Config.UseVORPMenu then
             qty = data.value
         end)
 
-        MainPage:RegisterElement('line', {
-            slot = "header"
+        HandlerMenuPage:RegisterElement('line', {
+            slot = "footer"
         })
 
-        MainPage:RegisterElement('button', {
+        HandlerMenuPage:RegisterElement('button', {
             label = (action == "buy" and "BUY" or "SELL"),
-            slot = "header",
+            slot = "footer",
             style = {
                 ['color'] = "red"
             },
@@ -690,14 +549,18 @@ if not Config.UseVORPMenu then
             -- This gets triggered whenever the button is clicked
             if itemDbName ~= nil and qty > 0 then
                 TriggerServerEvent('bcc-nazar:HandleBuySell', action, itemDbName, qty, currencyType)
-                HandlerMenu:Close({})
+                NazarMainMenu:Close({})
             end
         end)
 
-        HandlerMenu:Open({
+        HandlerMenuPage:RegisterElement('bottomline', {
+            slot = "footer"
+        })
+
+        NazarMainMenu:Open({
             -- cursorFocus = false,
             -- menuFocus = false,
-            startupPage = MainPage,
+            startupPage = HandlerMenuPage,
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
@@ -757,49 +620,19 @@ else
             print('^1Missing/Stopped Feather Menu Resource^7')
             return
         end
-        CraftMenu = FeatherMenu:RegisterMenu('feather:nazar:craftMenu', {
-            top = '15%',
-            left = '55%',
-            ['720width'] = '400px',
-            ['1080width'] = '500px',
-            ['2kwidth'] = '600px',
-            ['4kwidth'] = '700px',
-            style = {
-                -- ['height'] = '500px'
-                -- ['border'] = '5px solid white',
-                -- ['background-image'] = 'none',
-                -- ['background-color'] = '#515A5A'
-            },
-            contentslot = {
-                style = { --This style is what is currently making the content slot scoped and scrollable. If you delete this, it will make the content height dynamic to its inner content.
-                    ['height'] = '300px',
-                    ['min-height'] = '300px'
-                }
-            },
-            draggable = false,
-            --canclose = false
-        }, {
-            opened = function()
-                DisplayRadar(false)
-            end,
-            closed = function()
-                DisplayRadar(true)
-            end,
-        })
-
-        local MainPage = CraftMenu:RegisterPage('first:page')
-        MainPage:RegisterElement('header', {
+        local CraftMenuPage = NazarMainMenu:RegisterPage('craft:menu:page')
+        CraftMenuPage:RegisterElement('header', {
             value = _U('CraftCard'),
             slot = "header",
             style = {}
         })
-        MainPage:RegisterElement('line', {
+        CraftMenuPage:RegisterElement('line', {
             slot = "header",
             style = {}
         })
 
         for setId, v in pairs(ConfigCards.SetsData) do
-            MainPage:RegisterElement('button', {
+            CraftMenuPage:RegisterElement('button', {
                 label = v.name,
                 sound = {
                     action = "SELECT",
@@ -808,19 +641,19 @@ else
             }, function()
                 local success = VORPcore.Callback.TriggerAwait('bcc-nazar:CardCraft', setId)
                 if success then
-                    CraftMenu:Close({})
+                    NazarMainMenu:Close({})
                 end
             end)
         end
 
-        MainPage:RegisterElement('bottomline', {
+        CraftMenuPage:RegisterElement('bottomline', {
             slot = "footer"
         })
 
-        CraftMenu:Open({
+        NazarMainMenu:Open({
             -- cursorFocus = false,
             -- menuFocus = false,
-            startupPage = MainPage,
+            startupPage = CraftMenuPage,
             sound = {
                 action = "SELECT",
                 soundset = "RDRO_Character_Creator_Sounds"
