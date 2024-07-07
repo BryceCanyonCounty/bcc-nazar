@@ -18,6 +18,7 @@ shared_scripts {
 }
 
 client_scripts {
+	'/client/functions.lua',
     '/client/menusetup.lua',
     '/client/nazarspawn.lua',
     '/client/treasurehunt.lua',
