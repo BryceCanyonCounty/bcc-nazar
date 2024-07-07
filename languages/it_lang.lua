@@ -15,6 +15,7 @@ Locales["it_lang"] = {
     NoItem = "Non possiedi questo oggetto.",
     NoMoney = "Non hai abbastanza denaro.",
     NoGold = "Non hai abbastanza oro",
+    NoCurrency = "Non hai abbastanza valuta",
     ChestLooted = 'Oggetti Ricevuti: ',
     Pickup = "Raccogli",
     YouCollected = "Hai raccolto una carta",
@@ -22,4 +23,10 @@ Locales["it_lang"] = {
     CantCollectCard = "Per favore aspetta, qualcuno ha raccolto di recente questa carta",
     StackFull = "Non puoi portare altri oggetti di questo tipo",
     InvFull = "Non puoi portare altri oggetti",
+
+    CraftCard = "Confezione di carte",
+    NotEnoughCards = "Non hai abbastanza carte : ",
+    PackedCards = "Set di carte confezionate : ",
+    UnpackedCards = "Set di carte non imballate : ",
+    NoCardBox = "Non hai una scatola di carte vuota."
 }

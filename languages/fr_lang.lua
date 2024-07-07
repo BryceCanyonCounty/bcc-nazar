@@ -1,5 +1,4 @@
 Locales["fr_lang"] = {
-
     TreasureBlipName = 'Trésor?',
     TreasurePromptTitle = 'Cherchez dans le coffre des indices',
     TreasurePrompt_search = "Ouvrir",
@@ -16,11 +15,18 @@ Locales["fr_lang"] = {
     NoItem = "Vous n'avez pas cet objet.",
     NoMoney = "Vous n'avez pas assez d'argent.",
     NoGold = "Vous n'avez pas assez d'or",
+    NoCurrency = "Vous n'avez pas assez de devises",
     ChestLooted = 'Objets reçus : ',
     Pickup = "Ramasser",
     YouCollected = "Vous avez ramassé une carte",
     CardCollected = "Carte collectée",
     CantCollectCard = "Veuillez patienter, quelqu'un a récemment ramassé cette carte",
     StackFull = "Vous ne pouvez pas transporter plus de cet objet",
-    InvFull = "Vous ne pouvez pas transporter plus d'objets"
+    InvFull = "Vous ne pouvez pas transporter plus d'objets",
+
+    CraftCard = "Pack de cartes",
+    NotEnoughCards = "Vous n'avez pas assez de cartes : ",
+    PackedCards = "Jeu de cartes emballées : ",
+    UnpackedCards = "Jeu de cartes déballées : ",
+    NoCardBox = "Vous n'avez pas de boîte à cartes vide."
 }
