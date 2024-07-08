@@ -18,7 +18,7 @@ end)
 
 ------------ Hint Management -----------------
 local HintCooldown = false
-RegisterServerEvent('bcc-nazar:BuyHint', function(cost, location)
+RegisterServerEvent('bcc-nazar:BuyHint', function(cost, location, reward)
     local _source = source
     local Character = VORPcore.getUser(_source).getUsedCharacter
     if not HintCooldown then
@@ -37,7 +37,7 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(cost, location)
             else
                 -- Functionality for Feather Menu
                 -- Pass the location data to the client event that handles chest creation
-                TriggerClientEvent('bcc-nazar:OpenChest', _source, location)
+                TriggerClientEvent('bcc-nazar:OpenChest', _source, location, reward)
             end
         else
             VORPcore.NotifyRightTip(_source, _U('NoMoney'), 4000)
@@ -50,8 +50,6 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(cost, location)
         VORPcore.NotifyBottomRight(_source, _U('NoHintNotify'), 4000)
     end
 end)
-
-
 --------- Nazar Spawn Coords Handler (Done Server Side so its same location for all players) ---------------
 local randomizedCoords, d = 0, 0
 local nspawn
@@ -66,14 +64,20 @@ end)
 
 ----------- Handles Giving Items When Chest Is Opened ------------
 local ChestCooldown = false
-RegisterServerEvent('bcc-nazar:GetRewards', function(V)
+RegisterServerEvent('bcc-nazar:GetRewards', function(rewards)
     local _source = source
     local items = ''
     local Character = VORPcore.getUser(_source).getUsedCharacter
+    -- Validate incoming data
+    if not rewards or #rewards == 0 then
+        print("Invalid or nil reward data received.")
+        return
+    end
+
     if not ChestCooldown then
-        for _, v in pairs(V.Reward) do
+        for _, v in pairs(rewards) do
             exports.vorp_inventory:addItem(_source, v.name, v.count)
-            items = items .. v.displayname .. ','
+            items = items .. v.displayname .. ', '
         end
         VORPcore.NotifyRightTip(_source, _U('ChestLooted') .. items, 4000)
         discord:sendMessage("Name: " .. Character.firstname .. " " .. Character.lastname .. "\nIdentifier: " .. Character.identifier .. '\nChest Opened: ' .. V.huntname.. "\nRewards: " .. items)
@@ -83,25 +87,14 @@ RegisterServerEvent('bcc-nazar:GetRewards', function(V)
     end
 end)
 
+
+
+-- Function To Get Item Data Based on Action and ItemName Added Safety for event to only sell/buy mentioned items.
 local function GetDataFromItemName(itemName, action, currency)
     if action == "buy" then
         for _, item in ipairs(Config.Shop) do
             if item.itemdbname == itemName and item.currencytype == currency then
                 return item
-            end
-        end
-        -- Attempt to find hints if the item is not found in the shop
-        for _, location in ipairs(Config.TreasureLocations) do
-            for _, reward in ipairs(location.Reward) do
-                if reward.name == itemName then  -- Matching with reward name
-                    -- Create a fake 'itemData' that mimics the expected structure
-                    return {
-                        itemdbname = reward.name,
-                        price = location.hintcost,
-                        currencytype = 'money',  -- Assuming hints are always bought with gold
-                        displayname = reward.displayname
-                    }
-                end
             end
         end
     elseif action == "sell" then
@@ -111,7 +104,7 @@ local function GetDataFromItemName(itemName, action, currency)
             end
         end
     end
-    return nil
+    return nil -- Return nil if the item is not found
 end
 
 -- Event to handle both buy and sell

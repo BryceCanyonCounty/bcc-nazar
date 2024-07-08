@@ -5,7 +5,7 @@ Locales["ro_lang"] = {
     TreasureBlipName = 'Comoara?',
     TreasurePromptTitle = 'Cauta in lada dupa indicii',
     TreasurePrompt_search = "Deschide",
-    TalkToNPCText = 'Vorbi',
+    TalkToNPCText = 'Acceseaza',
     Menu_SubTitle_Hint = 'Cumpara Indicii',
     Menu_SubTitle_Sell = 'Vinde Obiecte',
     Menu_SubTitle_Buy = 'Cumpara Obiecte',
@@ -27,9 +27,9 @@ Locales["ro_lang"] = {
     StackFull = "Nu poti transporta mai multe din acest obiect",
     InvFull = "Nu poti transporta mai multe obiecte",
 
-    CraftCard = "Pack Carduri",
-    NotEnoughCards = "Nu ai suficiente cărți : ",
-    PackedCards = "Set de cărți împachetate : ",
-    UnpackedCards = "Set de cărți despachetate : ",
-    NoCardBox = "Nu aveți o cutie goală pentru carduri."
+    CraftCard = "Pachet cu carti",
+    NotEnoughCards = "Nu ai suficiente carti : ",
+    PackedCards = "Set de carti impachetate : ",
+    UnpackedCards = "Set de carti despachetate : ",
+    NoCardBox = "Nu ai un pachet pentru carti"
 }
