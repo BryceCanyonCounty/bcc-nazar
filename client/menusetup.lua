@@ -3,6 +3,7 @@ VORPcore = exports.vorp_core:GetCore()
 
 VORPMenu = {}
 FeatherMenu = {}
+NazarMainMenu = {}
 
 if Config.UseVORPMenu then
     if GetResourceState('vorp_menu'):match("missing") or GetResourceState('vorp_menu'):match("stopped") then
@@ -17,6 +18,30 @@ else
         print('^1Missing/Stopped Feather Menu Resource^7')
     else
         FeatherMenu = exports['feather-menu'].initiate()
+
+        NazarMainMenu = FeatherMenu:RegisterMenu('feather:nazar:mainMenu', {
+            top = '5%',
+            left = '5%',            
+            ['720width'] = '400px',
+            ['1080width'] = '500px',
+            ['2kwidth'] = '600px',
+            ['4kwidth'] = '700px',
+            style = {},
+            contentslot = {
+              style = {
+                ['height'] = '350px',
+                ['min-height'] = '250px'
+              }
+            },
+            draggable = true
+          }, {
+            opened = function()
+                DisplayRadar(false)
+            end,
+            closed = function()
+                DisplayRadar(true)
+            end,
+        })
     end
 end
 
