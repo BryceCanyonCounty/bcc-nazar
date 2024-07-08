@@ -432,7 +432,6 @@ if Config.UseVORPMenu then
         end)
     end
 else
-    local HintMenu
     function OpenHintMenu()
         local HintMenuPage = NazarMainMenu:RegisterPage('hint:menu:page')
         HintMenuPage:RegisterElement('header', {
@@ -449,28 +448,34 @@ else
             slot = "header",
             style = {}
         })
-
+    
         for _, v in pairs(Config.TreasureLocations) do
             HintMenuPage:RegisterElement('button', {
                 label = v.huntname,
-                -- style = {
-                --     ['color'] = ((items.currencytype == "gold") and "yellow" or "white")
-                -- },
                 sound = {
                     action = "SELECT",
                     soundset = "RDRO_Character_Creator_Sounds"
                 },
             }, function()
-                OpenHandlerMenu()
-                -- This gets triggered whenever the button is clicked
-
+                local cost = v.hintcost
+                local itemDbName = v.Reward[1].name
+                local location = v.location
+                
+                -- Trigger the server event with cost and additional necessary details
+                TriggerServerEvent('bcc-nazar:BuyHint', cost, location)
+            
+                -- Close menu and perform cleanup actions
+                NazarMainMenu:Close({})
+                ClearPedTasksImmediately(PlayerPedId())
+                DisplayRadar(true)
             end)
+            
         end
-
+    
         HintMenuPage:RegisterElement('line', {
             slot = "footer"
         })
-
+    
         HintMenuPage:RegisterElement('button', {
             label = "BACK",
             slot = "footer",
@@ -483,16 +488,13 @@ else
             },
         }, function()
             OpenNazarMenu()
-            -- This gets triggered whenever the button is clicked
         end)
-
+    
         HintMenuPage:RegisterElement('line', {
             slot = "footer"
         })
-
+    
         NazarMainMenu:Open({
-            -- cursorFocus = false,
-            -- menuFocus = false,
             startupPage = HintMenuPage,
             sound = {
                 action = "SELECT",
@@ -527,7 +529,6 @@ if not Config.UseVORPMenu then
             steps = 1,
             slot = "header",
         }, function(data)
-            -- This gets triggered whenever the sliders selected value changes
             qty = data.value
         end)
 
@@ -535,6 +536,7 @@ if not Config.UseVORPMenu then
             slot = "footer"
         })
 
+        -- Adding debug statement in the button registration callback
         HandlerMenuPage:RegisterElement('button', {
             label = (action == "buy" and "BUY" or "SELL"),
             slot = "footer",
@@ -546,10 +548,11 @@ if not Config.UseVORPMenu then
                 soundset = "RDRO_Character_Creator_Sounds"
             },
         }, function()
-            -- This gets triggered whenever the button is clicked
             if itemDbName ~= nil and qty > 0 then
                 TriggerServerEvent('bcc-nazar:HandleBuySell', action, itemDbName, qty, currencyType)
                 NazarMainMenu:Close({})
+            else
+                print("Either itemDbName is nil or qty is not greater than 0")
             end
         end)
 

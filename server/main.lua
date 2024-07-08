@@ -18,13 +18,27 @@ end)
 
 ------------ Hint Management -----------------
 local HintCooldown = false
-RegisterServerEvent('bcc-nazar:BuyHint', function(cost)
+RegisterServerEvent('bcc-nazar:BuyHint', function(cost, location)
     local _source = source
     local Character = VORPcore.getUser(_source).getUsedCharacter
     if not HintCooldown then
+        -- Convert cost to a number to prevent type issues
+        cost = tonumber(cost)
+        if not cost then
+            print("Invalid cost value received")
+            return
+        end
         if Character.money >= cost then
             Character.removeCurrency(0, cost)
-            TriggerClientEvent('bcc-nazar:OpenChest', _source)
+            -- Server Side: When buying a hint
+            if Config.UseVORPMenu then
+                -- Functionality for VORP Menu
+                TriggerClientEvent('bcc-nazar:OpenChest', _source)  -- No location needed
+            else
+                -- Functionality for Feather Menu
+                -- Pass the location data to the client event that handles chest creation
+                TriggerClientEvent('bcc-nazar:OpenChest', _source, location)
+            end
         else
             VORPcore.NotifyRightTip(_source, _U('NoMoney'), 4000)
             return
@@ -36,6 +50,7 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(cost)
         VORPcore.NotifyBottomRight(_source, _U('NoHintNotify'), 4000)
     end
 end)
+
 
 --------- Nazar Spawn Coords Handler (Done Server Side so its same location for all players) ---------------
 local randomizedCoords, d = 0, 0
@@ -68,12 +83,25 @@ RegisterServerEvent('bcc-nazar:GetRewards', function(V)
     end
 end)
 
--- Function To Get Item Data Based on Action and ItemName Added Safety for event to only sell/buy mentioned items.
 local function GetDataFromItemName(itemName, action, currency)
     if action == "buy" then
         for _, item in ipairs(Config.Shop) do
             if item.itemdbname == itemName and item.currencytype == currency then
                 return item
+            end
+        end
+        -- Attempt to find hints if the item is not found in the shop
+        for _, location in ipairs(Config.TreasureLocations) do
+            for _, reward in ipairs(location.Reward) do
+                if reward.name == itemName then  -- Matching with reward name
+                    -- Create a fake 'itemData' that mimics the expected structure
+                    return {
+                        itemdbname = reward.name,
+                        price = location.hintcost,
+                        currencytype = 'money',  -- Assuming hints are always bought with gold
+                        displayname = reward.displayname
+                    }
+                end
             end
         end
     elseif action == "sell" then
@@ -83,7 +111,7 @@ local function GetDataFromItemName(itemName, action, currency)
             end
         end
     end
-    return nil -- Return nil if the item is not found
+    return nil
 end
 
 -- Event to handle both buy and sell

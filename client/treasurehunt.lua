@@ -3,10 +3,11 @@ local ChestGroup = GetRandomIntInRange(0, 0xffffff)
 local PromptStarted = false
 
 ------------ Main Chest Hunt Setup ----------------
-RegisterNetEvent('bcc-nazar:OpenChest', function()
+RegisterNetEvent('bcc-nazar:OpenChest', function(location)
     if not PromptStarted then
         StartChestPrompt()
     end
+    C = location
     VORPcore.NotifyBottomRight(_U('HintNotify'), 6000)
 
     local chest = CreateObject(joaat('p_chest01x'), C.x, C.y, C.z - 1, false, false, false, false, false)
@@ -17,7 +18,7 @@ RegisterNetEvent('bcc-nazar:OpenChest', function()
     local blip = Citizen.InvokeNative(0x45F13B7E0A15C880, -1282792512, C.x, C.y, C.z, 100.0) -- BlipAddForRadius
     Citizen.InvokeNative(0x9CB1A1623062F402, _U('TreasureBlipName')) -- SetBlipName
     while true do
-        Wait(1)
+        Wait(0)
         local sleep = true
         local distance = #(GetEntityCoords(PlayerPedId()) - vector3(C.x, C.y, C.z))
         if distance <= 3 then
