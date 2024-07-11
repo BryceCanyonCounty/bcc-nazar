@@ -1,21 +1,25 @@
 local ChestPrompt
 local ChestGroup = GetRandomIntInRange(0, 0xffffff)
 local PromptStarted = false
+local blips = {}
 
 ------------ Main Chest Hunt Setup ----------------
-RegisterNetEvent('bcc-nazar:OpenChest', function(location)
+RegisterNetEvent('bcc-nazar:OpenChest', function(treasure, reward)
     if not PromptStarted then
         StartChestPrompt()
     end
-    C = location
-    VORPcore.NotifyBottomRight(_U('HintNotify'), 6000)
+    C = treasure
 
+    VORPcore.NotifyLeft(_U('Nazar'), _U('HintNotify'), "BLIPS_MP", "blip_special_series_2", 6000, "COLOR_GREEN")
+    
     local chest = CreateObject(joaat('p_chest01x'), C.x, C.y, C.z - 1, false, false, false, false, false)
+    
     Citizen.InvokeNative(0x58A850EAEE20FAA3, chest, true) -- PlaceObjectOnGroundProperly
     Wait(500)
     FreezeEntityPosition(chest, true)
 
     local blip = Citizen.InvokeNative(0x45F13B7E0A15C880, -1282792512, C.x, C.y, C.z, 100.0) -- BlipAddForRadius
+    table.insert(blips, blip)
     Citizen.InvokeNative(0x9CB1A1623062F402, _U('TreasureBlipName')) -- SetBlipName
     while true do
         Wait(0)
@@ -31,7 +35,8 @@ RegisterNetEvent('bcc-nazar:OpenChest', function(location)
                 TaskPlayAnim(PlayerPedId(), dict, 'base', 1.0, 1.0, 5000, 17, 1.0, false, false, false)
                 RemoveBlip(blip)
                 Wait(5000)
-                TriggerServerEvent('bcc-nazar:GetRewards', V)
+                print("Reward data being sent:", json.encode(reward))
+                TriggerServerEvent('bcc-nazar:GetRewards', reward)
                 DeleteEntity(chest)
                 break
             end
@@ -62,3 +67,10 @@ function StartChestPrompt()
 
     PromptStarted = true
 end
+
+RegisterNetEvent('bcc-nazar:ClearBlips', function()
+    for _, blip in ipairs(blips) do
+        RemoveBlip(blip)
+    end
+    blips = {}
+end)

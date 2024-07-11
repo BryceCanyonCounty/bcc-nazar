@@ -458,11 +458,11 @@ else
                 },
             }, function()
                 local cost = v.hintcost
-                local itemDbName = v.Reward[1].name
+                local reward = v.Reward
                 local location = v.location
                 
                 -- Trigger the server event with cost and additional necessary details
-                TriggerServerEvent('bcc-nazar:BuyHint', cost, location)
+                TriggerServerEvent('bcc-nazar:BuyHint', cost, location, reward)
             
                 -- Close menu and perform cleanup actions
                 NazarMainMenu:Close({})
@@ -674,6 +674,9 @@ AddEventHandler("onResourceStop", function(resourceName)
     if resourceName ~= GetCurrentResourceName() then
         return
     end
+        -- Remove all chest blips
+    TriggerEvent('bcc-nazar:ClearBlips')
+
     if Config.UseVORPMenu then
         VORPMenu.CloseAll()
     else
