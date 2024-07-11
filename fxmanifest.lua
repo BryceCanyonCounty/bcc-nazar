@@ -25,7 +25,7 @@ server_scripts {
     'server/versioncheck.lua'
 }
 
-version '1.5.1'
+version '1.5.2'
 
 dependency {
     'vorp_core',
