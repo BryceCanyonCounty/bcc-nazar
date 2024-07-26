@@ -10,8 +10,10 @@ Config.keys = {
     chest   = 0x760A9C6F, -- [G]
 }
 -----------------------------------------------------
+
 Config.UseVORPMenu = false -- true | Use VORPmenu , false | Use Feather Menu
 -----------------------------------------------------
+
 --will display when someone opens a chest who did it what items they got what chest etc
 --this is what will display when someone sells or buys from nazar
 Config.Webhook = ''  --webhooks place your webhook url between the two
@@ -67,194 +69,6 @@ Config.NazarSetup = {
 }
 -----------------------------------------------------
 
---This is the treasure chest setup you can not add anymore sadly only configure the existing ones there are 20 in total and i can add more if enough people want more
-Config.TreasureLocations = {
-    {
-        huntname = 'Grizzlies West', --the name that will show when buying a hint from nazar
-        location = vector3(-960.33, 1630.17, 246.58), --the location of the chest
-        hintcost = 5, --set to 0 if you dont want to charge the player for getting a hint
-        Reward = { --this is the rewards -- you can add as many rewards per chest as you want use the existing rewards as a guide to add more
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'diamond', --this has to be the database name of the item
-                count = 1, --the amount of the item you want it to give
-            },
-            {
-                displayname = 'Golden Nugget',
-                name = 'gold_nugget',
-                count = 2,
-            },
-            {
-                displayname = 'Iron',
-                name = 'iron',
-                count = 5,
-            },
-        },
-    },
-    {
-        huntname = 'Girzzlies east',
-        location = vector3(-2728.65, -1464.78, 153.06),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'book',
-                count = 2,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'rollingpaper',
-                count = 5,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'beer',
-                count = 2,
-            },
-        },
-    },
-    {
-        huntname = 'Big Valley',
-        location = vector3(-2260.32, 115.96, 248.63),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'stolenmerch',
-                count = 2,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'pipe',
-                count = 1,
-            },
-        },
-    },
-    {
-        huntname = 'Manzanita Post',
-        location = vector3(-1814.82, -1546.38, 95.36),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'lockpick',
-                count = 1,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'aligatorto',
-                count = 4,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'cigar',
-                count = 2,
-            },
-        },
-    },
-    {
-        huntname = 'Lake Don Julio',
-        location = vector3(-3340.63, -3399.11, 31.46),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'heroin',
-                count = 2,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'book',
-                count = 1,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'lockpick',
-                count = 1,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'gold_nugget',
-                count = 2,
-            },
-        },
-    },
-    {
-        huntname = 'Glacier',
-        location = vector3(-1495.65, 3129.55, 492.6),
-        hintcost = 10,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'goldbar',
-                count = 1,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'lockpick',
-                count = 1,
-            },
-        },
-    },
-    {
-        huntname = 'Ambarinor',
-        location = vector3(922.24, 2065.61, 310.88),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'gold_nugget',
-                count = 3,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'stolenmerch',
-                count = 1,
-            },
-        },
-    },
-    {
-        huntname = 'Guarma',
-        location = vector3(1663.53, -7164.55, 93.17),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'goldbar',
-                count = 1,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'stolenmerch',
-                count = 1,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'gold_nugget',
-                count = 2,
-            },
-        },
-    },
-    {
-        huntname = 'Lagras',
-        location = vector3(2299.25, -621.2, 41.25),
-        hintcost = 5,
-        Reward = {
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'gold_nugget',
-                count = 3,
-            },
-            {
-                displayname = 'Diamond', --the name of the item that the notification will display
-                name = 'aligatorto',
-                count = 2,
-            },
-        },
-    },
-}
------------------------------------------------------
-
 --This is the shop configuration
 --You can add as many items to sale as you want just copy the line paste it and change it to your new item
 --itemdbname is the database name of the item and displayname is what will show in the menu with nazar
@@ -264,6 +78,7 @@ Config.CurrencyTypes = {
     ['gold'] = 1,
     ['rol'] = 2
 }
+-----------------------------------------------------
 
 --This is what she will sell to the player
 Config.Shop = {
@@ -287,7 +102,6 @@ Config.NazarsSellableItems = {
     { itemdbname = 'aligatorto', displayname = 'Alligator Tooth', price = 4, currencytype = 'money'},
     { itemdbname = 'heroin', displayname = 'Heroin', price = 5, currencytype = 'money'},
 }
-
 -----------------------------------------------------
 
 Config.BlipColors = {
