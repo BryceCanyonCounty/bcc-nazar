@@ -1,4 +1,4 @@
-fx_version "adamant"
+fx_version "cerulean"
 games {"rdr3"}
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 
@@ -9,7 +9,6 @@ shared_scripts {
     'config/*.lua',
     'locale.lua',
     'languages/*.lua'
-    
 }
 
 client_scripts {
@@ -25,7 +24,7 @@ server_scripts {
     'server/versioncheck.lua'
 }
 
-version '1.5.2'
+version '1.5.3'
 
 dependency {
     'vorp_core',

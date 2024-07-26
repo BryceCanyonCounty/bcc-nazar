@@ -140,7 +140,7 @@ function StartCardSoundHint(card)
     end
     while Citizen.InvokeNative(0x45AB66D02B601FA7, PlayerId()) do
         Citizen.InvokeNative(0x67C540AA08E4A6F5, frontend_soundset_name, frontend_soundset_ref, true, 0); -- play sound frontend
-        Citizen.Wait(#(GetEntityCoords(PlayerPedId() - cardCfg.coords)) * ConfigCards.ptfx.soundset_delay)
+        Citizen.Wait(#(GetEntityCoords(PlayerPedId()) - cardCfg.coords) * ConfigCards.ptfx.soundset_delay)
     end
     Citizen.InvokeNative(0x9D746964E0CF2C5F, frontend_soundset_name, frontend_soundset_ref)     -- stop audio
 end

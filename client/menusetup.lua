@@ -121,7 +121,7 @@ else
             OpenHintMenu()
             -- This gets triggered whenever the button is clicked
         end)
-        
+
         NazarMenuPage:RegisterElement('line', {
             slot = "footer"
         })
@@ -396,12 +396,12 @@ if Config.UseVORPMenu then
         local elements = {}
         local elementindex = 1
         Wait(100)
-        for _, v in pairs(Config.TreasureLocations) do
+        for _, chestCfg in pairs(Chests) do
             elements[elementindex] = {
-                label = v.huntname,
+                label = chestCfg.huntname,
                 value = 'hintbought' .. tostring(elementindex),
                 desc = '',
-                info = v
+                info = chestCfg
             }
             elementindex = elementindex + 1
         end
@@ -416,10 +416,8 @@ if Config.UseVORPMenu then
                 return _G[data.trigger]()
             end
             if data.current.info then
-                local cost = data.current.info.hintcost
-                    C = data.current.info.location
-                    V = data.current.info
-                TriggerServerEvent('bcc-nazar:BuyHint', cost)
+                local chestData = data.current.info
+                TriggerServerEvent('bcc-nazar:BuyHint', chestData)
                 menu.close()
                 ClearPedTasksImmediately(PlayerPedId())
                 DisplayRadar(true)
@@ -448,34 +446,32 @@ else
             slot = "header",
             style = {}
         })
-    
-        for _, v in pairs(Config.TreasureLocations) do
+
+        for _, chestCfg in pairs(Chests) do
             HintMenuPage:RegisterElement('button', {
-                label = v.huntname,
+                label = chestCfg.huntname,
                 sound = {
                     action = "SELECT",
                     soundset = "RDRO_Character_Creator_Sounds"
                 },
             }, function()
-                local cost = v.hintcost
-                local reward = v.Reward
-                local location = v.location
-                
+                local chestData = chestCfg
+
                 -- Trigger the server event with cost and additional necessary details
-                TriggerServerEvent('bcc-nazar:BuyHint', cost, location, reward)
-            
+                TriggerServerEvent('bcc-nazar:BuyHint', chestData)
+
                 -- Close menu and perform cleanup actions
                 NazarMainMenu:Close({})
                 ClearPedTasksImmediately(PlayerPedId())
                 DisplayRadar(true)
             end)
-            
+
         end
-    
+
         HintMenuPage:RegisterElement('line', {
             slot = "footer"
         })
-    
+
         HintMenuPage:RegisterElement('button', {
             label = "BACK",
             slot = "footer",
@@ -489,11 +485,11 @@ else
         }, function()
             OpenNazarMenu()
         end)
-    
+
         HintMenuPage:RegisterElement('line', {
             slot = "footer"
         })
-    
+
         NazarMainMenu:Open({
             startupPage = HintMenuPage,
             sound = {
@@ -680,7 +676,7 @@ AddEventHandler("onResourceStop", function(resourceName)
     if Config.UseVORPMenu then
         VORPMenu.CloseAll()
     else
-        
+
         -- Close All Feather Menu here
     end
     ClearPedTasksImmediately(PlayerPedId())
