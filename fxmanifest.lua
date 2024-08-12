@@ -12,7 +12,6 @@ shared_scripts {
 }
 
 client_scripts {
-	'/client/functions.lua',
     '/client/menusetup.lua',
     '/client/nazarspawn.lua',
     '/client/treasurehunt.lua',
@@ -24,7 +23,7 @@ server_scripts {
     'server/versioncheck.lua'
 }
 
-version '1.5.3'
+version '1.5.4'
 
 dependency {
     'vorp_core',
