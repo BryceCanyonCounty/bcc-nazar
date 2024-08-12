@@ -1,8 +1,10 @@
 ConfigCards = {}
 
 ConfigCards.Item = 'collector_card'
+-----------------------------------------------------
 
 ConfigCards.Enabled = true
+-----------------------------------------------------
 
 ConfigCards.ptfx = {
     enabled = true, -- Default : true, this is the particles on the cards when you use Eagle Eyes
@@ -13,12 +15,13 @@ ConfigCards.ptfx = {
     soundset_name = "Heartbeat",
     soundset_delay = 1000 -- Distance * soundset_delay = delay between each sound
 }
+-----------------------------------------------------
 
 ConfigCards.CardTime = 60 -- Default: 60 = 1 hour, this is time in minutes before card can be collected again
 -----------------------------------------------------
 
------------------------------------------------------
 ConfigCards.SetItem = 'collector_card_box'
+-----------------------------------------------------
 
 ConfigCards.SetsData = {
     [1] = {
@@ -82,6 +85,8 @@ ConfigCards.SetsData = {
         sellingPrice = 100
     }
 }
+-----------------------------------------------------
+
 -- Collector Cards: 144 cards / 12 cards per set / 12 Sets
 ConfigCards.Cards = {
     -- Flora Of North America
