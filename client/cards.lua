@@ -15,7 +15,7 @@ if ConfigCards.Enabled then
             local player = PlayerId()
             local playerPed = PlayerPedId()
             if IsEntityDead(playerPed) then
-                goto continue
+                goto END
             end
             for card, cardCfg in pairs(ConfigCards.Cards) do
                 local distance = #(GetEntityCoords(playerPed) - cardCfg.coords)
@@ -92,7 +92,7 @@ if ConfigCards.Enabled then
                     CardMade = false
                 end
             end
-            ::continue::
+            ::END::
             Wait(sleep)
         end
     end)
