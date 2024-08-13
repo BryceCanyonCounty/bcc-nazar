@@ -23,7 +23,7 @@ Chests = {
     },
     -----------------------------------------------------
     {
-        huntname = 'Girzzlies east',
+        huntname = 'Grizzlies East',
         location = vector3(-2728.65, -1464.78, 153.06),
         hintcost = 5,
         Reward = {
