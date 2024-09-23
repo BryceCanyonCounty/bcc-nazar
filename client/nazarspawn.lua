@@ -20,7 +20,7 @@ RegisterNetEvent('bcc-nazar:PedSpawn', function(location)
         Citizen.InvokeNative(0x58A850EAEE20FAA3, WagonObj, true) -- PlaceObjectOnGroundProperly
     end
 
-    if Config.nazar.blip then
+    if Config.nazar.blip.show == true then
         Blip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, nazarCoords.x, nazarCoords.y, nazarCoords.z)
         SetBlipSprite(Blip, Config.nazar.blip.sprite, 1)
         Citizen.InvokeNative(0x662D364ABF16DE2F, Blip, joaat(Config.BlipColors[Config.nazar.blip.color])) -- BlipAddModifier
