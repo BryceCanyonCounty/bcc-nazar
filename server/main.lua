@@ -155,7 +155,8 @@ RegisterServerEvent('bcc-nazar:HandleBuySell', function(action, itemName, qty, c
             return
         end
         if currMoney >= totalAmount then
-            if exports.vorp_inventory:addItem(src, itemData.itemdbname, qty) == true then
+            local itemsGiven = exports.vorp_inventory:addItem(src, itemData.itemdbname, qty)
+            if itemsGiven then
                 character.removeCurrency(Config.CurrencyTypes[itemData.currencytype], totalAmount)
                 VORPcore.NotifyLeft(src, _U('Nazar'), "Bought "..qty..'x '..itemData.displayname, "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_GREEN")
                 discord:sendMessage("Name: " .. character.firstname .. " " .. character.lastname .. "\nIdentifier: " .. character.identifier .. '\nItems bought: ' .. itemData.itemdbname .. '\nItem price: ' .. tostring(itemData.price) .. '\nAmount bought: ' .. tostring(qty))
@@ -285,8 +286,15 @@ end)
 
 -- Set metadata for card box as setId = 0
 AddEventHandler("vorp_inventory:Server:OnItemCreated",function(data, src)
-    if data.name == ConfigCards.SetItem and next(data.metadata) == nil then
-        exports.vorp_inventory:setItemMetadata(src, data.id, {description = data.desc.."<br>Empty Box", setId = 0}, 1)      
+    local cardBox = ConfigCards.SetItem
+    if data.name == cardBox and next(data.metadata) == nil then
+        local userItems = exports.vorp_inventory:getUserInventoryItems(src)
+        for _, item in pairs(userItems) do
+            if item.name == cardBox and next(item.metadata) == nil then
+                exports.vorp_inventory:setItemMetadata(src, item.id, {description = item.desc .. "<br>Empty Box", setId = 0}, 1)
+                break
+            end
+        end
     end
 end)
 
