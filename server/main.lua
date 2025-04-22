@@ -1,10 +1,21 @@
 local VORPcore = exports.vorp_core:GetCore()
 BccUtils = exports['bcc-utils'].initiate()
 local discord = BccUtils.Discord.setup(Config.Webhook, Config.WebhookTitle, Config.WebhookAvatar)
+local UserLogAPI = exports['bcc-userlog']:getUserLogAPI()
 
 local CooldownData = {}
 local SpawnCoordsSet = false
 local Location = {}
+LastBroadcastedLocation = nil
+
+-- Helper function for debugging in DevMode
+if Config.devMode then
+    function devPrint(message)
+        print("^1[DEV MODE] ^4" .. message)
+    end
+else
+    function devPrint(message) end -- No-op if DevMode is disabled
+end
 
 CreateThread(function()
     if GetResourceState('feather-menu'):match("missing") or GetResourceState('feather-menu'):match("stopped") then
@@ -16,67 +27,148 @@ local function SetPlayerCooldown(type)
     CooldownData[type] = os.time()
 end
 
-VORPcore.Callback.Register('bcc-nazar:CheckPlayerCooldown', function(source, cb, type)
-    local src = source
-    local user = VORPcore.getUser(src)
-    if not user then return cb(false) end
-    local cooldown = Config.cooldown[type]
-    local onList = false
+BccUtils.RPC:Register("bcc-nazar:CheckPlayerCooldown", function(params, cb, source)
+    local cooldownType = params.type
+    if not cooldownType or not Config.cooldown[cooldownType] then
+        return cb(false)
+    end
+
+    local cooldown = Config.cooldown[cooldownType]
+    local currentTime = os.time()
 
     for id, time in pairs(CooldownData) do
-        if id == type then
-            onList = true
-            if os.difftime(os.time(), time) >= cooldown * 60 then
-                cb(false) -- Not on Cooldown
-                break
+        if id == cooldownType then
+            local elapsed = os.difftime(currentTime, time)
+            if elapsed >= cooldown * 60 then
+                return cb(false) -- Not on cooldown
             else
-                cb(true)
-                break
+                return cb(true) -- Still on cooldown
             end
         end
     end
-    if not onList then
-        cb(false)
-    end
+
+    cb(false) -- No entry found, allow action
 end)
 
 RegisterServerEvent('bcc-nazar:BuyHint', function(chestData)
     local src = source
     local user = VORPcore.getUser(src)
-    if not user then return end
-    local character = user.getUsedCharacter
+    if not user then
+        devPrint("[BuyHint] User not found for src: " .. tostring(src))
+        return
+    end
 
-    local cost = nil
-    for _, chestCfg in pairs(Chests) do
-        if chestCfg.huntname == chestData.huntname then
-            cost = tonumber(chestCfg.hintcost)
+    local character = user.getUsedCharacter
+    if not character then
+        devPrint("[BuyHint] Character not found for user.")
+        return
+    end
+
+    -- Locate chest config
+    local chestCfg = nil
+    for _, chest in pairs(Chests) do
+        if chest.huntname == chestData.huntname then
+            chestCfg = chest
             break
         end
     end
 
-    if cost == nil then
-        print('Invalid cost value received')
+    if not chestCfg then
+        devPrint("[BuyHint] ERROR: Chest config not found for huntname: " .. tostring(chestData.huntname))
         return
     end
 
+    local cost = tonumber(chestCfg.hintcost) or 0
+    local requiredMinutes = tonumber(chestCfg.requiredPlaytimeMinutes) or 0
+    devPrint("[BuyHint] Found chest config for '" .. chestCfg.huntname .. "' with cost: " .. cost .. " and required playtime: " .. requiredMinutes)
+
+    -- Optional: check playtime with bcc-userlog
+    if Config.useBccUserlog then
+        local identifier = character.identifier
+        devPrint("[BuyHint] Character identifier: " .. tostring(identifier))
+
+        local playerData = UserLogAPI:GetUserBySteamID(identifier)
+        local playtime = playerData and playerData.players_playTime or 0
+
+        devPrint("[BuyHint] Total playtime for " .. identifier .. ": " .. tostring(playtime) .. " minutes")
+
+        if playtime < requiredMinutes then
+            local requiredHours = math.floor(requiredMinutes / 60)
+            VORPcore.NotifyRightTip(src, _U('needAtLeast') .. requiredHours .. _U('needHours') .. requiredMinutes .. _U('playtime'), 4000)
+            devPrint("[BuyHint] Player has insufficient playtime (" .. playtime .. " < " .. requiredMinutes .. ")")
+            return
+        end
+    end
+
+    -- Check money and proceed
     if character.money >= cost then
+        devPrint("[BuyHint] Player has enough money (" .. character.money .. "), charging: " .. cost)
         character.removeCurrency(0, cost)
         TriggerClientEvent('bcc-nazar:OpenChest', src, chestData)
-    else
-        VORPcore.NotifyRightTip(src, _U('NoMoney'), 4000)
-        return
-    end
+        SetPlayerCooldown('buyHint')
 
-    SetPlayerCooldown('buyHint')
+        -- ✅ Send Discord log using your preferred format
+        local logMsg = _U('name') ..
+            character.firstname .. " " .. character.lastname ..
+            _U('identifier') .. character.identifier ..
+            chestData.huntname ..
+            "Hint Purchased for $" .. cost
+
+        discord:sendMessage(logMsg)
+    else
+        devPrint("[BuyHint] Not enough money! Player has: " .. character.money .. ", required: " .. cost)
+        VORPcore.NotifyRightTip(src, _U('NoMoney'), 4000)
+    end
 end)
 
---------- Nazar Spawn Coords Handler (Done Server Side so its same location for all players) ---------------
-RegisterServerEvent('bcc-nazar:LocationSet', function()
+BccUtils.RPC:Register("bcc-nazar:GetLocation", function(_, cb, source)
+    devPrint("[Nazar] RPC requested by source: " .. tostring(source))
+
+    -- Set location once on first call
     if not SpawnCoordsSet then
         Location = Config.nazar.location[math.random(1, #Config.nazar.location)]
         SpawnCoordsSet = true
+        devPrint("[Nazar] First location set: " .. json.encode(Location))
     end
-    TriggerClientEvent('bcc-nazar:PedSpawn', source, Location)
+
+    -- Send the current location back
+    cb(Location)
+end)
+
+-- Respawn logic (conditional via config)
+CreateThread(function()
+    if not Config.nazar.autoRespawn then
+        devPrint("Auto respawn is disabled in Config.")
+        return
+    end
+
+    devPrint("Auto respawn enabled. Timer: " .. tostring(Config.nazar.timeRespawn) .. "ms")
+
+    while true do
+        Wait(Config.nazar.timeRespawn)
+
+        local newLocation = Config.nazar.location[math.random(1, #Config.nazar.location)]
+
+        if not Location
+            or not Location.nazarCoords
+            or newLocation.nazarCoords.x ~= Location.nazarCoords.x
+            or newLocation.nazarCoords.y ~= Location.nazarCoords.y
+            or newLocation.nazarCoords.z ~= Location.nazarCoords.z then
+
+            Location = newLocation
+            LastBroadcastedLocation = newLocation
+            SpawnCoordsSet = true
+
+            devPrint("New location selected: " .. json.encode(Location))
+
+            for _, playerId in ipairs(GetPlayers()) do
+                TriggerClientEvent('bcc-nazar:PedSpawn', playerId, Location)
+                devPrint("Sent PedSpawn to " .. playerId)
+            end
+        else
+            devPrint("Location unchanged, skipping broadcast.")
+        end
+    end
 end)
 
 ----------- Handles Giving Items When Chest Is Opened ------------
@@ -107,7 +199,7 @@ RegisterServerEvent('bcc-nazar:GetRewards', function(chestData)
     end
 
     VORPcore.NotifyRightTip(src, _U('ChestLooted') .. items, 6000)
-    discord:sendMessage("Name: " .. character.firstname .. " " .. character.lastname .. "\nIdentifier: " .. character.identifier .. '\nChest Opened: ' .. chestData.huntname.. "\nRewards: " .. items)
+    discord:sendMessage(_U('name') .. character.firstname .. " " .. character.lastname .. _U('identifier') .. character.identifier .. _U('chestOpened') .. chestData.huntname .. _U('rewards') .. items)
 end)
 
 -- Function To Get Item Data Based on Action and ItemName Added Safety for event to only sell/buy mentioned items.
@@ -141,16 +233,16 @@ RegisterServerEvent('bcc-nazar:HandleBuySell', function(action, itemName, qty, c
         local totalAmount = itemData.price * qty
         local canCarry = exports.vorp_inventory:canCarryItem(src, itemData.itemdbname, qty)
         if not canCarry then
-            VORPcore.NotifyLeft(src, _U('Nazar'), _U('StackFull'),"BLIPS_MP","blip_mp_collector_map",4000,"COLOR_RED")
+            VORPcore.NotifyLeft(src, _U('Nazar'), _U('StackFull'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
             return
         end
         if currMoney == nil or currMoney < totalAmount then
             if itemData.currencytype == "money" then
-                VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoMoney'),"BLIPS_MP","blip_mp_collector_map",4000,"COLOR_RED")
+                VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoMoney'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
             elseif itemData.currencytype == "gold" then
-                VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoGold'),"BLIPS_MP","blip_mp_collector_map",4000,"COLOR_RED")
+                VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoGold'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
             else
-                VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoCurrency'),"BLIPS_MP","blip_mp_collector_map",4000,"COLOR_RED")
+                VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoCurrency'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
             end
             return
         end
@@ -158,39 +250,68 @@ RegisterServerEvent('bcc-nazar:HandleBuySell', function(action, itemName, qty, c
             local itemsGiven = exports.vorp_inventory:addItem(src, itemData.itemdbname, qty)
             if itemsGiven then
                 character.removeCurrency(Config.CurrencyTypes[itemData.currencytype], totalAmount)
-                VORPcore.NotifyLeft(src, _U('Nazar'), "Bought "..qty..'x '..itemData.displayname, "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_GREEN")
-                discord:sendMessage("Name: " .. character.firstname .. " " .. character.lastname .. "\nIdentifier: " .. character.identifier .. '\nItems bought: ' .. itemData.itemdbname .. '\nItem price: ' .. tostring(itemData.price) .. '\nAmount bought: ' .. tostring(qty))
+                VORPcore.NotifyLeft(src, _U('Nazar'), _U('bought') .. qty .. 'x ' .. itemData.displayname, "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_GREEN")
+
+                discord:sendMessage(_U('name') ..
+                character.firstname ..
+                " " ..
+                character.lastname ..
+                _U('identifier') ..
+                character.identifier ..
+                _U('itemsBought') ..
+                itemData.itemdbname .. _U('itemPrice') .. tostring(itemData.price) .. _U('amountBought') .. tostring(qty))
             else
-                print('^2bcc-nazar^7 : Failed To Buy [^3'..itemData.itemdbname..']^7')
+                print('^2bcc-nazar^7 : Failed To Buy [^3' .. itemData.itemdbname .. ']^7')
             end
         end
-
     elseif action == "sell" then -- Sell To Nazar
         local itemData = GetDataFromItemName(itemName, action, currency)
         if itemData == nil then
-            VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoItem'),"BLIPS_MP","blip_mp_collector_map",4000,"COLOR_RED")
+            VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoItem'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
             return
         end
         local itemCount = exports.vorp_inventory:getItemCount(src, nil, itemData.itemdbname) -- check if player do have item to sell ?
         local amountCatch = 0
-        if itemCount >= qty then 
+        if itemCount >= qty then
             if exports.vorp_inventory:subItem(src, itemData.itemdbname, qty) == true then
                 repeat
                     Wait(0)
                     character.addCurrency(Config.CurrencyTypes[itemData.currencytype], tonumber(itemData.price))
                     amountCatch = amountCatch + 1
                 until amountCatch >= qty
-                VORPcore.NotifyLeft(src, _U('Nazar'), "Sold "..qty..'x '..itemData.displayname, "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_GREEN")
-                discord:sendMessage("Name: " .. character.firstname .. " " .. character.lastname .. "\nIdentifier: " .. character.identifier .. '\nItems Sold: ' .. itemData.itemdbname .. '\nAmount sold: ' .. qty .. '\nSold for: ' .. tonumber(itemData.price))
+                VORPcore.NotifyLeft(src, _U('Nazar'), _U('sold') .. qty .. 'x ' .. itemData.displayname, "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_GREEN")
+                discord:sendMessage("Name: " ..
+                character.firstname ..
+                " " ..
+                character.lastname ..
+                "\nIdentifier: " ..
+                character.identifier ..
+                _U('itemsSold') ..
+                itemData.itemdbname .. _U('amountSold') .. qty .. _U('soldFor') .. tonumber(itemData.price))
             else
-                print('^2bcc-nazar^7 : Failed To Sell [^3'..itemData.itemdbname..']^7')
+                print('^2bcc-nazar^7 : Failed To Sell [^3' .. itemData.itemdbname .. ']^7')
             end
         else
-            VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoItem'),"BLIPS_MP","blip_mp_collector_map",4000,"COLOR_RED")
+            VORPcore.NotifyLeft(src, _U('Nazar'), _U('NoItem'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
             return false
         end
     end
+end)
 
+BccUtils.RPC:Register("bcc-nazar:GetInventoryItems", function(_, cb, source)
+    local inventoryItems = exports.vorp_inventory:getUserInventoryItems(source)
+    local sellableItems = {}
+
+    for _, item in pairs(inventoryItems) do
+        for _, sellable in pairs(Items.sell) do
+            if item.name == sellable.itemdbname then
+                table.insert(sellableItems, item)
+                break
+            end
+        end
+    end
+
+    cb(sellableItems)
 end)
 
 exports.vorp_inventory:registerUsableItem('collector_card', function(data)
@@ -212,16 +333,19 @@ RegisterServerEvent("bcc-nazar:GetCard", function(cardname, model)
 end)
 
 local CardCooldown = {}
-VORPcore.Callback.Register('bcc-nazar:CardCooldown', function(source, cb, cardId)
+BccUtils.RPC:Register("bcc-nazar:CardCooldown", function(params, cb, source)
+    local cardId = params.cardId
+    if not cardId then return cb(true) end -- Fail safe
+
     if CardCooldown[cardId] then
         if os.difftime(os.time(), CardCooldown[cardId]) >= ConfigCards.CardTime * 60 then
             CardCooldown[cardId] = os.time()
-          cb(false)
+            cb(false)
         else
-          cb(true)
+            cb(true)
         end
     else
-        CardCooldown[cardId] = os.time() --Store the current time
+        CardCooldown[cardId] = os.time()
         cb(false)
     end
 end)
@@ -240,58 +364,59 @@ local function GetCardsDataFromSet(setId)
     return cards
 end
 
-VORPcore.Callback.Register('bcc-nazar:CardCraft', function(source, cb, setId, itemId)
+BccUtils.RPC:Register("bcc-nazar:CardCraft", function(params, cb, source)
+    local setId = params.setId
     local invItems = exports.vorp_inventory:getUserInventoryItems(source)
     local cardsData = GetCardsDataFromSet(setId)
-
     local ownedCards = {}
 
-    -- Pick 12 cards of requested set and store in a table "ownedCards"
-    for key, item in pairs(invItems) do
+    -- Check what cards the player owns from this set
+    for _, item in pairs(invItems) do
         if item.name == ConfigCards.Item and next(item.metadata) ~= nil then
-            if cardsData[item.metadata.model] ~= nil and not cardsData[item.metadata.model].owned then
-                cardsData[item.metadata.model].owned = true
+            local model = item.metadata.model
+            if cardsData[model] and not cardsData[model].owned then
+                cardsData[model].owned = true
                 ownedCards[#ownedCards + 1] = item
             end
         end
     end
 
-    -- Check for empty Card Box
-    local hasCardBox = exports.vorp_inventory:getItemContainingMetadata(source, ConfigCards.SetItem, {setId = 0})
-
+    -- Check for empty card box
+    local hasCardBox = exports.vorp_inventory:getItemContainingMetadata(source, ConfigCards.SetItem, { setId = 0 })
     if not hasCardBox then
-        -- Add Notification of no empty card box here
-        VORPcore.NotifyLeft(source,"Collectable Cards",_U('NoCardBox'),"toast_log_blips","blip_rc_collectable_cigcard",4000,"COLOR_RED")
-        return
+        VORPcore.NotifyLeft(source, _U('collectableCards'), _U('NoCardBox'), "toast_log_blips", "blip_rc_collectable_cigcard", 4000, "COLOR_RED")
+        return cb(false)
     end
-    if #ownedCards > 0 and #ownedCards == 12 then
-        -- Remove selected 12 cards from Inventory
-        for key, item in pairs(ownedCards) do
+
+    -- Ensure full set of 12
+    if #ownedCards == 12 then
+        for _, item in pairs(ownedCards) do
             exports.vorp_inventory:subItemID(source, item.id)
         end
 
-        -- Change Metadata of Card Box with set data
-        if exports.vorp_inventory:setItemMetadata(source, hasCardBox.id, {description = ConfigCards.SetsData[setId].name, setId = setId}, 1) then
-            VORPcore.NotifyLeft(source,"Collectable Cards",_U('PackedCards')..ConfigCards.SetsData[setId].name,"toast_log_blips","blip_rc_collectable_cigcard",4000,"COLOR_GREEN")
+        local metadata = { description = ConfigCards.SetsData[setId].name, setId = setId }
+        if exports.vorp_inventory:setItemMetadata(source, hasCardBox.id, metadata, 1) then
+            VORPcore.NotifyLeft(source, _U('collectableCards'), _U('PackedCards') .. ConfigCards.SetsData[setId].name, "toast_log_blips", "blip_rc_collectable_cigcard", 4000, "COLOR_GREEN")
+            return cb(true)
         else
-            print('^1 Failed to Change Metadata after Craft Cards ^7 Item :', hasCardBox.id)
+            print('^1 Failed to Change Metadata after Craft Cards ^7 Item:', hasCardBox.id)
+            return cb(false)
         end
     else
-        -- Add Notification here of not enough cards of setname to pack
-        VORPcore.NotifyLeft(source,"Collectable Cards",_U('NotEnoughCards')..ConfigCards.SetsData[setId].name,"toast_log_blips","blip_rc_collectable_cigcard",4000,"COLOR_RED")
+        VORPcore.NotifyLeft(source, _U('collectableCards'), _U('NotEnoughCards') .. ConfigCards.SetsData[setId].name, "toast_log_blips", "blip_rc_collectable_cigcard", 4000, "COLOR_RED")
+        return cb(false)
     end
-
-    cb(true)
 end)
 
 -- Set metadata for card box as setId = 0
-AddEventHandler("vorp_inventory:Server:OnItemCreated",function(data, src)
+AddEventHandler("vorp_inventory:Server:OnItemCreated", function(data, src)
     local cardBox = ConfigCards.SetItem
     if data.name == cardBox and next(data.metadata) == nil then
         local userItems = exports.vorp_inventory:getUserInventoryItems(src)
         for _, item in pairs(userItems) do
             if item.name == cardBox and next(item.metadata) == nil then
-                exports.vorp_inventory:setItemMetadata(src, item.id, {description = item.desc .. "<br>Empty Box", setId = 0}, 1)
+                exports.vorp_inventory:setItemMetadata(src, item.id,
+                    { description = item.desc .. "<br>Empty Box", setId = 0 }, 1)
                 break
             end
         end
@@ -319,19 +444,20 @@ exports.vorp_inventory:registerUsableItem(ConfigCards.SetItem, function(data)
         -- check Can Carry 12 cards as each set as 12 cards
         local canCarryCards = exports.vorp_inventory:canCarryItem(src, ConfigCards.Item, 12)
         if not canCarryCards then
-            VORPcore.NotifyLeft(source,"Collectable Cards",_U('StackFull'),"toast_log_blips","blip_rc_collectable_cigcard",4000,"COLOR_RED")
+            VORPcore.NotifyLeft(source, _U('collectableCards'), _U('StackFull'), "toast_log_blips", "blip_rc_collectable_cigcard", 4000, "COLOR_RED")
             return
         end
 
         -- check if item meta is changed
-        if exports.vorp_inventory:setItemMetadata(src, item.mainid, {description = item.desc.."<br>Empty Box", setId = 0}, 1) then
+        if exports.vorp_inventory:setItemMetadata(src, item.mainid, { description = item.desc .. "<br>Empty Box", setId = 0 }, 1) then
             -- Give Cards To Player based on setId
             for _, cards in pairs(ConfigCards.Cards) do
                 if cards.setId == setId then
-                    exports.vorp_inventory:addItem(src, ConfigCards.Item, 1, { description = cards.name..' '..cards.number, model = cards.model })
+                    exports.vorp_inventory:addItem(src, ConfigCards.Item, 1,
+                        { description = cards.name .. ' ' .. cards.number, model = cards.model })
                 end
             end
-            VORPcore.NotifyLeft(src,"Collectable Cards",_U('UnpackedCards')..ConfigCards.SetsData[setId].name,"toast_log_blips","blip_rc_collectable_cigcard",4000,"COLOR_GREEN")
+            VORPcore.NotifyLeft(src, _U('collectableCards'), _U('UnpackedCards') .. ConfigCards.SetsData[setId].name, "toast_log_blips", "blip_rc_collectable_cigcard", 4000, "COLOR_GREEN")
         else
             print('^1 Failed to Change Metadata after Unpack Cards ^7 Item :', item.mainid)
         end

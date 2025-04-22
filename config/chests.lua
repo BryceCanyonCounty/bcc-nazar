@@ -2,7 +2,8 @@ Chests = {
     {
         huntname = 'Grizzlies West',                  --the name that will show when buying a hint from nazar
         location = vector3(-960.33, 1630.17, 246.58), -- the location of the chest
-        hintcost = 5,                                 --set to 0 if you dont want to charge the player for getting a hint
+        hintcost = 5,
+        requiredPlaytimeMinutes = 1500,                -- Minimum played minutes needed to buy a hint example 1500--set to 0 if you dont want to charge the player for getting a hint
         Reward = { -- you can add as many rewards per chest as you want / use the existing rewards as a guide to add more
             {
                 displayname = 'Diamond',              --the name of the item that the notification will display
@@ -26,6 +27,7 @@ Chests = {
         huntname = 'Grizzlies East',
         location = vector3(-2728.65, -1464.78, 153.06),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Book', --the name of the item that the notification will display
@@ -49,6 +51,7 @@ Chests = {
         huntname = 'Big Valley',
         location = vector3(-2260.32, 115.96, 248.63),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Stolen Merch', --the name of the item that the notification will display
@@ -67,6 +70,7 @@ Chests = {
         huntname = 'Manzanita Post',
         location = vector3(-1814.82, -1546.38, 95.36),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Lockpick', --the name of the item that the notification will display
@@ -90,6 +94,7 @@ Chests = {
         huntname = 'Lake Don Julio',
         location = vector3(-3340.63, -3399.11, 31.46),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Heroin', --the name of the item that the notification will display
@@ -118,6 +123,7 @@ Chests = {
         huntname = 'Glacier',
         location = vector3(-1495.65, 3129.55, 492.6),
         hintcost = 10,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Gold Bar', --the name of the item that the notification will display
@@ -136,6 +142,7 @@ Chests = {
         huntname = 'Ambarinor',
         location = vector3(922.24, 2065.61, 310.88),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Gold Nugget', --the name of the item that the notification will display
@@ -154,6 +161,7 @@ Chests = {
         huntname = 'Guarma',
         location = vector3(1663.53, -7164.55, 93.17),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Gold Bar', --the name of the item that the notification will display
@@ -177,6 +185,7 @@ Chests = {
         huntname = 'Lagras',
         location = vector3(2299.25, -621.2, 41.25),
         hintcost = 5,
+        requiredPlaytimeMinutes = 1500,
         Reward = {
             {
                 displayname = 'Gold Nugget', --the name of the item that the notification will display
