@@ -1,4 +1,7 @@
+---------------------------------- FRENCH -------------------------------------------
+
 Locales["fr_lang"] = {
+
     TreasureBlipName = 'Trésor?',
     TreasurePromptTitle = 'Cherchez dans le coffre des indices',
     TreasurePrompt_search = "Ouvrir",
@@ -28,5 +31,51 @@ Locales["fr_lang"] = {
     NotEnoughCards = "Vous n'avez pas assez de cartes : ",
     PackedCards = "Jeu de cartes emballées : ",
     UnpackedCards = "Jeu de cartes déballées : ",
-    NoCardBox = "Vous n'avez pas de boîte à cartes vide."
+    NoCardBox = "Vous n'avez pas de boîte à cartes vide.",
+    NoSellableItems = "No Sellable Items",
+    backButton = "Back",
+    buy = "BUY",
+    sell = "SELL",
+    bought = "Bought ",
+    sold = "Sold ",
+    collectableCards = "Collectable Cards",
+
+    ---Webhooks
+    name = "Name: ",
+    identifier = "\nIdentifier: ",
+    chestOpened = "\nChest Opened: ",
+    rewards = "\nRewards: ",
+    itemsBought = "\nItems bought: ",
+    itemsSold = "\nItems Sold: ",
+    itemPrice = "\nItem price: ",
+    amountBought = "\nAmount bought: ",
+    amountSold = "\nAmount sold: ",
+    soldFor = "\nSold for: ",
+    needAtLeast = "You need at least ",
+    needHours = " hours (",
+    playtime = " minutes) of playtime to buy this hint.",
+    Quotes = {
+        "Every move you make is being watched! Avoid even the slightest misstep!",
+        "I see a lazy river flowing past a burnt town.",
+        "I see rocks in a silent desert.",
+        "I see a strange man with a tall hat... he frightens me.",
+        "I feel lupines... so many lupines. They fill the valley!",
+        "I see frowning mountains and hungry eyes.",
+        "I see an emerald covered in dirt, lying in a beautiful field.",
+        "I hear birds, beautiful birds singing in a cage!",
+        "I see a great, furious judgment descending from the clouds to strike you!",
+        "I see scorched earth. A river; along a border that cannot be crossed.",
+        "Have you seen... Gavin?",
+        "I see beautiful trees in an arid land.",
+        "I see a great stone window, looking down over a cold river.",
+        "I see trees! Trees... so... tall!",
+        "I see numbers. One, two, three. I see numbers. Seven, six, four. I see numbers. Five, one, one, two.",
+        "I see damp ground and figures in the dark. And the spirit of a lonely girl.",
+        "I see mists... and fog. I see thunder and lightning! I see a sky covered with clouds. I see... snow! I see... a bright sun in a clear sky.",
+        "I see a ridge in the land… and a hawk hunter… and black smoke rising to the east.",
+        "I see a man with red hair... And a red stain on his face. He does not belong here.",
+        "I see the ruins of a battle fought long ago.",
+        "Remember, the stars favor those who leave no stone unturned.",
+        "Be careful... Your next drink will tip you over..."
+    }
 }

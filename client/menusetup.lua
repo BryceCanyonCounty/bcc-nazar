@@ -7,7 +7,8 @@ if GetResourceState('feather-menu'):match("missing") or GetResourceState('feathe
 else
     FeatherMenu = exports['feather-menu'].initiate()
 end
-
+local quotes = Locales[Config.defaultlang].Quotes
+local quote = quotes[math.random(1, #quotes)]
 -- Register Nazar Menu
 NazarMainMenu = FeatherMenu:RegisterMenu('feather:nazar:mainMenu', {
     top = '5%',
@@ -74,7 +75,7 @@ function OpenNazarMenu()
             soundset = "RDRO_Character_Creator_Sounds"
         },
     }, function()
-        local onCooldown = VORPcore.Callback.TriggerAwait('bcc-nazar:CheckPlayerCooldown', 'buyHint')
+        local onCooldown = BccUtils.RPC:CallAsync("bcc-nazar:CheckPlayerCooldown", { type = "buyHint" })
         if onCooldown then
             VORPcore.NotifyRightTip(_U('NoHintNotify'), 4000)
         else
@@ -87,7 +88,7 @@ function OpenNazarMenu()
     })
 
     NazarMenuPage:RegisterElement('textdisplay', {
-        value = Config.quotes[RandomQuoteIndex],
+        value = quote,
         slot = "footer",
         style = {
             ['font-family'] = "rdr",
@@ -115,7 +116,7 @@ end
 function OpenBuyMenu()
     local BuyMenuPage = NazarMainMenu:RegisterPage('buy:menu:page')
     BuyMenuPage:RegisterElement('header', {
-        value = 'Madam Nazar',
+        value = _U('Nazar'),
         slot = "header",
         style = {}
     })
@@ -130,17 +131,21 @@ function OpenBuyMenu()
     })
 
     for _, items in pairs(Items.buy) do
+        local imgPath = "nui://vorp_inventory/html/img/items/" .. items.itemdbname .. ".png"
+        local html = '<div style="display: flex; justify-content: space-between; align-items: center;">' .. 
+        '<img src="' .. imgPath .. '" width="48" height="48" />' ..
+        '<div style="flex: 1; text-align: center;">' ..
+            '<strong>' .. items.displayname .. '</strong>' ..
+        '</div>' ..
+        '<div style="text-align: right;">' ..
+            '<span style="color: gray;">' .. items.price .. ' ' .. items.currencytype .. '</span>' ..
+        '</div>' ..
+     '</div>'
         BuyMenuPage:RegisterElement('button', {
-            label = items.displayname .. ' - '..items.price..' ('..items.currencytype..')',
-            -- style = {
-            --     ['color'] = ((items.currencytype == "gold") and "yellow" or "white")
-            -- },
-            sound = {
-                action = "SELECT",
-                soundset = "RDRO_Character_Creator_Sounds"
-            },
+            html = html,
+            slot = "content"
         }, function()
-            OpenHandlerMenu(items.displayname, items.itemdbname, items.currencytype ,"buy")
+            OpenHandlerMenu(items.displayname, items.itemdbname, items.currencytype, "buy")
         end)
     end
 
@@ -149,7 +154,7 @@ function OpenBuyMenu()
     })
 
     BuyMenuPage:RegisterElement('button', {
-        label = "BACK",
+        label = _U('backButton'),
         slot = "footer",
         style = {
             ['color'] = "red"
@@ -177,11 +182,20 @@ function OpenBuyMenu()
     })
 end
 
------------- Selling Items Menu Setup -----------------
 function OpenSellMenu()
+    local sellableItems = BccUtils.RPC:CallAsync("bcc-nazar:GetInventoryItems")
+    if sellableItems and #sellableItems > 0 then
+        TriggerEvent('bcc-nazar:UpdateSellMenu', sellableItems)
+    else
+        VORPcore.NotifyRightTip(_U('NoSellableItems'), 4000)
+    end
+end
+
+RegisterNetEvent('bcc-nazar:UpdateSellMenu')
+AddEventHandler('bcc-nazar:UpdateSellMenu', function(sellableItems)
     local SellMenuPage = NazarMainMenu:RegisterPage('sell:menu:page')
     SellMenuPage:RegisterElement('header', {
-        value = 'Madam Nazar',
+        value = _U('Nazar'),
         slot = "header",
         style = {}
     })
@@ -195,19 +209,49 @@ function OpenSellMenu()
         style = {}
     })
 
-    for _, items in pairs(Items.sell) do
-        SellMenuPage:RegisterElement('button', {
-            label = items.displayname .. ' - '..items.price..' ('..items.currencytype..')',
-            -- style = {
-            --     ['color'] = ((items.currencytype == "gold") and "yellow" or "white")
-            -- },
-            sound = {
-                action = "SELECT",
-                soundset = "RDRO_Character_Creator_Sounds"
-            },
-        }, function()
-            OpenHandlerMenu(items.displayname, items.itemdbname, items.currencytype ,"sell")
-        end)
+    if #sellableItems == 0 then
+        SellMenuPage:RegisterElement('textdisplay', {
+            value = _U('NoSellableItems'),
+            slot = "header",
+            style = {
+                ['color'] = "red"
+            }
+        })
+    else
+        for _, item in pairs(sellableItems) do
+            local sellableItem = nil
+            for _, itemCfg in pairs(Items.sell) do
+                if item.name == itemCfg.itemdbname then
+                    sellableItem = itemCfg
+                    break
+                end
+            end
+    
+            if sellableItem then
+                local imgPath = "nui://vorp_inventory/html/img/items/" .. sellableItem.itemdbname .. ".png"
+    
+                local html = '<div style="display: flex; justify-content: space-between; align-items: center;">' ..
+                                '<img src="' .. imgPath .. '" width="48" height="48" />' ..
+                                '<div style="flex: 1; text-align: center;">' ..
+                                    '<strong>' .. sellableItem.displayname .. '</strong>' ..
+                                '</div>' ..
+                                '<div style="text-align: right;">' ..
+                                    '<span style="color: gray;">' .. sellableItem.price .. ' ' .. sellableItem.currencytype .. '</span>' ..
+                                '</div>' ..
+                             '</div>'
+    
+                SellMenuPage:RegisterElement('button', {
+                    html = html,
+                    slot = "content",
+                    sound = {
+                        action = "SELECT",
+                        soundset = "RDRO_Character_Creator_Sounds"
+                    },
+                }, function()
+                    OpenHandlerMenu(sellableItem.displayname, sellableItem.itemdbname, sellableItem.currencytype, "sell")
+                end)
+            end
+        end
     end
 
     SellMenuPage:RegisterElement('line', {
@@ -215,7 +259,7 @@ function OpenSellMenu()
     })
 
     SellMenuPage:RegisterElement('button', {
-        label = "BACK",
+        label = _U('backButton'),
         slot = "footer",
         style = {
             ['color'] = "red"
@@ -233,21 +277,19 @@ function OpenSellMenu()
     })
 
     NazarMainMenu:Open({
-        -- cursorFocus = false,
-        -- menuFocus = false,
         startupPage = SellMenuPage,
         sound = {
             action = "SELECT",
             soundset = "RDRO_Character_Creator_Sounds"
         }
     })
-end
+end)
 
 -------------- Hint Menu Setup -----------------
 function OpenHintMenu()
     local HintMenuPage = NazarMainMenu:RegisterPage('hint:menu:page')
     HintMenuPage:RegisterElement('header', {
-        value = 'Madam Nazar',
+        value = _U('Nazar'),
         slot = "header",
         style = {}
     })
@@ -283,7 +325,7 @@ function OpenHintMenu()
     })
 
     HintMenuPage:RegisterElement('button', {
-        label = "BACK",
+        label = _U('backButton'),
         slot = "footer",
         style = {
             ['color'] = "red"
@@ -314,7 +356,7 @@ function OpenHandlerMenu(itemDisplay, itemDbName, currencyType, action)
     local HandlerMenuPage = NazarMainMenu:RegisterPage('handler:menu:page')
 
     HandlerMenuPage:RegisterElement('header', {
-        value = 'Madam Nazar',
+        value = _U('Nazar'),
         slot = "header",
         style = {}
     })
@@ -329,7 +371,7 @@ function OpenHandlerMenu(itemDisplay, itemDbName, currencyType, action)
         label = itemDisplay:upper(),
         start = 1,
         min = 1,
-        max = 10,
+        max = 50,
         steps = 1,
         slot = "header",
     }, function(data)
@@ -342,7 +384,7 @@ function OpenHandlerMenu(itemDisplay, itemDbName, currencyType, action)
 
     -- Adding debug statement in the button registration callback
     HandlerMenuPage:RegisterElement('button', {
-        label = (action == "buy" and "BUY" or "SELL"),
+        label = (action == "buy" and _U('buy') or _U('sell')),
         slot = "footer",
         style = {
             ['color'] = "red"
@@ -359,7 +401,19 @@ function OpenHandlerMenu(itemDisplay, itemDbName, currencyType, action)
             print("Either itemDbName is nil or qty is not greater than 0")
         end
     end)
-
+    HandlerMenuPage:RegisterElement('button', {
+        label = _U('backButton'),
+        slot = "footer",
+        style = {
+            ['color'] = "red"
+        },
+        sound = {
+            action = "SELECT",
+            soundset = "RDRO_Character_Creator_Sounds"
+        },
+    }, function()
+        OpenNazarMenu()
+    end)
     HandlerMenuPage:RegisterElement('bottomline', {
         slot = "footer"
     })
@@ -400,7 +454,7 @@ function CraftMenuMain()
                 soundset = "RDRO_Character_Creator_Sounds"
             },
         }, function()
-            local success = VORPcore.Callback.TriggerAwait('bcc-nazar:CardCraft', setId)
+            local success = BccUtils.RPC:CallAsync("bcc-nazar:CardCraft", { setId = setId })
             if success then
                 NazarMainMenu:Close({})
             end

@@ -3,6 +3,14 @@ Config = {}
 Config.defaultlang = 'en_lang'
 -----------------------------------------------------
 
+Config.devMode       = false
+-----------------------------------------------------
+
+-- If you want to use BCC-UserLog API's
+-- Global toggle for using playtime restrictions
+Config.useBccUserlog = true
+-----------------------------------------------------
+
 Config.keys = {
     collect = 0x760A9C6F, -- [G]
     nazar   = 0x760A9C6F, -- [G]
@@ -38,6 +46,8 @@ Config.nazar = {
         name = 'Madam Nazar', -- Name of Blip on Map
         color = 'RED', -- Blip Colors Shown Below
     },
+    autoRespawn = true,                   -- If true, Nazar will auto respawn in different locations every X minutes otherwise every server restart
+    timeRespawn = 1800000,                -- Time between spawns in milliseconds (30 minutes here)
     location = { --You can add as many locations as you would like. Script will randomly pick one at each server restart!
         {
             nazarCoords = vector3(-1047.19, 450.55, 56.81),
@@ -52,32 +62,6 @@ Config.nazar = {
             wagonCoords = vector3(-1522.95, -311.68, 142.39),
         },
     }
-}
------------------------------------------------------
-
-Config.quotes = {
-    [1]  = 'Your every move is watched! Avoid even the smallest misdemeanor!',
-    [2]  = 'I see a lazy river. Flowing beside a scorched town.',
-    [3]  = 'I see cliffs in a silent desert.',
-    [4]  = 'I see a strange man in a tall hat... he frightens me.',
-    [5]  = 'I smell lupins... so many lupins. They fill the valley floor!',
-    [6]  = 'I see grizzled mountains and hungry eyes.',
-    [7]  = 'I see an emerald covered in filth, lying on a beautiful plain.',
-    [8]  = 'I hear birds, beautiful birds singing in a cage!',
-    [9]  = 'I see great and furious judgment descending from the clouds to strike you down!',
-    [10] = 'I see a scorched land. A river; along a border that cannot be crossed.',
-    [11] = 'Have you seen... Gavin?',
-    [12] = 'I see beautiful trees in an arid land.',
-    [13] = 'I see a great stone window, looking down upon a cold river.',
-    [14] = 'I see trees! Such... tall... trees!',
-    [15] = 'I see numbers. One, two, three. I see numbers. Seven, six, four. I see numbers. Five, one, one, two.',
-    [16] = 'I see wet ground, and figures in the dark. And the spirit of a lonely girl',
-    [17] = 'I see mists... and fog. I see thunder and lightning! I see a sky covered by clouds. I see... snow! I see... a bright sun in a clear sky.',
-    [18] = 'I see a ridge in the land… and a falconer… and a black smoke rising to the east.',
-    [19] = 'I see a man with red hair… And a red mark upon his face. He does not belong here.',
-    [20] = 'I see the ruins of a battle fought long ago.',
-    [21] = 'Remember, the stars favor those who leave no stone unturned.',
-    [22] = 'Take care... Your next drink will go to your head...'
 }
 -----------------------------------------------------
 
