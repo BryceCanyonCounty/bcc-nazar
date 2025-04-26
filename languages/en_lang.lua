@@ -1,7 +1,7 @@
 ---------------------------------- ENGLISH -------------------------------------------
--- Please send Pull Request to GitHub with Language Updates
+
 Locales["en_lang"] = {
-    
+
     TreasureBlipName = 'Treasure?',
     TreasurePromptTitle = 'Search the chest for clues',
     TreasurePrompt_search = "Open",
@@ -77,5 +77,6 @@ Locales["en_lang"] = {
         'I see the ruins of a battle fought long ago.',
         'Remember, the stars favor those who leave no stone unturned.',
         'Take care... Your next drink will go to your head...'
-    }
+    },
+    jobNotAllowed = "You do not have the required job to purchase this hint."
 }
