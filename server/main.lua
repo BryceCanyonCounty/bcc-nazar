@@ -1,7 +1,10 @@
 local VORPcore = exports.vorp_core:GetCore()
 BccUtils = exports['bcc-utils'].initiate()
 local discord = BccUtils.Discord.setup(Config.Webhook, Config.WebhookTitle, Config.WebhookAvatar)
-local UserLogAPI = exports['bcc-userlog']:getUserLogAPI()
+
+if Config.useBccUserlog then
+    UserLogAPI = exports['bcc-userlog']:getUserLogAPI()
+end
 
 local CooldownData = {}
 local SpawnCoordsSet = false
@@ -64,6 +67,18 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(chestData)
         return
     end
 
+    if Config.jobPermissions and Config.jobPermissions.enabled then
+        local job = character.job
+        local grade = tonumber(character.jobGrade)
+        local jobConfig = Config.jobPermissions.allowedJobs[job]
+
+        if not job or not grade or not jobConfig or grade < jobConfig.minGrade or grade > jobConfig.maxGrade then
+            devPrint("[BuyHint] Job or grade not allowed: " .. tostring(job) .. " (" .. tostring(grade) .. ")")
+            VORPcore.NotifyRightTip(src, _U('jobNotAllowed'), 4000)
+            return
+        end
+    end
+
     -- Locate chest config
     local chestCfg = nil
     for _, chest in pairs(Chests) do
@@ -107,7 +122,6 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(chestData)
         TriggerClientEvent('bcc-nazar:OpenChest', src, chestData)
         SetPlayerCooldown('buyHint')
 
-        -- ✅ Send Discord log using your preferred format
         local logMsg = _U('name') ..
             character.firstname .. " " .. character.lastname ..
             _U('identifier') .. character.identifier ..
@@ -314,11 +328,11 @@ BccUtils.RPC:Register("bcc-nazar:GetInventoryItems", function(_, cb, source)
     cb(sellableItems)
 end)
 
-exports.vorp_inventory:registerUsableItem('collector_card', function(data)
+exports.vorp_inventory:registerUsableItem(ConfigCards.Item, function(data)
     local src = data.source
     exports.vorp_inventory:closeInventory(src)
     TriggerClientEvent('bcc-nazar:UseCard', src, data.item['metadata'].model)
-end)
+end, GetCurrentResourceName())
 
 RegisterServerEvent("bcc-nazar:GetCard", function(cardname, model)
     local src = source
@@ -462,4 +476,4 @@ exports.vorp_inventory:registerUsableItem(ConfigCards.SetItem, function(data)
             print('^1 Failed to Change Metadata after Unpack Cards ^7 Item :', item.mainid)
         end
     end
-end)
+end, GetCurrentResourceName())

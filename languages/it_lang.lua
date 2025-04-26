@@ -77,5 +77,6 @@ Locales["it_lang"] = {
         "I see the ruins of a battle fought long ago.",
         "Remember, the stars favor those who leave no stone unturned.",
         "Be careful... Your next drink will tip you over..."
-    }
+    },
+    jobNotAllowed = "You do not have the required job to purchase this hint."
 }

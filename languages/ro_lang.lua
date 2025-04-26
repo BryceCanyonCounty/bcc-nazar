@@ -77,5 +77,6 @@ Locales["ro_lang"] = {
         "Vad ruinele unei batalii purtate demult.",
         "Aminteste-ti, stelele favorizeaza pe cei care nu lasa nicio piatra neintoarsa.",
         "Ai grija... Urmatoarea ta bautura te va da peste cap..."
-    }
+    },
+    jobNotAllowed = "Nu ai meseria necesara pentru a cumpara acest indiciu."
 }

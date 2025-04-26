@@ -65,6 +65,14 @@ Config.nazar = {
 }
 -----------------------------------------------------
 
+Config.jobPermissions = {
+    enabled = false, -- Set to false to disable job restrictions for hints
+    allowedJobs = {
+        collector = { minGrade = 0, maxGrade = 5 }
+        -- Add more jobs as needed
+    }
+}
+-----------------------------------------------------
 Config.BlipColors = {
     LIGHT_BLUE    = 'BLIP_MODIFIER_MP_COLOR_1',
     DARK_RED      = 'BLIP_MODIFIER_MP_COLOR_2',
