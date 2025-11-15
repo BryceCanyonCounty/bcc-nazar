@@ -209,7 +209,9 @@ AddEventHandler('bcc-nazar:UpdateSellMenu', function(sellableItems)
         style = {}
     })
 
-    if #sellableItems == 0 then
+    local hasSellableItems = #sellableItems > 0
+
+    if not hasSellableItems then
         SellMenuPage:RegisterElement('textdisplay', {
             value = _U('NoSellableItems'),
             slot = "header",
@@ -257,6 +259,27 @@ AddEventHandler('bcc-nazar:UpdateSellMenu', function(sellableItems)
     SellMenuPage:RegisterElement('line', {
         slot = "footer"
     })
+
+    if hasSellableItems then
+        SellMenuPage:RegisterElement('button', {
+            label = _U('sellAllButton'),
+            slot = "footer",
+            style = {
+                ['color'] = "green"
+            },
+            sound = {
+                action = "SELECT",
+                soundset = "RDRO_Character_Creator_Sounds"
+            },
+        }, function()
+            TriggerServerEvent('bcc-nazar:SellAllItems')
+            NazarMainMenu:Close({})
+        end)
+
+        SellMenuPage:RegisterElement('line', {
+            slot = "footer"
+        })
+    end
 
     SellMenuPage:RegisterElement('button', {
         label = _U('backButton'),
