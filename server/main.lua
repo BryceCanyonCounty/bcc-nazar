@@ -122,6 +122,7 @@ RegisterServerEvent('bcc-nazar:BuyHint', function(chestData)
         TriggerClientEvent('bcc-nazar:OpenChest', src, chestData)
         SetPlayerCooldown('buyHint')
 
+        -- ✅ Send Discord log
         local logMsg = _U('name') ..
             character.firstname .. " " .. character.lastname ..
             _U('identifier') .. character.identifier ..
@@ -234,6 +235,14 @@ local function GetDataFromItemName(itemName, action, currency)
     return nil -- Return nil if the item is not found
 end
 
+local function GetSellConfig(itemName)
+    for _, item in ipairs(Items.sell) do
+        if item.itemdbname == itemName then
+            return item
+        end
+    end
+end
+
 RegisterServerEvent('bcc-nazar:HandleBuySell', function(action, itemName, qty, currency)
     local src = source
     local user = VORPcore.getUser(src)
@@ -326,6 +335,78 @@ BccUtils.RPC:Register("bcc-nazar:GetInventoryItems", function(_, cb, source)
     end
 
     cb(sellableItems)
+end)
+
+RegisterServerEvent('bcc-nazar:SellAllItems', function()
+    local src = source
+    local user = VORPcore.getUser(src)
+    if not user then return end
+    local character = user.getUsedCharacter
+    local inventoryItems = exports.vorp_inventory:getUserInventoryItems(src)
+
+    if not inventoryItems or next(inventoryItems) == nil then
+        VORPcore.NotifyLeft(src, _U('Nazar'), _U('sellAllNothing'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
+        return
+    end
+
+    local soldItems, currencyTotals = {}, {}
+
+    for _, invItem in pairs(inventoryItems) do
+        local sellCfg = GetSellConfig(invItem.name)
+        local count = invItem.count or 0
+
+        if sellCfg and count > 0 then
+            local removed = exports.vorp_inventory:subItem(src, sellCfg.itemdbname, count)
+            if removed then
+                local currencyType = sellCfg.currencytype
+                local payout = sellCfg.price * count
+                character.addCurrency(Config.CurrencyTypes[currencyType], payout)
+                currencyTotals[currencyType] = (currencyTotals[currencyType] or 0) + payout
+                table.insert(soldItems, {
+                    name = sellCfg.displayname,
+                    count = count,
+                    payout = payout,
+                    currency = currencyType
+                })
+            end
+        end
+    end
+
+    if #soldItems == 0 then
+        VORPcore.NotifyLeft(src, _U('Nazar'), _U('sellAllNothing'), "BLIPS_MP", "blip_mp_collector_map", 4000, "COLOR_RED")
+        return
+    end
+
+    local currencySummary = {}
+    for currencyType, amount in pairs(currencyTotals) do
+        table.insert(currencySummary, tostring(amount) .. " " .. currencyType)
+    end
+
+    VORPcore.NotifyLeft(
+        src,
+        _U('Nazar'),
+        _U('soldAllSuccess') .. table.concat(currencySummary, " | "),
+        "BLIPS_MP",
+        "blip_mp_collector_map",
+        4000,
+        "COLOR_GREEN"
+    )
+
+    local soldItemDetails = {}
+    for _, info in ipairs(soldItems) do
+        table.insert(soldItemDetails, string.format("%dx %s (%s %s)", info.count, info.name, info.payout, info.currency))
+    end
+
+    discord:sendMessage(_U('name') ..
+        character.firstname ..
+        " " ..
+        character.lastname ..
+        _U('identifier') ..
+        character.identifier ..
+        _U('itemsSold') ..
+        table.concat(soldItemDetails, ", ") ..
+        _U('soldFor') ..
+        table.concat(currencySummary, " | "))
 end)
 
 exports.vorp_inventory:registerUsableItem(ConfigCards.Item, function(data)
